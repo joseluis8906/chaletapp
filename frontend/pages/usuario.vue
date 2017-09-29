@@ -62,6 +62,8 @@ v-layout( align-center justify-center )
                       class="select-special"
                       :disabled="DisableGrupoSelect")
 
+            v-text-field( label="Msg" v-model="Msg" @keypress.native.enter="PubMsg" dark )
+
       v-card-actions
         v-spacer
         v-btn( dark @click.native="Reset" ) Cancelar
@@ -98,6 +100,7 @@ export default {
     Email: null,
     Direccion: null,
     Activo: null,
+    Msg: null,
     UiPassword: null,
     SelectedGrupos: [],
     OldSelectedGrupos: [],
@@ -117,6 +120,11 @@ export default {
       var Roles = JSON.parse(sessionStorage.getItem('x-access-roles'))
       this.$store.commit('security/AddRoles', Roles);
     }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.$mqtt.subscribe('param/test')
+    })
   },
   apollo: {
     Usuarios: {
@@ -149,7 +157,16 @@ export default {
       (value === null) ? this.DisableGrupoSelect = true : this.DisableGrupoSelect = false
     }
   },
+  mqtt: {
+    'param/test': (val) => {
+      console.log('llega: ' + val)
+    }
+  },
   methods: {
+    PubMsg () {
+      //console.log('enviando: ' + this.Msg)
+      this.$mqtt.publish('param/test', this.Msg)
+    },
     CheckGrupos () {
       if(this.Id !== null) {
         if(!this.SelectedGruposForUi) {
