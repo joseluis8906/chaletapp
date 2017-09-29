@@ -62,7 +62,7 @@ v-layout( align-center justify-center )
                       class="select-special"
                       :disabled="DisableGrupoSelect")
 
-            v-text-field( label="Msg" v-model="Msg" @keypress.native.enter="PubMsg" dark )
+            //- v-text-field( label="Msg" v-model="Msg" @keypress.native.enter="PubMsg" dark )
 
       v-card-actions
         v-spacer
@@ -123,7 +123,7 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      this.$mqtt.subscribe('param/test')
+      this.$mqtt.subscribe('chaletapp/apollo')
     })
   },
   apollo: {
@@ -158,14 +158,23 @@ export default {
     }
   },
   mqtt: {
-    'param/test': (val) => {
-      console.log('llega: ' + val)
+    'chaletapp/apollo': function (val) {
+      console.log('llega')
+      var res = (JSON.parse(val))
+      //console.log(this.$apollo)
+      /*var data = this.$apollo.vm.$store.readQuery({
+        query: USUARIOS,
+        variables: {
+          UserName: res.UserName
+        }
+      })
+      console.log(data)*/
     }
   },
   methods: {
     PubMsg () {
       //console.log('enviando: ' + this.Msg)
-      this.$mqtt.publish('param/test', this.Msg)
+      this.$mqtt.publish('chaletapp/apollo', this.Msg)
     },
     CheckGrupos () {
       if(this.Id !== null) {
@@ -432,7 +441,8 @@ export default {
         },
         loadingKey: 'loading',
         update: (store, { data: res }) => {
-          //console.log(Ente);
+          this.$mqtt.publish('chaletapp/apollo', JSON.stringify({Method: 'Actualizar', Usuario: Usuario}))
+          //console.log(res.UpdateUsuario)
           try {
             var data = store.readQuery({
               query: USUARIOS,
