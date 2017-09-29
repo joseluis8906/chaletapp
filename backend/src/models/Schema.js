@@ -38,7 +38,7 @@ var Usuario = new GraphQLObjectType({
       },
       Nombre: {
         type: GraphQLString,
-        resolve(Nombre) {
+        resolve(Usuario) {
           return Usuario.Nombre;
         }
       },
