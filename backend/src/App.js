@@ -73,7 +73,7 @@ app.get('/generatepassword/:Password', (req, res) => {
 app.get('/login/:UserName/:Password', (req, res, next) => {
   var Data = (req.params);
 
-  Db.models.User.findOne({where: {UserName: Data.UserName}}).then( R => {
+  Db.models.Usuario.findOne({where: {UserName: Data.UserName}}).then( R => {
     Bcrypt.compare(Data.Password, R.Password, (Err, Res) => {
       if(Res) {
         Jwt.sign({ User: Data.UserName },
@@ -101,15 +101,15 @@ app.get('/login/:UserName/:Password', (req, res, next) => {
 app.post('/login/', (req, res, next) => {
   var Data = (req.body);
 
-  Db.models.User.findOne({
+  Db.models.Usuario.findOne({
     where: {UserName: Data.UserName},
     include: [
-      {model: Db.models.Group},
+      {model: Db.models.Grupo},
     ]
   }).then( R => {
     var Roles = [];
-    for (let i=0; i<R.Groups.length; i++){
-      Roles.push(R.Groups[i].Name);
+    for (let i=0; i<R.Grupos.length; i++){
+      Roles.push(R.Grupos[i].Nombre);
     }
     Bcrypt.compare(Data.Password, R.Password, (Err, Res) => {
       if(Res) {
