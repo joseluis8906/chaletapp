@@ -1,0 +1,10 @@
+backend/node_modules
+backend/dist
+#backend/db/Db.sqlite
+backend/npm-debug.log
+frontend/node_modules
+frontend/.nuxt
+frontend/npm-debug.log
+proxy/node_modules
+proxy/dist
+proxy/npm-debug.log

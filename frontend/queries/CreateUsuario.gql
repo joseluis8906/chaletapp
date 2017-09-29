@@ -1,0 +1,41 @@
+mutation CreateUsuario (
+  $UserName: String,
+  $Password: String,
+  $Cedula: String,
+  $Nombre: String,
+  $Apellido: String,
+  $Edad: Int,
+  $Telefono: String,
+  $Email: String,
+  $Direccion: String,
+  $Activo: String
+) {
+  CreateUsuario (
+    UserName: $UserName,
+    Password: $Password,
+    Cedula: $Cedula,
+    Nombre: $Nombre,
+    Apellido: $Apellido,
+    Edad: $Edad,
+    Telefono: $Telefono,
+    Email: $Email,
+    Direccion: $Direccion,
+    Activo: $Activo
+  ) {
+    Id
+    UserName
+    Password
+    Cedula
+    Nombre
+    Apellido
+    Edad
+    Telefono
+    Email
+    Direccion
+    Activo
+    Grupos {
+      Id
+      Nombre
+    }
+  }
+}
