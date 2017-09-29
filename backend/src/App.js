@@ -144,6 +144,6 @@ app.use((err, req, res, next) => {
   res.status(500).send("Internal server erro");
 });
 
-app.listen(3002, () => {
-  console.log('Express backend runing at http://127.0.0.1:3002');
+app.listen(3004, () => {
+  console.log('Express backend runing at http://127.0.0.1:3004');
 });
