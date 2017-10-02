@@ -123,7 +123,7 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      this.$mqtt.subscribe('chaletapp/apollo')
+      this.$mqtt.subscribe('chaletapp/apollo/mutation')
     })
   },
   apollo: {
@@ -158,48 +158,48 @@ export default {
     }
   },
   mqtt: {
-    'chaletapp/apollo': function (val) {
+    'chaletapp/apollo/mutation': function (val) {
       console.log('mqtt')
       var res = (JSON.parse(val))
       var Method = res.Method
-      var Obj = res.Usuario
-      this.StoreUpdateUsuario(Obj)
+      var Obj = res.Obj
+
+      switch (Method) {
+        case 'StoreUsuario': this.StoreUsuario(Obj)
+      }
+
     }
   },
   methods: {
     PubMsg () {
       //console.log('enviando: ' + this.Msg)
-      this.$mqtt.publish('chaletapp/apollo', this.Msg)
+      this.$mqtt.publish('chaletapp/apollo/mutation', this.Msg)
     },
-    StoreUpdateUsuario (res) {
+    StoreUsuario (Usuario) {
       var store = this.$apollo.provider.defaultClient
       try {
         var data = store.readQuery({
           query: USUARIOS,
           variables: {
-            UserName: res.UpdateUsuario.UserName
+            UserName: Usuario.UserName
           }
         })
 
+        var Existe = false
+
         for (let i=0; i<data.Usuarios.length; i++) {
-          if (data.Usuarios[i].Id === res.UpdateUsuario.Id) {
-            data.Usuarios[i].UserName = res.UpdateUsuario.UserName
-            data.Usuarios[i].Password = res.UpdateUsuario.Password
-            data.Usuarios[i].Cedula = res.UpdateUsuario.Cedula
-            data.Usuarios[i].Nombre = res.UpdateUsuario.Nombre
-            data.Usuarios[i].Apellido = res.UpdateUsuario.Apellido
-            data.Usuarios[i].Edad = res.UpdateUsuario.Edad
-            data.Usuarios[i].Telefono = res.UpdateUsuario.Telefono
-            data.Usuarios[i].Email = res.UpdateUsuario.Email
-            data.Usuarios[i].Direccion = res.UpdateUsuario.Direccion
-            data.Usuarios[i].Activo = res.UpdateUsuario.Activo
+          if (data.Usuarios[i].Id === Usuario.Id) {
+            Existe = true
+            data.Usuarios[i] = Usuario
           }
         }
+
+        (!Existe) ? data.Usuarios.push(Usuario)
 
         store.writeQuery({
           query: USUARIOS,
           variables: {
-            UserName: res.UpdateUsuario.UserName
+            UserName: Usuario.UserName
           },
           data: data
         })
@@ -208,12 +208,12 @@ export default {
 
         var data = {Usuarios: []}
 
-        data.Usuarios.push(res.UpdateUsuario)
+        data.Usuarios.push(Usuario)
 
         store.writeQuery({
           query: USUARIOS,
           variables: {
-            UserName: res.UpdateUsuario.UserName
+            UserName: Usuario.UserName
           },
           data: data
         })
@@ -339,11 +339,8 @@ export default {
                   }
 
                 },
-                }).then( data => {
-                  //console.log(data)
-                }).catch( Err => {
-                  //console.log(Err)
                 })
+
                 break
               }
             }
@@ -403,48 +400,9 @@ export default {
           Activo: Usuario.Activo
       },
       loadingKey: 'loading',
-      update: (store, { data: res }) => {
-        //console.log(Ente);
-        try{
-          var data = store.readQuery({
-            query: USUARIOS,
-            variables: {
-              UserName: res.CreateUsuario.UserName,
-            }
-          })
-
-          data.Usuarios.push(res.CreateUsuario)
-
-          store.writeQuery({
-            query: USUARIOS,
-            variables: {
-              UserName: res.CreateUsuario.UserName
-            },
-            data: data
-          })
-
-        } catch (Err) {
-
-          var data = {Usuarios: []}
-
-          data.Usuarios.push(res.CreateUsuario)
-
-          store.writeQuery({
-            query: USUARIOS,
-            variables: {
-              UserName: res.CreateUsuario.UserName
-            },
-            data: data
-          })
-
-        }
-
-      },
-      }).then( data => {
-        //console.log(data)
-      }).catch( Err => {
-        //console.log(Err)
-      })
+      update: function (store, { data: res }) {
+        this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreUsuario', Res: res.CreateUsuario}))
+      }})
     },
     Update () {
       //console.log(this.Password)
@@ -480,9 +438,9 @@ export default {
           Activo: Usuario.Activo
         },
         loadingKey: 'loading',
-        update: (store, { data: res }) => {
+        update: function (store, { data: res }) {
           //console.log(JSON.stringify(res))
-          this.$mqtt.publish('chaletapp/apollo', JSON.stringify({Method: 'UpdateUsuario', Usuario: res}))
+          this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreUsuario', Obj: res.UpdateUsuario}))
         },
       })
 
