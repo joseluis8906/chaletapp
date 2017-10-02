@@ -194,7 +194,7 @@ export default {
           }
         }
 
-        (!Existe) ? data.Usuarios.push(Usuario)
+        (!Existe) ? data.Usuarios.push(Usuario) : null;
 
         store.writeQuery({
           query: USUARIOS,
@@ -235,50 +235,14 @@ export default {
               variables: {
                 UsuarioId: UsuarioAddGrupo.UsuarioId,
                 GrupoId: UsuarioAddGrupo.GrupoId
-            },
-            loadingKey: 'loading',
-            update: function (store, { data: res }) {
-
-              try{
-                var data = store.readQuery({
-                  query: USUARIOS,
-                  variables: {
-                    UserName: res.UsuarioAddGrupo.UserName,
-                  }
-                })
-
-                for (let i=0; i<data.Usuarios.length; i++) {
-                  if (data.Usuarios[i].Id === res.UsuarioAddGrupo.Id) {
-                    data.Usuarios[i].Grupos = res.UsuarioAddGrupo.Grupos
-                  }
-                }
-
-                store.writeQuery({
-                  query: USUARIOS,
-                  variables: {
-                    UserName: res.UsuarioAddGrupo.UserName
-                  },
-                  data: data
-                })
-
-              } catch (Err) {
-
-                var data = {Usuarios: []}
-
-                data.Usuarios.push(res.UsuarioAddGrupo)
-
-                store.writeQuery({
-                  query: USUARIOS,
-                  variables: {
-                    UserName: res.UsuarioAddGrupo.UserName
-                  },
-                  data: data
-                })
-
+              },
+              loadingKey: 'loading',
+              update: (store, { data: res }) => {
+                console.log(res)
+                this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreUsuario', Obj: res.UsuarioAddGrupo}))
               }
-
-            },
             })
+
             this.OldSelectedGrupos = this.SelectedGrupos
           }
           else if (this.SelectedGrupos.length < this.OldSelectedGrupos.length) {
@@ -296,54 +260,17 @@ export default {
                   variables: {
                     UsuarioId: UsuarioRemoveGrupo.UsuarioId,
                     GrupoId: UsuarioRemoveGrupo.GrupoId
-                },
-                loadingKey: 'loading',
-                update: (store, { data: res }) => {
-                  //console.log(res);
-                  try{
-                    var data = store.readQuery({
-                      query: USUARIOS,
-                      variables: {
-                        UserName: res.UsuarioRemoveGrupo.UserName,
-                      }
-                    })
-
-                    for (let i=0; i<data.Usuarios.length; i++) {
-                      if (data.Usuarios[i].Id === res.UsuarioRemoveGrupo.Id) {
-                        data.Usuarios[i].Grupos = res.UsuarioRemoveGrupo.Grupos
-                      }
-                    }
-
-                    store.writeQuery({
-                      query: USUARIOS,
-                      variables: {
-                        UserName: res.UsuarioRemoveGrupo.UserName
-                      },
-                      data: data
-                    })
-
-                  } catch (Err) {
-
-                    var data = {Usuarios: []}
-
-                    data.Usuarios.push(res.UsuarioRemoveGrupo)
-
-                    store.writeQuery({
-                      query: USUARIOS,
-                      variables: {
-                        UserName: res.UsuarioRemoveGrupo.UserName
-                      },
-                      data: data
-                    })
-
+                  },
+                  loadingKey: 'loading',
+                  update: (store, { data: res }) => {
+                    this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreUsuario', Obj: res.UsuarioRemoveGrupo}))
                   }
-
-                },
                 })
 
                 break
               }
             }
+
             this.OldSelectedGrupos = this.SelectedGrupos
           }
         }
@@ -398,11 +325,12 @@ export default {
           Email: Usuario.Email,
           Direccion: Usuario.Direccion,
           Activo: Usuario.Activo
-      },
-      loadingKey: 'loading',
-      update: function (store, { data: res }) {
-        this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreUsuario', Res: res.CreateUsuario}))
-      }})
+        },
+        loadingKey: 'loading',
+        update: (store, { data: res }) => {
+          this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreUsuario', Obj: res.CreateUsuario}))
+        }
+      })
     },
     Update () {
       //console.log(this.Password)
@@ -438,12 +366,11 @@ export default {
           Activo: Usuario.Activo
         },
         loadingKey: 'loading',
-        update: function (store, { data: res }) {
+        update: (store, { data: res }) => {
           //console.log(JSON.stringify(res))
           this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreUsuario', Obj: res.UpdateUsuario}))
         },
       })
-
     },
     Reset () {
       this.Id = null
