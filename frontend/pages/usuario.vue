@@ -159,22 +159,66 @@ export default {
   },
   mqtt: {
     'chaletapp/apollo': function (val) {
-      console.log('llega')
+      console.log('mqtt')
       var res = (JSON.parse(val))
-      //console.log(this.$apollo)
-      /*var data = this.$apollo.vm.$store.readQuery({
-        query: USUARIOS,
-        variables: {
-          UserName: res.UserName
-        }
-      })
-      console.log(data)*/
+      var Method = res.Method
+      var Obj = res.Usuario
+      this.StoreUpdateUsuario(Obj)
     }
   },
   methods: {
     PubMsg () {
       //console.log('enviando: ' + this.Msg)
       this.$mqtt.publish('chaletapp/apollo', this.Msg)
+    },
+    StoreUpdateUsuario (res) {
+      var store = this.$apollo.provider.defaultClient
+      try {
+        var data = store.readQuery({
+          query: USUARIOS,
+          variables: {
+            UserName: res.UpdateUsuario.UserName
+          }
+        })
+
+        for (let i=0; i<data.Usuarios.length; i++) {
+          if (data.Usuarios[i].Id === res.UpdateUsuario.Id) {
+            data.Usuarios[i].UserName = res.UpdateUsuario.UserName
+            data.Usuarios[i].Password = res.UpdateUsuario.Password
+            data.Usuarios[i].Cedula = res.UpdateUsuario.Cedula
+            data.Usuarios[i].Nombre = res.UpdateUsuario.Nombre
+            data.Usuarios[i].Apellido = res.UpdateUsuario.Apellido
+            data.Usuarios[i].Edad = res.UpdateUsuario.Edad
+            data.Usuarios[i].Telefono = res.UpdateUsuario.Telefono
+            data.Usuarios[i].Email = res.UpdateUsuario.Email
+            data.Usuarios[i].Direccion = res.UpdateUsuario.Direccion
+            data.Usuarios[i].Activo = res.UpdateUsuario.Activo
+          }
+        }
+
+        store.writeQuery({
+          query: USUARIOS,
+          variables: {
+            UserName: res.UpdateUsuario.UserName
+          },
+          data: data
+        })
+
+      } catch (Err) {
+
+        var data = {Usuarios: []}
+
+        data.Usuarios.push(res.UpdateUsuario)
+
+        store.writeQuery({
+          query: USUARIOS,
+          variables: {
+            UserName: res.UpdateUsuario.UserName
+          },
+          data: data
+        })
+
+      }
     },
     CheckGrupos () {
       if(this.Id !== null) {
@@ -193,8 +237,8 @@ export default {
                 GrupoId: UsuarioAddGrupo.GrupoId
             },
             loadingKey: 'loading',
-            update: (store, { data: res }) => {
-              //console.log(res);
+            update: function (store, { data: res }) {
+
               try{
                 var data = store.readQuery({
                   query: USUARIOS,
@@ -234,10 +278,6 @@ export default {
               }
 
             },
-            }).then( data => {
-              //console.log(data)
-            }).catch( Err => {
-              //console.log(Err)
             })
             this.OldSelectedGrupos = this.SelectedGrupos
           }
@@ -441,61 +481,11 @@ export default {
         },
         loadingKey: 'loading',
         update: (store, { data: res }) => {
-          this.$mqtt.publish('chaletapp/apollo', JSON.stringify({Method: 'Actualizar', Usuario: Usuario}))
-          //console.log(res.UpdateUsuario)
-          try {
-            var data = store.readQuery({
-              query: USUARIOS,
-              variables: {
-                UserName: res.UpdateUsuario.UserName
-              }
-            })
-
-            for (let i=0; i<data.Usuarios.length; i++) {
-              if (data.Usuarios[i].Id === res.UpdateUsuario.Id) {
-                data.Usuarios[i].UserName = res.UpdateUsuario.UserName
-                data.Usuarios[i].Password = res.UpdateUsuario.Password
-                data.Usuarios[i].Cedula = res.UpdateUsuario.Cedula
-                data.Usuarios[i].Nombre = res.UpdateUsuario.Nombre
-                data.Usuarios[i].Apellido = res.UpdateUsuario.Apellido
-                data.Usuarios[i].Edad = res.UpdateUsuario.Edad
-                data.Usuarios[i].Telefono = res.UpdateUsuario.Telefono
-                data.Usuarios[i].Email = res.UpdateUsuario.Email
-                data.Usuarios[i].Direccion = res.UpdateUsuario.Direccion
-                data.Usuarios[i].Activo = res.UpdateUsuario.Activo
-              }
-            }
-
-            store.writeQuery({
-              query: USUARIOS,
-              variables: {
-                UserName: res.UpdateUsuario.UserName
-              },
-              data: data
-            })
-
-          } catch (Err) {
-
-            var data = {Usuarios: []}
-
-            data.Usuarios.push(res.UpdateUsuario)
-
-            store.writeQuery({
-              query: USUARIOS,
-              variables: {
-                UserName: res.UpdateUsuario.UserName
-              },
-              data: data
-            })
-
-          }
-
+          //console.log(JSON.stringify(res))
+          this.$mqtt.publish('chaletapp/apollo', JSON.stringify({Method: 'UpdateUsuario', Usuario: res}))
         },
-      }).then( data => {
-        //console.log(data)
-      }).catch( Err => {
-        //console.log(Err)
       })
+
     },
     Reset () {
       this.Id = null
