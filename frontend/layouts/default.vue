@@ -57,6 +57,7 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
           { icon: 'assignment', text: 'Kardex', to: '/kardex', Roles: ["Gerencia"] },
           { icon: 'person', text: 'Usuario', to: '/usuario', Roles: ["Administrador"] },
           { icon: 'group', text: 'Grupo', to: '/grupo', Roles: ["Administrador"] },
+          { icon: 'account_balance', text: 'Escenario', to: '/escenario', Roles: ["Administrador"] },
         ],
         title: 'Chalet Escenarios Deportivos',
         StoreRoles: []

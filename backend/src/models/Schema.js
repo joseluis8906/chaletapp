@@ -123,6 +123,46 @@ var Grupo = new GraphQLObjectType({
 });
 
 
+var Escenario = new GraphQLObjectType({
+  name: "Escenario",
+  description: "Object representation of Escenario",
+  fields: () => {
+    return {
+      Id: {
+        type: GraphQLInt,
+        resolve(Escenario) {
+          return Escenario.Id;
+        }
+      },
+      Tipo: {
+        type: GraphQLString,
+        resolve(Escenario) {
+          return Escenario.Tipo;
+        }
+      },
+      Codigo: {
+        type: GraphQLString,
+        resolve(Escenario) {
+          return Escenario.Codigo;
+        }
+      },
+      Precio: {
+        type: GraphQLFloat,
+        resolve(Escenario) {
+          return Escenario.Precio;
+        }
+      },
+      Activo: {
+        type: GraphQLString,
+        resolve(Escenario) {
+          return Escenario.Activo;
+        }
+      },
+    };
+  }
+});
+
+
 //Query
 var Query = new GraphQLObjectType({
   name: "Query",
@@ -163,6 +203,19 @@ var Query = new GraphQLObjectType({
         },
         resolve(root, args) {
           return Db.models.Grupo.findAll({where: args});
+        }
+      },
+      Escenarios: {
+        type: new GraphQLList(Escenario),
+        args: {
+          Id: {type: GraphQLInt},
+          Tipo: {type: GraphQLString},
+          Codigo: {type: GraphQLString},
+          Precio: {type: GraphQLFloat},
+          Activo: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Escenario.findAll({where: args});
         }
       }
     };
@@ -315,6 +368,45 @@ var Mutation = new GraphQLObjectType({
             } else {
               return U;
             }
+          });
+        }
+      },
+      CreateEscenario: {
+        type: Escenario,
+        args: {
+          Tipo: {type: GraphQLString},
+          Codigo: {type: GraphQLString},
+          Precio: {type: GraphQLFloat},
+          Activo: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.Escenario.create({
+            Tipo: args.Tipo,
+            Codigo: args.Codigo,
+            Precio: args.Precio,
+            Activo: args.Activo
+          });
+        }
+      },
+      UpdateEscenario: {
+        type: Escenario,
+        args: {
+          Id: {type: GraphQLInt},
+          Tipo: {type: GraphQLString},
+          Codigo: {type: GraphQLString},
+          Precio: {type: GraphQLFloat},
+          Activo: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.Escenario.findOne({
+            where: {Id: args.Id}
+          }).then(R => {
+            R.Tipo = args.Tipo
+            R.Codigo = args.Codigo
+            R.Precio = args.Precio
+            R.Activo = args.Activo
+            R.save()
+            return R;
           });
         }
       }

@@ -1,0 +1,21 @@
+mutation UpdateEscenario (
+  $Id: Int,
+  $Tipo: String,
+  $Codigo: String,
+  $Precio: Float,
+  $Activo: String
+) {
+  UpdateEscenario (
+    Id: $Id,
+    Tipo: $Tipo,
+    Codigo: $Codigo,
+    Precio: $Precio,
+    Activo: $Activo
+  ) {
+    Id
+    Tipo
+    Codigo
+    Precio
+    Activo
+  }
+}

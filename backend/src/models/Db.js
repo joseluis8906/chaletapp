@@ -45,6 +45,19 @@ Usuario.belongsToMany(Grupo, {through: 'UsuarioGrupo'});
 Grupo.belongsToMany(Usuario, {through: 'UsuarioGrupo'});
 
 
+const Escenario = Db.define('Escenario', {
+  Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+  Tipo: Sequelize.STRING,
+  Codigo: Sequelize.STRING,
+  Precio: Sequelize.DECIMAL,
+  Activo: Sequelize.STRING
+},
+{
+  timestamps: false,
+  freezeTableName: true
+});
+
+
 
 //open connection
 Db.authenticate().then(() => {

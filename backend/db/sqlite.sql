@@ -24,3 +24,12 @@ CREATE TABLE IF NOT EXISTS "UsuarioGrupo" (
   "GrupoId" INTEGER REFERENCES "Grupo"("Id") ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY("UsuarioId", "GrupoId")
 );
+
+CREATE TABLE IF NOT EXISTS "Escenario" (
+  "Id" INTEGER PRIMARY KEY,
+  "Tipo" TEXT,
+  "Codigo" TEXT,
+  "Precio" DECIMAL,
+  "Activo" TEXT,
+  UNIQUE("Tipo", "Codigo")
+);
