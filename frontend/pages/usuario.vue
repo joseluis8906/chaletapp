@@ -238,7 +238,7 @@ export default {
               },
               loadingKey: 'loading',
               update: (store, { data: res }) => {
-                console.log(res)
+                //console.log(res)
                 this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreUsuario', Obj: res.UsuarioAddGrupo}))
               }
             })
