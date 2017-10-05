@@ -25,9 +25,9 @@ CREATE TABLE IF NOT EXISTS "UsuarioGrupo" (
 
 CREATE TABLE IF NOT EXISTS "Escenario" (
   "Id" BIGSERIAL PRIMARY KEY,
-  "Tipo" TEXT,
-  "Codigo" TEXT,
+  "Codigo" TEXT UNIQUE,
+  "Nombre" TEXT,
+  "Imagen" TEXT,
   "Precio" DECIMAL,
-  "Activo" TEXT,
-  UNIQUE("Tipo", "Codigo")
+  "Activo" TEXT
 );
