@@ -1,21 +1,33 @@
-CREATE TABLE IF NOT EXISTS "User" (
+CREATE TABLE IF NOT EXISTS "Usuario" (
   "Id" BIGSERIAL PRIMARY KEY,
   "UserName" TEXT UNIQUE,
   "Password" TEXT,
-  "Active" BOOLEAN
-);
-
-CREATE TABLE IF NOT EXISTS "Person" (
-  "UserId" BIGINTEGER REFERENCES "User"("Id") ON DELETE CASCADE ON UPDATE CASCADE PRIMARY KEY,
+  "Cedula" TEXT UNIQUE,
+  "Nombre" TEXT,
+  "Apellido" TEXT,
+  "Edad" INTEGER,
+  "Telefono" TEXT,
   "Email" TEXT UNIQUE,
-  "FirstName" TEXT,
-  "LastName" TEXT
+  "Direccion" TEXT,
+  "Activo" TEXT
 );
 
-CREATE TABLE IF NOT EXISTS "Post" (
+CREATE TABLE IF NOT EXISTS "Grupo" (
   "Id" BIGSERIAL PRIMARY KEY,
-  "PersonId" BIGINTEGER REFERENCES "Person"("PersonId") ON DELETE CASCADE ON UPDATE CASCADE,
-  "Title" TEXT,
-  "Content" TEXT
+  "Nombre" TEXT UNIQUE,
 );
 
+CREATE TABLE IF NOT EXISTS "UsuarioGrupo" (
+  "UsuarioId" BIGINT REFERENCES "Usuario"("Id") ON DELETE CASCADE ON UPDATE CASCADE,
+  "GrupoId" BIGINT REFERENCES "Grupo"("Id") ON DELETE CASCADE ON UPDATE CASCADE,
+  PRIMARY KEY("UsuarioId", "GrupoId")
+);
+
+CREATE TABLE IF NOT EXISTS "Escenario" (
+  "Id" BIGSERIAL PRIMARY KEY,
+  "Tipo" TEXT,
+  "Codigo" TEXT,
+  "Precio" DECIMAL,
+  "Activo" TEXT,
+  UNIQUE("Tipo", "Codigo")
+);
