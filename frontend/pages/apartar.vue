@@ -22,7 +22,7 @@ v-layout( align-center justify-center )
                      esp1="60x18 m"
                      esp2="Grava sintética"
                      esp3="Cubierta anti-lluvia"
-                     precio="20.000" )
+                     precio="20000" )
 
 </template>
 

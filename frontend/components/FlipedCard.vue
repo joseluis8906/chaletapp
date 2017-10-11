@@ -1,7 +1,7 @@
 <template lang="pug">
-v-flex(xs12 md6 lg4 mb-5 class="g-card-container" v-on:mouseover="over=true" v-on:mouseout="over=false")
+v-flex(xs12 md6 lg4 mb-5 class="g-card-container")
   v-card(class="g-card" v-bind:class="{ flipped: over }" light)
-    div(class="front")
+    div(class="front" v-on:click="over=true")
       div(:style="{backgroundImage:'url('+src+')', backgroundSize:'cover', height:'180px', display:'table-cell', width: '360px', verticalAlign:'bottom'}" class="g-card-img")
         h3(class="text-xs-left title white--text ml-2 mb-3" style="text-shadow: 2px 2px rgba(40,40,40,0.75);") {{ title }}
 
@@ -19,7 +19,7 @@ v-flex(xs12 md6 lg4 mb-5 class="g-card-container" v-on:mouseover="over=true" v-o
           v-icon(fa class="blue--text") thumbs-up
 
 
-    div( class="back" )
+    div( class="back")
       h6(class="title text-xs-center pt-2") {{ title }}
       v-layout(row pr-2 pl-2)
         v-flex()
@@ -67,9 +67,8 @@ v-flex(xs12 md6 lg4 mb-5 class="g-card-container" v-on:mouseover="over=true" v-o
                        style="width: 90%"
                        light)
 
-          v-btn(light primary class="blue white--text") Apartar
-          v-btn(primary fab small class="blue")
-            v-icon(fa class="white--text") thumbs-up
+          v-btn(light primary class="blue white--text") APARTAR
+          v-btn(light error class="white--text" v-on:click.native="reset()") CANCELAR
 
 
 </template>
@@ -122,13 +121,13 @@ export default {
   data () {
     return {
       over: false,
-      horaInicial: null,
-      horaFinal: null,
-      total: 20000,
+      horaInicial: '8:00am',
+      horaFinal: '8:00am',
+      total: 0,
       menu1: false,
       menu2: false,
       horarioPermitido: {
-        horas: {min: '8AM', max: '10PM'},
+        horas: [8,9,10,11],
         minutos: {min: '00', max: '00'}
       }
     }
@@ -141,5 +140,31 @@ export default {
     esp3: String,
     precio: String
   },
+  watch: {
+    horaInicial (value) {
+      let ampm = value.split(':')[1].substr(2,2)
+      this.horarioPermitido.horas = (ampm === 'am') ? [8,9,10,11] : [12,1,2,3,4,5,6,7,8]
+      this.calcularPrecio()
+    },
+    horaFinal (value) {
+      let ampm = value.split(':')[1].substr(2,2)
+      this.horarioPermitido.horas = (ampm === 'am') ? [8,9,10,11] : [12,1,2,3,4,5,6,7,8]
+      this.calcularPrecio()
+    }
+  },
+  methods: {
+    calcularPrecio () {
+      let inicial = Number(this.horaInicial.split(':')[0])
+      let final = Number(this.horaFinal.split(':')[0])
+      let precio = Number(this.precio)
+      this.total = (final-inicial) * precio
+    },
+    reset () {
+      this.over = false
+      this.horaInicial = '8:00am'
+      this.horaFinal = '8:00am'
+      this.total = 0
+    }
+  }
 }
 </script>
