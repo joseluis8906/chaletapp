@@ -15,15 +15,16 @@ v-layout( align-center justify-center )
       h6(class="grey--text text--lighten-4 mb-0") {{ snackbar.text }}
       v-icon autorenew
 
-  v-flex( xs12 md10 lg8 mt-5 )
+  v-flex(xs12 mt-5)
     v-layout(row wrap justify-space-around class="g-layout")
-      v-fliped-card(title="Cancha de futbol 01"
-                    src="/cancha01.jpeg"
-                    esp1="60x18 m"
-                    esp2="Grava sintética"
-                    esp3="Cubierta anti-lluvia"
-                    :precio=20000
-                    :likes=3)
+      v-fliped-card(v-for="(item, i) in itemsEscenario" :key="i"
+                    :title="item.Nombre"
+                    :src="item.Imagen"
+                    :esp1="item.Esp1"
+                    :esp2="item.Esp2"
+                    :esp3="item.Esp3"
+                    :precio="item.Precio"
+                    :likes="item.Likes")
 
 </template>
 
@@ -50,6 +51,7 @@ export default {
       timeout: 6000,
       text: 'Cargando'
     },
+    itemsEscenario: null,
     loading: 0
   }),
   beforeMount () {
@@ -60,24 +62,71 @@ export default {
       this.$store.commit('security/AddRoles', Roles);
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      this.$mqtt.subscribe('chaletapp/apollo/mutation')
+    })
+  },
   apollo: {
     Escenarios: {
       query: ESCENARIOS,
-      variables () {
-        return {
-          Tipo: this.Tipo,
-          Codigo: this.Codigo
-        }
-      },
       loadingKey: 'loading',
       update (data) {
-        //console.log(data)
-        this.LoadUi(data.Escenarios)
+        this.itemsEscenario = data.Escenarios;
       }
     },
   },
+  mqtt: {
+    'chaletapp/apollo/mutation': function (val) {
+      console.log('mqtt')
+      var res = (JSON.parse(val))
+      var Method = res.Method
+      var Obj = res.Obj
+
+      switch (Method) {
+        case 'StoreEscenario': this.StoreEscenario(Obj)
+      }
+
+    }
+  },
   methods: {
-    LoadUi () {
+    StoreEscenario (Escenario) {
+      var store = this.$apollo.provider.defaultClient
+
+      try{
+        var data = store.readQuery({
+          query: ESCENARIOS
+        })
+
+        var Existe = false
+
+        for (let i=0; i<data.Escenarios.length; i++) {
+          if (data.Escenarios[i].Id === Escenario.Id) {
+            Existe = true
+            data.Escenarios[i] = Escenario
+          }
+        }
+
+        (!Existe) ? data.Escenarios.push(Escenario) : null;
+
+        store.writeQuery({
+          query: ESCENARIOS,
+          data: data
+        })
+
+      } catch (Err) {
+
+        var data = {Escenarios: []}
+
+        data.Escenarios.push(Escenario)
+
+        store.writeQuery({
+          query: ESCENARIOS,
+          data: data
+        })
+
+      }
+
     }
   },
   components: {

@@ -1,15 +1,16 @@
 <template lang="pug">
-v-flex(xs12 md6 lg4 mb-5 class="g-card-container")
+v-flex(xs12 sm4 md4 lg3 class="g-card-container")
   v-card(class="g-card" v-bind:class="{ flipped: over }" light)
     div(class="front" v-on:click="over=true")
-      div(:style="{backgroundImage:'url('+src+')', backgroundSize:'cover', height:'180px', display:'table-cell', width: '360px', verticalAlign:'bottom'}" class="g-card-img")
-        h3(class="text-xs-left title white--text ml-2 mb-3" style="text-shadow: 2px 2px rgba(40,40,40,0.75);") {{ title }}
+      div(:style="{backgroundImage:'url('+src+')', backgroundSize:'cover', height:'180px', width: '100%', verticalAlign:'bottom'}" class="g-card-img")
+        h3(class="text-xs-left title white--text ml-2" style="text-shadow: 2px 2px rgba(40,40,40,0.75); margin-top: 140px; display: inline-block") {{ title }}
 
-      p(class="subheading text-xs-left pl-2 pt-2") Especificaciones:
-      ul(class="ml-3 mb-5")
-        li {{ esp1 }}
-        li {{ esp2 }}
-        li {{ esp3 }}
+      div(class="pl-2 pt-2" style="height:165px; border-bottom: 1px solid rgb(180,180,180)")
+        p(class="subheading text-xs-left") Especificaciones:
+        ul
+          li {{ esp1 }}
+          li {{ esp2 }}
+          li {{ esp3 }}
 
       v-layout(row wrap grey lighten-2 pt-2 pb-2)
         v-flex(xs6 pl-3 grey--text text--darken-1 mt-1)
@@ -20,55 +21,50 @@ v-flex(xs12 md6 lg4 mb-5 class="g-card-container")
 
 
     div( class="back")
-      h6(class="title text-xs-center pt-2") {{ title }}
-      v-layout(row pr-2 pl-2)
-        v-flex()
-          v-menu(lazy
-                 :close-on-content-click="false"
-                 v-model="menu1"
-                 transition="scale-transition"
-                 offset-y
-                 :nudge-left="40"
-                 light)
-            v-text-field(slot="activator"
-                       label="Hora Inicial"
-                       v-model="horaInicial"
-                       prepend-icon="access_time"
-                       readonly
-                       light)
-            v-time-picker(v-model="horaInicial"
-                          :allowed-hours="horarioPermitido.horas"
-                          :allowed-minutes="horarioPermitido.minutos"
-                          autosave light)
+      v-container
+        v-layout(justify-space-around)
+          v-flex(xs12)
+            h6(class="title text-xs-center pt-2") {{ title }}
 
-          v-menu(lazy
-                 :close-on-content-click="false"
-                 v-model="menu2"
-                 transition="scale-transition"
-                 offset-y
-                 :nudge-left="40"
-                 light)
-            v-text-field(slot="activator"
-                       label="Hora Final"
-                       v-model="horaFinal"
-                       prepend-icon="access_time"
-                       readonly
-                       light)
-            v-time-picker(v-model="horaFinal"
-                          :allowed-hours="horarioPermitido.horas"
-                          :allowed-minutes="horarioPermitido.minutos"
-                          autosave light)
+            v-dialog(persistent
+                     v-model="modal1"
+                     style="width: 100%"
+                     lazy)
+              v-text-field(slot="activator"
+                         label="Hora Inicial"
+                         v-model="horaInicial"
+                         prepend-icon="access_time"
+                         readonly
+                         light)
+              v-time-picker(v-model="horaInicial"
+                            :allowed-hours="horarioPermitido.horas"
+                            :allowed-minutes="horarioPermitido.minutos"
+                            autosave)
 
+            v-dialog(persistent
+                     v-model="modal2"
+                     style="width: 100%"
+                     lazy)
+              v-text-field(slot="activator"
+                         label="Hora Final"
+                         v-model="horaFinal"
+                         prepend-icon="access_time"
+                         readonly
+                         light)
+              v-time-picker(v-model="horaFinal"
+                            :allowed-hours="horarioPermitido.horas"
+                            :allowed-minutes="horarioPermitido.minutos"
+                            autosave)
 
-          v-text-field(label="Total"
-                       v-model="total"
-                       readonly
-                       prepend-icon="attach_money"
-                       style="width: 90%"
-                       light)
+            v-money(label="Total"
+                    v-model="total"
+                    readonly
+                    prepend-icon="attach_money"
+                    maskType="currency"
+                    light)
 
-          v-btn(light primary class="blue white--text") APARTAR
-          v-btn(light error class="white--text" v-on:click.native="reset()") CANCELAR
+            v-btn(light primary class="blue white--text") APARTAR
+            v-btn(light error class="white--text" v-on:click.native="reset()") CANCELAR
 
 
 </template>
@@ -79,29 +75,29 @@ ul li
   text-align left
 
 .g-card-container
-  perspective 512px
-  height 380px
+  perspective 800px
 
 .g-card
   transform-style preserve-3d
   transition transform 1s
-  position relative
   border-radius 5px
-  height 380px
+  position relative
+  height 390px
   box-shadow 0px 0px 10px rgb(230,230,230)
 
 
 .front
   width 100%
-  height 380px
-  backface-visibility hidden
+  height 390px
   position absolute
+  backface-visibility hidden
   border-radius 5px
   overflow hidden
 
 .back
   transform rotateY( 180deg )
-  height 380px
+  width 100%
+  height 390px
   backface-visibility hidden
   border-radius 5px
   overflow hidden
@@ -117,6 +113,7 @@ ul li
 </style>
 
 <script>
+import VMoney from '~/components/MonetaryInput.vue'
 export default {
   data () {
     return {
@@ -124,8 +121,8 @@ export default {
       horaInicial: '8:00am',
       horaFinal: '8:00am',
       total: 0,
-      menu1: false,
-      menu2: false,
+      modal1: false,
+      modal2: false,
       horarioPermitido: {
         horas: [8,9,10,11],
         minutos: {min: '00', max: '00'}
@@ -166,6 +163,9 @@ export default {
       this.horaFinal = '8:00am'
       this.total = 0
     }
+  },
+  components: {
+    VMoney
   }
 }
 </script>

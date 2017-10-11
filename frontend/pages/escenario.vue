@@ -20,7 +20,7 @@ v-layout( align-center justify-center )
       v-layout(row wrap pt-3 light-blue)
         v-flex( xs12 )
           h5(class="grey--text text--lighten-4 text-xs-center bold")
-            v-icon(ma) group
+            v-icon(ma) account_balance
             |  Escenario
       v-card-text
         v-layout( row wrap)
@@ -102,7 +102,7 @@ export default {
       query: ESCENARIOS,
       variables () {
         return {
-          Tipo: this.Nombre,
+          Nombre: this.Nombre,
         }
       },
       loadingKey: 'loading',
@@ -169,8 +169,41 @@ export default {
           },
           data: data
         })
-
       }
+
+      try{
+        var data = store.readQuery({
+          query: ESCENARIOS,
+        })
+
+        var Existe = false
+
+        for (let i=0; i<data.Escenarios.length; i++) {
+          if (data.Escenarios[i].Id === Escenario.Id) {
+            Existe = true
+            data.Escenarios[i] = Escenario
+          }
+        }
+
+        (!Existe) ? data.Escenarios.push(Escenario) : null;
+
+        store.writeQuery({
+          query: ESCENARIOS,
+          data: data
+        })
+
+      } catch (Err) {
+
+        var data = {Escenarios: []}
+
+        data.Escenarios.push(Escenario)
+
+        store.writeQuery({
+          query: ESCENARIOS,
+          data: data
+        })
+      }
+
     },
     CreateOrUpdate () {
       if (this.Id === null) {

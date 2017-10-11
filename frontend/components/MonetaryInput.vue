@@ -1,9 +1,11 @@
 <template lang="pug">
   v-text-field( v-model="displayValue"
-          :label="label"
-          :readonly="readonly"
-         @blur="handleInputState"
-         @focus="handleInputState" )
+                :label="label"
+                :readonly="readonly"
+                :prepend-icon="prependIcon"
+                :light="light"
+                @blur="handleInputState"
+                @focus="handleInputState" )
 </template>
 
 <script>
@@ -26,7 +28,10 @@ export default {
     maskType: String,
     focused: false,
     label: String,
-    readonly: Boolean
+    readonly: Boolean,
+    prependIcon: String,
+    light: Boolean,
+
   },
   data: function() {
     return {

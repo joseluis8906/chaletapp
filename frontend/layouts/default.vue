@@ -49,15 +49,11 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
           fixed: true
         },
         items: [
-          //{ icon: 'subtitles', text: 'Ente', to: '/ente', Roles: ["Gerencia"]},
-          //{ icon: 'delete', text: 'Producto', to: '/producto', Roles: ["Gerencia"] },
-          //{ icon: 'battery_alert', text: 'Envase', to: '/envase', Roles: ["Gerencia"] },
-          //{ icon: 'settings', text: 'Produccion', to: '/produccion', Roles: ["Gerencia", "Produccion"] },
-          { icon: 'attach_money', text: 'Recargas', to: '/recargas', Roles: ["Administrador"] },
-          { icon: 'assignment', text: 'Apartar', to: '/apartar', Roles: ["Administrador"] },
           { icon: 'person', text: 'Usuario', to: '/usuario', Roles: ["Administrador"] },
           { icon: 'group', text: 'Grupo', to: '/grupo', Roles: ["Administrador"] },
           { icon: 'account_balance', text: 'Escenario', to: '/escenario', Roles: ["Administrador"] },
+          { icon: 'attach_money', text: 'Recargas', to: '/recargas', Roles: ["Administrador"] },
+          { icon: 'assignment', text: 'Apartar', to: '/apartar', Roles: ["Administrador"] },
         ],
         title: 'Chalet Escenarios Deportivos',
         StoreRoles: []
