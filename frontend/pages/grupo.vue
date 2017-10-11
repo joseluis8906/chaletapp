@@ -59,6 +59,14 @@ export default {
       this.$store.commit('security/AddRoles', Roles);
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      this.$mqtt.subscribe('chaletapp/apollo/mutation')
+    })
+  },
+  beforeDestroy () {
+    this.$mqtt.unsubscribe('chaletapp/apollo/mutation')
+  },
   apollo: {
     Grupos: {
       query: GRUPOS,
@@ -74,7 +82,101 @@ export default {
       }
     },
   },
+  mqtt: {
+    'chaletapp/apollo/mutation': function (val) {
+      console.log('mqtt')
+      var res = (JSON.parse(val))
+      var Method = res.Method
+      var Obj = res.Obj
+
+      switch (Method) {
+        case 'StoreGrupo': this.StoreGrupo(Obj)
+      }
+
+    }
+  },
   methods: {
+    StoreGrupo (Grupo) {
+      var store = this.$apollo.provider.defaultClient
+
+      try{
+        var data = store.readQuery({
+          query: GRUPOS,
+        })
+
+        var Existe = false
+
+        for (let i=0; i<data.Grupos.length; i++) {
+          if (data.Grupos[i].Id === Grupo.Id) {
+            Existe = true
+            data.Grupos[i] = Grupo
+          }
+        }
+
+        (!Existe) ? data.Grupos.push(Grupo) : null;
+
+        store.writeQuery({
+          query: GRUPOS,
+          data: data
+        })
+
+      } catch (Err) {
+
+        var data = {Grupos: []}
+
+        data.Grupos.push(Grupo)
+
+        store.writeQuery({
+          query: GRUPOS,
+          data: data
+        })
+      }
+
+
+      //por Nombre
+      try{
+        var data = store.readQuery({
+          query: GRUPOS,
+          variables: {
+            Nombre: Grupo.Nombre
+          }
+        })
+
+        var Existe = false
+
+        for (let i=0; i<data.Grupos.length; i++) {
+          if (data.Grupos[i].Id === Grupo.Id) {
+            Existe = true
+            data.Grupos[i] = Grupo
+          }
+        }
+
+        (!Existe) ? data.Grupos.push(Grupo) : null;
+
+        store.writeQuery({
+          query: GRUPOS,
+          variables: {
+            Nombre: Grupo.Nombre
+          },
+          data: data
+        })
+
+      } catch (Err) {
+
+        var data = {Grupos: []}
+
+        data.Grupos.push(Grupo)
+
+        store.writeQuery({
+          query: GRUPOS,
+          variables: {
+            Nombre: Grupo.Nombre
+          },
+          data: data
+        })
+      }
+
+    },
     CreateOrUpdate () {
       if (this.Id === null) {
         this.Create();
@@ -93,40 +195,11 @@ export default {
         mutation: CREATE_GRUPO,
         variables: {
           Nombre: Group.Nombre
-      },
-      loadingKey: 'loading',
-      update: (store, { data: res }) => {
-        //console.log(Ente);
-        try{
-          var data = store.readQuery({
-            query: GRUPOS,
-          })
-
-          data.Grupos.push(res.CreateGrupo)
-
-          store.writeQuery({
-            query: GRUPOS,
-            data: data
-          })
-
-        } catch (Err) {
-
-          var data = {Grupos: []}
-
-          data.Grupos.push(res.CreateGrupo)
-
-          store.writeQuery({
-            query: GRUPOS,
-            data: data
-          })
-
-        }
-
-      },
-      }).then( data => {
-        //console.log(data)
-      }).catch( Err => {
-        //console.log(Err)
+        },
+        loadingKey: 'loading',
+        update: (store, { data: res }) => {
+            this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreGrupo', Obj: res.CreateGrupo}))
+        },
       })
     },
     Update () {
@@ -146,41 +219,8 @@ export default {
         },
         loadingKey: 'loading',
         update: (store, { data: res }) => {
-          //console.log(Ente);
-          try {
-            var data = store.readQuery({
-              query: GRUPOS,
-            })
-
-            for (let i=0; i<data.Grupos.length; i++) {
-              if (data.Grupos[i].Id === res.UpdateGrupo.Id) {
-                data.Grupos[i].Nombre = res.UpdateGrupo.Nombre
-              }
-            }
-
-            store.writeQuery({
-              query: GRUPOS,
-              data: data
-            })
-
-          } catch (Err) {
-
-            var data = {Grupos: []}
-
-            data.Grupos.push(res.UpdateGrupo)
-
-            store.writeQuery({
-              query: GRUPOS,
-              data: data
-            })
-
-          }
-
+          this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreGrupo', Obj: res.UpdateGrupo}))
         },
-      }).then( data => {
-        //console.log(data)
-      }).catch( Err => {
-        //console.log(Err)
       })
     },
     Reset () {

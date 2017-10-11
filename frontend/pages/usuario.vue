@@ -126,6 +126,9 @@ export default {
       this.$mqtt.subscribe('chaletapp/apollo/mutation')
     })
   },
+  beforeDestroy () {
+    this.$mqtt.unsubscribe('chaletapp/apollo/mutation')
+  },
   apollo: {
     Usuarios: {
       query: USUARIOS,
