@@ -15,7 +15,7 @@ v-flex(xs12 md6 lg4 mb-5 class="g-card-container")
         v-flex(xs6 pl-3 grey--text text--darken-1 mt-1)
           | ${{ precio }}/hr
         v-flex(xs6 text-xs-right pr-3 blue--text mt-1)
-          <span style="vertical-align: bottom"> 10 </span>
+          <span style="vertical-align: bottom"> {{ likes }} </span>
           v-icon(fa class="blue--text") thumbs-up
 
 
@@ -138,7 +138,8 @@ export default {
     esp1: String,
     esp2: String,
     esp3: String,
-    precio: String
+    likes: Number,
+    precio: Number
   },
   watch: {
     horaInicial (value) {
