@@ -25,9 +25,33 @@ CREATE TABLE IF NOT EXISTS "UsuarioGrupo" (
 
 CREATE TABLE IF NOT EXISTS "Escenario" (
   "Id" BIGSERIAL PRIMARY KEY,
-  "Codigo" TEXT UNIQUE,
-  "Nombre" TEXT,
+  "Nombre" TEXT UNIQUE,
   "Imagen" TEXT,
+  "Esp1" TEXT,
+  "Esp2" TEXT,
+  "Esp3" TEXT,
   "Precio" DECIMAL,
+  "Likes" INTEGER,
   "Activo" TEXT
+);
+
+
+CREATE TABLE IF NOT EXISTS "Cuenta" (
+  "Id" BIGSERIAL PRIMARY KEY,
+  "UsuarioId" BIGINT REFERENCES "Usuario"("Id") ON DELETE CASCADE ON UPDATE CASCADE,
+  "Saldo" DECIMAL,
+  "Tipo" TEXT,
+  "Fecha" DATE,
+  "Hora" TIME
+);
+
+CREATE TABLE IF NOT EXISTS "Compra" (
+  "Id" BIGSERIAL PRIMARY KEY,
+  "UsuarioId" BIGINT REFERENCES "Usuario"("Id") ON DELETE CASCADE ON UPDATE CASCADE,
+  "EscenarioId" BIGINT REFERENCES "Escenario"("Id") ON DELETE CASCADE ON UPDATE CASCADE,
+  "Tiempo" DECIMAL,
+  "Precio" DECIMAL,
+  "Estado" TEXT,
+  "Fecha" DATE,
+  "Hora" TIME
 );

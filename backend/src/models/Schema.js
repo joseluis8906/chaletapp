@@ -134,22 +134,46 @@ var Escenario = new GraphQLObjectType({
           return Escenario.Id;
         }
       },
-      Tipo: {
+      Nombre: {
         type: GraphQLString,
         resolve(Escenario) {
-          return Escenario.Tipo;
+          return Escenario.Nombre;
         }
       },
-      Codigo: {
+      Imagen: {
         type: GraphQLString,
         resolve(Escenario) {
-          return Escenario.Codigo;
+          return Escenario.Imagen;
+        }
+      },
+      Esp1: {
+        type: GraphQLString,
+        resolve(Escenario) {
+          return Escenario.Esp1;
+        }
+      },
+      Esp2: {
+        type: GraphQLString,
+        resolve(Escenario) {
+          return Escenario.Esp2;
+        }
+      },
+      Esp3: {
+        type: GraphQLString,
+        resolve(Escenario) {
+          return Escenario.Esp3;
         }
       },
       Precio: {
         type: GraphQLFloat,
         resolve(Escenario) {
           return Escenario.Precio;
+        }
+      },
+      Likes: {
+        type: GraphQLInt,
+        resolve(Escenario) {
+          return Escenario.Likes;
         }
       },
       Activo: {
@@ -161,6 +185,111 @@ var Escenario = new GraphQLObjectType({
     };
   }
 });
+
+
+var Cuenta = new GraphQLObjectType({
+  name: "Cuenta",
+  description: "Object representation of Cuenta",
+  fields: () => {
+    return {
+      Id: {
+        type: GraphQLInt,
+        resolve(Cuenta) {
+          return Cuenta.Id;
+        }
+      },
+      UsuarioId: {
+        type: GraphQLInt,
+        resolve(Cuenta) {
+          return Cuenta.UsuarioId;
+        }
+      },
+      Saldo: {
+        type: GraphQLFloat,
+        resolve(Cuenta) {
+          return Cuenta.Saldo;
+        }
+      },
+      Tipo: {
+        type: GraphQLString,
+        resolve(Cuenta) {
+          return Cuenta.Tipo;
+        }
+      },
+      Fecha: {
+        type: GraphQLString,
+        resolve(Cuenta) {
+          return Cuenta.Fecha;
+        }
+      },
+      Hora: {
+        type: GraphQLString,
+        resolve(Cuenta) {
+          return Cuenta.Hora;
+        }
+      }
+    }
+  }
+})
+
+
+var Compra = new GraphQLObjectType({
+  name: "Compra",
+  description: "Object representation of Compra",
+  fields: () => {
+    return {
+      Id: {
+        type: GraphQLInt,
+        resolve(Compra) {
+          return Compra.Id;
+        }
+      },
+      UsuarioId: {
+        type: GraphQLInt,
+        resolve(Compra) {
+          return Compra.UsuarioId;
+        }
+      },
+      EscenarioId: {
+        type: GraphQLInt,
+        resolve(Compra) {
+          return Compra.EscenarioId;
+        }
+      },
+      Tiempo: {
+        type: GraphQLInt,
+        resolve(Compra) {
+          return Compra.Tiempo;
+        }
+      },
+      Precio: {
+        type: GraphQLFloat,
+        resolve(Compra) {
+          return Compra.Precio;
+        }
+      },
+      Estado: {
+        type: GraphQLString,
+        resolve(Compra) {
+          return Compra.Estado;
+        }
+      },
+      Fecha: {
+        type: GraphQLString,
+        resolve(Compra) {
+          return Compra.Fecha;
+        }
+      },
+      Hora: {
+        type: GraphQLString,
+        resolve(Compra) {
+          return Compra.Hora;
+        }
+      }
+    }
+  }
+})
+
 
 
 //Query
@@ -209,13 +338,47 @@ var Query = new GraphQLObjectType({
         type: new GraphQLList(Escenario),
         args: {
           Id: {type: GraphQLInt},
-          Tipo: {type: GraphQLString},
-          Codigo: {type: GraphQLString},
+          Nombre: {type: GraphQLString},
+          Imagen: {type: GraphQLString},
+          Esp1: {type: GraphQLString},
+          Esp2: {type: GraphQLString},
+          Esp3: {type: GraphQLString},
           Precio: {type: GraphQLFloat},
+          Likes: {type: GraphQLInt},
           Activo: {type: GraphQLString}
         },
         resolve(root, args) {
           return Db.models.Escenario.findAll({where: args});
+        }
+      },
+      Cuenta: {
+        type: new GraphQLList(Escenario),
+        args: {
+          Id: {type: GraphQLInt},
+          UsuarioId: {type: GraphQLInt},
+          Saldo: {type: GraphQLFloat},
+          Tipo: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          Hora: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Cuenta.findAll({where: args});
+        }
+      },
+      Compra: {
+        type: new GraphQLList(Escenario),
+        args: {
+          Id: {type: GraphQLInt},
+          UsuarioId: {type: GraphQLInt},
+          EscenarioId: {type: GraphQLInt},
+          Tiempo: {type: GraphQLInt},
+          Precio: {type: GraphQLFloat},
+          Estado: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          Hora: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Compra.findAll({where: args});
         }
       }
     };
@@ -374,16 +537,24 @@ var Mutation = new GraphQLObjectType({
       CreateEscenario: {
         type: Escenario,
         args: {
-          Tipo: {type: GraphQLString},
-          Codigo: {type: GraphQLString},
+          Nombre: {type: GraphQLString},
+          Imagen: {type: GraphQLString},
+          Esp1: {type: GraphQLString},
+          Esp2: {type: GraphQLString},
+          Esp3: {type: GraphQLString},
           Precio: {type: GraphQLFloat},
+          Likes: {type: GraphQLInt},
           Activo: {type: GraphQLString}
         },
         resolve(_, args) {
           return Db.models.Escenario.create({
-            Tipo: args.Tipo,
-            Codigo: args.Codigo,
+            Nombre: args.Nombre,
+            Imagen: args.Imagen,
+            Esp1: args.Esp1,
+            Esp2: args.Esp2,
+            Esp3: args.Esp3,
             Precio: args.Precio,
+            Likes: args.Likes,
             Activo: args.Activo
           });
         }
@@ -392,19 +563,98 @@ var Mutation = new GraphQLObjectType({
         type: Escenario,
         args: {
           Id: {type: GraphQLInt},
-          Tipo: {type: GraphQLString},
-          Codigo: {type: GraphQLString},
+          Nombre: {type: GraphQLString},
+          Imagen: {type: GraphQLString},
+          Esp1: {type: GraphQLString},
+          Esp2: {type: GraphQLString},
+          Esp3: {type: GraphQLString},
           Precio: {type: GraphQLFloat},
+          Likes: {type: GraphQLInt},
           Activo: {type: GraphQLString}
         },
         resolve(_, args) {
           return Db.models.Escenario.findOne({
             where: {Id: args.Id}
           }).then(R => {
-            R.Tipo = args.Tipo
-            R.Codigo = args.Codigo
+            R.Nombre = args.Nombre
+            R.Imagen = args.Imagen
+            R.Esp1 = args.Esp1
+            R.Esp2 = args.Esp2
+            R.Esp3 = args.Esp3
             R.Precio = args.Precio
+            R.Likes = args.Likes
             R.Activo = args.Activo
+            R.save()
+            return R;
+          });
+        }
+      },
+      CreateCuenta: {
+        type: Cuenta,
+        args: {
+          UsuarioId: {type: GraphQLInt},
+          Saldo: {type: GraphQLFloat},
+          Tipo: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          Hora: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.Cuenta.create({
+            UsuarioId: args.UsuarioId,
+            Saldo: args.Saldo,
+            Tipo: args.Tipo,
+            Fecha: args.Fecha,
+            Hora: args.Hora
+          });
+        }
+      },
+      CreateCompra: {
+        type: Compra,
+        args: {
+          UsuarioId: {type: GraphQLInt},
+          EscenarioId: {type: GraphQLInt},
+          Tiempo: {type: GraphQLInt},
+          Precio: {type: GraphQLFloat},
+          Estado: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          Hora: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.Compra.create({
+            UsuarioId: args.UsuarioId,
+            EscenarioId: args.EscenarioId,
+            Tiempo: args.Tiempo,
+            Precio: args.Precio,
+            Estado: args.Estado,
+            Fecha: args.Fecha,
+            Hora: args.Hora
+          });
+        }
+      },
+      UpdateCompra: {
+        type: Compra,
+        args: {
+          Id: {type: GraphQLInt},
+          UsuarioId: {type: GraphQLInt},
+          EscenarioId: {type: GraphQLInt},
+          Tiempo: {type: GraphQLInt},
+          Precio: {type: GraphQLFloat},
+          Estado: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          Hora: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.Compra.findOne({
+            where: {Id: args.Id}
+          }).then(R => {
+            R.UsuarioId = args.UsuarioId
+            R.EscenarioId = args.EscenarioId
+            R.Tiempo = args.Tiempo
+            R.Precio = args.Precio
+            R.Estado = args.Estado
+            R.Activo = args.Activo
+            R.Fecha = args.Fecha
+            R.Hora = args.Hora
             R.save()
             return R;
           });

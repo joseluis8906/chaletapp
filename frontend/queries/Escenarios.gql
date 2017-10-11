@@ -1,21 +1,33 @@
 query Escenarios (
   $Id: Int,
-  $Tipo: String,
-  $Codigo: String,
+  $Nombre: String,
+  $Imagen: String,
+  $Esp1: String,
+  $Esp2: String,
+  $Esp3: String,
   $Precio: Float,
+  $Likes: Int,
   $Activo: String
 ) {
   Escenarios (
     Id: $Id,
-    Tipo: $Tipo,
-    Codigo: $Codigo,
+    Nombre: $Nombre,
+    Imagen: $Imagen,
+    Esp1: $Esp1,
+    Esp2: $Esp2,
+    Esp3: $Esp3,
     Precio: $Precio,
+    Likes: $Likes,
     Activo: $Activo
   ) {
     Id
-    Tipo
-    Codigo
+    Nombre
+    Imagen
+    Esp1
+    Esp2
+    Esp3
     Precio
+    Likes
     Activo
   }
 }

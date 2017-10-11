@@ -53,7 +53,7 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
           //{ icon: 'delete', text: 'Producto', to: '/producto', Roles: ["Gerencia"] },
           //{ icon: 'battery_alert', text: 'Envase', to: '/envase', Roles: ["Gerencia"] },
           //{ icon: 'settings', text: 'Produccion', to: '/produccion', Roles: ["Gerencia", "Produccion"] },
-          //{ icon: 'compare_arrows', text: 'Remisión', to: '/remision', Roles: ["Gerencia", "Ventas"] },
+          { icon: 'attach_money', text: 'Recargas', to: '/recargas', Roles: ["Administrador"] },
           { icon: 'assignment', text: 'Apartar', to: '/apartar', Roles: ["Administrador"] },
           { icon: 'person', text: 'Usuario', to: '/usuario', Roles: ["Administrador"] },
           { icon: 'group', text: 'Grupo', to: '/grupo', Roles: ["Administrador"] },

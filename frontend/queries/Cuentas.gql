@@ -1,0 +1,24 @@
+query Cuentas (
+  $Id: Int,
+  $UsuarioId: Int,
+  $Saldo: Float,
+  $Tipo: String,
+  $Fecha: String,
+  $Hora: String,
+) {
+  Cuentas (
+    Id: $Id,
+    UsuarioId: $UsuarioId,
+    Saldo: $Saldo,
+    Tipo: $Tipo,
+    Fecha: $Fecha,
+    Hora: $Hora
+  ) {
+    Id
+    UsuarioId
+    Saldo
+    Tipo
+    Fecha
+    Hora
+  }
+}

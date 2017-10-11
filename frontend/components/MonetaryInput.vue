@@ -1,6 +1,7 @@
 <template lang="pug">
   v-text-field( v-model="displayValue"
           :label="label"
+          :readonly="readonly"
          @blur="handleInputState"
          @focus="handleInputState" )
 </template>
@@ -14,7 +15,7 @@ const masks = {
     },
     unmask (value) {
       value = parseFloat(value.replace(/[^\d\.]/g, ""))
-      return isNaN(value) ? 0 : value
+      return isNaN(value) ? null : value
     },
   },
 }
@@ -24,7 +25,8 @@ export default {
     value: null,
     maskType: String,
     focused: false,
-    label: String
+    label: String,
+    readonly: Boolean
   },
   data: function() {
     return {

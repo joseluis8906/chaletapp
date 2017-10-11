@@ -54,11 +54,16 @@ Usuario.belongsToMany(Grupo, {through: 'UsuarioGrupo'});
 Grupo.belongsToMany(Usuario, {through: 'UsuarioGrupo'});
 
 
+//Escenario
 const Escenario = Db.define('Escenario', {
   Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
-  Tipo: Sequelize.STRING,
-  Codigo: Sequelize.STRING,
+  Nombre: Sequelize.STRING,
+  Imagen: Sequelize.STRING,
+  Esp1: Sequelize.STRING,
+  Esp2: Sequelize.STRING,
+  Esp3: Sequelize.STRING,
   Precio: Sequelize.DECIMAL,
+  Likes: Sequelize.INTEGER
   Activo: Sequelize.STRING
 },
 {
@@ -66,6 +71,37 @@ const Escenario = Db.define('Escenario', {
   freezeTableName: true
 });
 
+
+//Cuenta
+const Cuenta = Db.define('Cuenta', {
+  Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+  UsuarioId: {type: Sequelize.INTEGER, references: {model: Usuario, key: 'Id'}},
+  Saldo: Sequelize.DECIMAL,
+  Tipo: Sequelize.STRING,
+  Fecha: Sequelize.DATEONLY,
+  Hora: Sequelize.TIMEONLY
+},
+{
+  timestamps: false,
+  freezeTableName: true
+});
+
+
+//Compra
+const Compra = Db.define('Compra', {
+  Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+  UsuarioId: {type: Sequelize.INTEGER, references: {model: Usuario, key: 'Id'}},
+  EscenarioId: {type: Sequelize.INTEGER, references: {model: Escenario, key: 'Id'}},
+  Tiempo: Sequelize.INTEGER,
+  Precio: Sequelize.DECIMAL,
+  Estado: Sequelize.STRING,
+  Fecha: Sequelize.DATEONLY,
+  Hora: Sequelize.TIMEONLY
+},
+{
+  timestamps: false,
+  freezeTableName: true
+});
 
 
 //open connection
