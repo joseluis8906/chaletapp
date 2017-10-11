@@ -63,7 +63,7 @@ const Escenario = Db.define('Escenario', {
   Esp2: Sequelize.STRING,
   Esp3: Sequelize.STRING,
   Precio: Sequelize.DECIMAL,
-  Likes: Sequelize.INTEGER
+  Likes: Sequelize.INTEGER,
   Activo: Sequelize.STRING
 },
 {
@@ -79,7 +79,7 @@ const Cuenta = Db.define('Cuenta', {
   Saldo: Sequelize.DECIMAL,
   Tipo: Sequelize.STRING,
   Fecha: Sequelize.DATEONLY,
-  Hora: Sequelize.TIMEONLY
+  Hora: Sequelize.TIME
 },
 {
   timestamps: false,
@@ -96,7 +96,7 @@ const Compra = Db.define('Compra', {
   Precio: Sequelize.DECIMAL,
   Estado: Sequelize.STRING,
   Fecha: Sequelize.DATEONLY,
-  Hora: Sequelize.TIMEONLY
+  Hora: Sequelize.TIME
 },
 {
   timestamps: false,

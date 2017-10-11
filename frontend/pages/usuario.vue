@@ -171,12 +171,13 @@ export default {
     }
   },
   methods: {
-    PubMsg () {
+    /*PubMsg () {
       //console.log('enviando: ' + this.Msg)
       this.$mqtt.publish('chaletapp/apollo/mutation', this.Msg)
-    },
+    },*/
     StoreUsuario (Usuario) {
       var store = this.$apollo.provider.defaultClient
+
       try {
         var data = store.readQuery({
           query: USUARIOS,

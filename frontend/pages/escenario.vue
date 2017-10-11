@@ -26,16 +26,19 @@ v-layout( align-center justify-center )
         v-layout( row wrap)
           v-flex( xs12 )
 
-            v-select(
-              v-bind:items="ItemsTipo"
-              v-model="Tipo"
-              label="Tipo"
-              autocomplete
-              bottom )
+            v-text-field( label="Nombre" v-model="Nombre" dark )
 
-            v-text-field( label="Codigo" v-model="Codigo" dark )
+            v-text-field( label="Imagen" v-model="Imagen" dark )
+
+            v-text-field( label="Especificación 1" v-model="Esp1" dark )
+
+            v-text-field( label="Especificación 2" v-model="Esp2" dark )
+
+            v-text-field( label="Especificación 3" v-model="Esp3" dark )
 
             v-money(label="Precio" v-model="Precio" maskType="currency")
+
+            v-text-field( label="Likes" v-model="Likes" dark )
 
             v-select(
               v-bind:items="ItemsActivo"
@@ -67,14 +70,14 @@ export default {
       text: 'Cargando'
     },
     Id: null,
-    Codigo: null,
-    Tipo: null,
-    Codigo: null,
+    Nombre: null,
+    Imagen: null,
+    Esp1: null,
+    Esp2: null,
+    Esp3: null,
     Precio: null,
+    Likes: null,
     Activo: null,
-    ItemsTipo: [
-      'Cancha'
-    ],
     ItemsActivo: [
       'Si',
       'No'
@@ -89,13 +92,17 @@ export default {
       this.$store.commit('security/AddRoles', Roles);
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      this.$mqtt.subscribe('chaletapp/apollo/mutation')
+    })
+  },
   apollo: {
     Escenarios: {
       query: ESCENARIOS,
       variables () {
         return {
-          Tipo: this.Tipo,
-          Codigo: this.Codigo
+          Tipo: this.Nombre,
         }
       },
       loadingKey: 'loading',
@@ -105,7 +112,66 @@ export default {
       }
     },
   },
+  mqtt: {
+    'chaletapp/apollo/mutation': function (val) {
+      console.log('mqtt')
+      var res = (JSON.parse(val))
+      var Method = res.Method
+      var Obj = res.Obj
+
+      switch (Method) {
+        case 'StoreEscenario': this.StoreEscenario(Obj)
+      }
+
+    }
+  },
   methods: {
+    StoreEscenario (Escenario) {
+      var store = this.$apollo.provider.defaultClient
+
+      try{
+        var data = store.readQuery({
+          query: ESCENARIOS,
+          variables: {
+            Nombre: Escenario.Nombre,
+          }
+        })
+
+        var Existe = false
+
+        for (let i=0; i<data.Escenarios.length; i++) {
+          if (data.Escenarios[i].Id === Escenario.Id) {
+            Existe = true
+            data.Escenarios[i] = Escenario
+          }
+        }
+
+        (!Existe) ? data.Escenarios.push(Escenario) : null;
+
+        store.writeQuery({
+          query: ESCENARIOS,
+          variables: {
+            Nombre: Escenario.Nombre,
+          },
+          data: data
+        })
+
+      } catch (Err) {
+
+        var data = {Escenarios: []}
+
+        data.Escenarios.push(Escenario)
+
+        store.writeQuery({
+          query: ESCENARIOS,
+          variables: {
+            Nombre: Escenario.Nombre
+          },
+          data: data
+        })
+
+      }
+    },
     CreateOrUpdate () {
       if (this.Id === null) {
         this.Create();
@@ -115,9 +181,13 @@ export default {
     },
     Create () {
       const Escenario = {
-        Tipo: this.Tipo,
-        Codigo: this.Codigo,
+        Nombre: this.Nombre,
+        Imagen: this.Imagen,
+        Esp1: this.Esp1,
+        Esp2: this.Esp2,
+        Esp3: this.Esp3,
         Precio: this.Precio,
+        Likes: this.Likes,
         Activo: this.Activo
       };
 
@@ -126,65 +196,32 @@ export default {
       this.$apollo.mutate ({
         mutation: CREATE_ESCENARIO,
         variables: {
-          Tipo: Escenario.Tipo,
-          Codigo: Escenario.Codigo,
+          Nombre: Escenario.Nombre,
+          Imagen: Escenario.Imagen,
+          Esp1: Escenario.Esp1,
+          Esp2: Escenario.Esp2,
+          Esp3: Escenario.Esp3,
           Precio: Escenario.Precio,
+          Likes: Escenario.Likes,
           Activo: Escenario.Activo
-      },
-      loadingKey: 'loading',
-      update: (store, { data: res }) => {
-        //console.log(Ente);
-        try{
-          var data = store.readQuery({
-            query: ESCENARIOS,
-            variables: {
-              Tipo: res.CreateEscenario.Tipo,
-              Codigo: res.CreateEscenario.Codigo,
-            }
-          })
-
-          data.Escenarios.push(res.CreateEscenario)
-
-          store.writeQuery({
-            query: ESCENARIOS,
-            variables: {
-              Tipo: res.CreateEscenario.Tipo,
-              Codigo: res.CreateEscenario.Codigo,
-            },
-            data: data
-          })
-
-        } catch (Err) {
-
-          var data = {Escenarios: []}
-
-          data.Escenarios.push(res.CreateEscenario)
-
-          store.writeQuery({
-            query: ESCENARIOS,
-            variables: {
-              Tipo: res.CreateEscenario.Tipo,
-              Codigo: res.CreateEscenario.Codigo,
-            },
-            data: data
-          })
-
-        }
-
-      },
-      }).then( data => {
-        //console.log(data)
-      }).catch( Err => {
-        //console.log(Err)
+        },
+        loadingKey: 'loading',
+        update: (store, { data: res }) => {
+          this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreEscenario', Obj: res.CreateEscenario}))
+        },
       })
     },
     Update () {
       //console.log(this.Password)
       const Escenario = {
         Id: this.Id,
-        Tipo: this.Tipo,
-        Codigo: this.Codigo,
+        Nombre: this.Nombre,
+        Imagen: this.Imagen,
+        Esp1: this.Esp1,
+        Esp2: this.Esp2,
+        Esp3: this.Esp3,
         Precio: this.Precio,
+        Likes: this.Likes,
         Activo: this.Activo
       };
 
@@ -194,67 +231,30 @@ export default {
         mutation: UPDATE_ESCENARIO,
         variables: {
           Id: Escenario.Id,
-          Tipo: Escenario.Tipo,
-          Codigo: Escenario.Codigo,
+          Nombre: Escenario.Nombre,
+          Imagen: Escenario.Imagen,
+          Esp1: Escenario.Esp1,
+          Esp2: Escenario.Esp2,
+          Esp3: Escenario.Esp3,
           Precio: Escenario.Precio,
+          Likes: Escenario.Likes,
           Activo: Escenario.Activo
         },
         loadingKey: 'loading',
         update: (store, { data: res }) => {
-          //console.log(Ente);
-          try {
-            var data = store.readQuery({
-              query: ESCENARIOS,
-              variables: {
-                Tipo: res.UpdateEscenario.Tipo,
-                Codigo: res.UpdateEscenario.Codigo,
-              }
-            })
-
-            for (let i=0; i<data.Escenarios.length; i++) {
-              if (data.Escenarios[i].Id === res.UpdateEscenario.Id) {
-                data.Escenarios[i] = res.UpdateEscenario
-              }
-            }
-
-            store.writeQuery({
-              query: ESCENARIOS,
-              variables: {
-                Tipo: res.UpdateEscenario.Tipo,
-                Codigo: res.UpdateEscenario.Codigo,
-              },
-              data: data
-            })
-
-          } catch (Err) {
-
-            var data = {Escenarios: []}
-
-            data.Escenarios.push(res.UpdateEscenario)
-
-            store.writeQuery({
-              query: ESCENARIOS,
-              variables: {
-                Tipo: res.UpdateEscenario.Tipo,
-                Codigo: res.UpdateEscenario.Codigo,
-              },
-              data: data
-            })
-
-          }
-
-        },
-      }).then( data => {
-        //console.log(data)
-      }).catch( Err => {
-        //console.log(Err)
+          this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreEscenario', Obj: res.UpdateEscenario}))
+        }
       })
     },
     Reset () {
       this.Id = null
-      this.Tipo = null
-      this.Codigo = null
+      this.Nombre = null
+      this.Imagen = null
+      this.Esp1 = null
+      this.Esp2 = null
+      this.Esp3 = null
       this.Precio = null
+      this.Likes = null
       this.Activo = null
     },
     LoadUi (Escenarios) {
@@ -265,9 +265,13 @@ export default {
       for (let i=0; i<Escenarios.length; i++) {
         if ( this.Codigo === Escenarios[i].Codigo ) {
           this.Id = Escenarios[i].Id
-          this.Tipo = Escenarios[i].Tipo
-          this.Codigo = Escenarios[i].Codigo
+          this.Nombre = Escenarios[i].Nombre
+          this.Imagen = Escenarios[i].Imagen
+          this.Esp1 = Escenarios[i].Esp1
+          this.Esp2 = Escenarios[i].Esp2
+          this.Esp3 = Escenarios[i].Esp3
           this.Precio = Escenarios[i].Precio
+          this.Likes = Escenarios[i].Likes
           this.Activo = Escenarios[i].Activo
           break
         }else{

@@ -1,0 +1,30 @@
+mutation UpdateCompra (
+  $Id: Int,
+  $UsuarioId: Int,
+  $EscenarioId: Int,
+  $Tiempo: Int,
+  $Precio: Float,
+  $Estado: String,
+  $Fecha: String,
+  $Hora: String,
+) {
+  UpdateCompra (
+    Id: $Id,
+    UsuarioId: $UsuarioId,
+    EscenarioId: $EscenarioId,
+    Tiempo: $Tiempo,
+    Precio: $Precio,
+    Estado: $Estado,
+    Fecha: $Fecha,
+    Hora: $Hora
+  ) {
+    Id
+    UsuarioId
+    EscenarioId
+    Tiempo
+    Precio
+    Estado
+    Fecha
+    Hora
+  }
+}

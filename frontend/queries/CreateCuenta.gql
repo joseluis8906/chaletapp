@@ -1,0 +1,22 @@
+mutation CreateCuenta (
+  $UsuarioId: Int,
+  $Saldo: Float,
+  $Tipo: String,
+  $Fecha: String,
+  $Hora: String,
+) {
+  CreateCuenta (
+    UsuarioId: $UsuarioId,
+    Saldo: $Saldo,
+    Tipo: $Tipo,
+    Fecha: $Fecha,
+    Hora: $Hora
+  ) {
+    Id
+    UsuarioId
+    Saldo
+    Tipo
+    Fecha
+    Hora
+  }
+}
