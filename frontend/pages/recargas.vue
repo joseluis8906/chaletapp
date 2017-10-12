@@ -26,12 +26,18 @@ v-layout( align-center justify-center )
         v-layout(row wrap)
           v-flex(xs12)
             v-select(v-bind:items="ItemsUsuario"
-                     v-model="Usuario"
+                     v-model="UsuarioId"
                      label="Usuario"
-                     item-text="UserName"
+                     item-text="Buscar"
                      item-value="Id"
                      autocomplete
                      dark)
+              template(slot="selection" scope="data")
+                v-list-tile-content(style="font-size: 12pt")
+                  v-list-tile-title(v-html="data.item.Nombre + ' ' + data.item.Apellido")
+              template(slot="item" scope="data")
+                v-list-tile-content(style="font-size: 12pt")
+                  v-list-tile-title(v-html="(data.item.Nombre ? data.item.Nombre : 'no data available') + ' ' + (data.item.Apellido ? data.item.Apellido: '')")
 
             v-money(label="Saldo"
                     maskType="currency"
@@ -72,7 +78,7 @@ export default {
       text: 'Cargando'
     },
     ItemsUsuario: [],
-    Usuario: null,
+    UsuarioId: null,
     Saldo: null,
     Recarga: null,
     loading: 0
@@ -100,7 +106,9 @@ export default {
         for(let j=0; j<data.Usuarios.length; j++){
           for (let i=0; i < data.Usuarios[j].Grupos.length; i++){
             if (data.Usuarios[j].Grupos[i].Nombre === 'Cliente') {
-              this.ItemsUsuario.push(data.Usuarios[j])
+              var tmp = Object.assign({}, data.Usuarios[j])
+              tmp.Buscar = tmp.Nombre + " " +tmp.Apellido + " " + tmp.Cedula + tmp.UserName
+              this.ItemsUsuario.push(tmp)
             }
           }
         }
@@ -123,10 +131,10 @@ export default {
     }
   },
   methods: {
-    PubMsg () {
+    /*PubMsg () {
       //console.log('enviando: ' + this.Msg)
       this.$mqtt.publish('chaletapp/apollo/mutation', this.Msg)
-    },
+    },*/
     LoadUi () {
     },
     Reset () {
