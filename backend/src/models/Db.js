@@ -76,7 +76,19 @@ const Escenario = Db.define('Escenario', {
 const Cuenta = Db.define('Cuenta', {
   Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
   UsuarioId: {type: Sequelize.INTEGER, references: {model: Usuario, key: 'Id'}},
-  Saldo: Sequelize.DECIMAL,
+  Saldo: Sequelize.DECIMAL
+},
+{
+  timestamps: false,
+  freezeTableName: true
+});
+
+
+//Historial
+const Historial = Db.define('Historial', {
+  Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+  UsuarioId: {type: Sequelize.INTEGER, references: {model: Usuario, key: 'Id'}},
+  Monto: Sequelize.DECIMAL,
   Tipo: Sequelize.STRING,
   Fecha: Sequelize.DATEONLY,
   Hora: Sequelize.TIME
@@ -92,6 +104,8 @@ const Compra = Db.define('Compra', {
   Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
   UsuarioId: {type: Sequelize.INTEGER, references: {model: Usuario, key: 'Id'}},
   EscenarioId: {type: Sequelize.INTEGER, references: {model: Escenario, key: 'Id'}},
+  HoraInicial: Sequelize.TIME,
+  HoraFinal: Sequelize.TIME,
   Tiempo: Sequelize.INTEGER,
   Precio: Sequelize.DECIMAL,
   Estado: Sequelize.STRING,

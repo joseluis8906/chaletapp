@@ -209,24 +209,6 @@ var Cuenta = new GraphQLObjectType({
         resolve(Cuenta) {
           return Cuenta.Saldo;
         }
-      },
-      Tipo: {
-        type: GraphQLString,
-        resolve(Cuenta) {
-          return Cuenta.Tipo;
-        }
-      },
-      Fecha: {
-        type: GraphQLString,
-        resolve(Cuenta) {
-          return Cuenta.Fecha;
-        }
-      },
-      Hora: {
-        type: GraphQLString,
-        resolve(Cuenta) {
-          return Cuenta.Hora;
-        }
       }
     }
   }
@@ -254,6 +236,18 @@ var Compra = new GraphQLObjectType({
         type: GraphQLInt,
         resolve(Compra) {
           return Compra.EscenarioId;
+        }
+      },
+      HoraInicial: {
+        type: GraphQLString,
+        resolve(Compra) {
+          return Compra.HoraInicial;
+        }
+      },
+      HoraFinal: {
+        type: GraphQLString,
+        resolve(Compra) {
+          return Compra.HoraFinal;
         }
       },
       Tiempo: {
@@ -356,10 +350,7 @@ var Query = new GraphQLObjectType({
         args: {
           Id: {type: GraphQLInt},
           UsuarioId: {type: GraphQLInt},
-          Saldo: {type: GraphQLFloat},
-          Tipo: {type: GraphQLString},
-          Fecha: {type: GraphQLString},
-          Hora: {type: GraphQLString}
+          Saldo: {type: GraphQLFloat}
         },
         resolve(root, args) {
           return Db.models.Cuenta.findAll({where: args});
@@ -371,6 +362,8 @@ var Query = new GraphQLObjectType({
           Id: {type: GraphQLInt},
           UsuarioId: {type: GraphQLInt},
           EscenarioId: {type: GraphQLInt},
+          HoraInicial: {type: GraphQLString},
+          HoraFinal: {type: GraphQLString},
           Tiempo: {type: GraphQLInt},
           Precio: {type: GraphQLFloat},
           Estado: {type: GraphQLString},
@@ -593,18 +586,12 @@ var Mutation = new GraphQLObjectType({
         type: Cuenta,
         args: {
           UsuarioId: {type: GraphQLInt},
-          Saldo: {type: GraphQLFloat},
-          Tipo: {type: GraphQLString},
-          Fecha: {type: GraphQLString},
-          Hora: {type: GraphQLString}
+          Saldo: {type: GraphQLFloat}
         },
         resolve(_, args) {
           return Db.models.Cuenta.create({
             UsuarioId: args.UsuarioId,
-            Saldo: args.Saldo,
-            Tipo: args.Tipo,
-            Fecha: args.Fecha,
-            Hora: args.Hora
+            Saldo: args.Saldo
           });
         }
       },
@@ -613,6 +600,8 @@ var Mutation = new GraphQLObjectType({
         args: {
           UsuarioId: {type: GraphQLInt},
           EscenarioId: {type: GraphQLInt},
+          HoraInicial: {type: GraphQLString},
+          HoraFinal: {type: GraphQLString},
           Tiempo: {type: GraphQLInt},
           Precio: {type: GraphQLFloat},
           Estado: {type: GraphQLString},
@@ -623,6 +612,8 @@ var Mutation = new GraphQLObjectType({
           return Db.models.Compra.create({
             UsuarioId: args.UsuarioId,
             EscenarioId: args.EscenarioId,
+            HoraInicial: args.HoraInicial,
+            HoraFinal: args.HoraFinal,
             Tiempo: args.Tiempo,
             Precio: args.Precio,
             Estado: args.Estado,
@@ -637,6 +628,8 @@ var Mutation = new GraphQLObjectType({
           Id: {type: GraphQLInt},
           UsuarioId: {type: GraphQLInt},
           EscenarioId: {type: GraphQLInt},
+          HoraInicial: {type: GraphQLString},
+          HoraFinal: {type: GraphQLString},
           Tiempo: {type: GraphQLInt},
           Precio: {type: GraphQLFloat},
           Estado: {type: GraphQLString},
@@ -649,6 +642,8 @@ var Mutation = new GraphQLObjectType({
           }).then(R => {
             R.UsuarioId = args.UsuarioId
             R.EscenarioId = args.EscenarioId
+            R.HoraInicial = args.HoraInicial
+            R.HoraFinal = args.HoraFinal
             R.Tiempo = args.Tiempo
             R.Precio = args.Precio
             R.Estado = args.Estado
