@@ -139,7 +139,6 @@ export default {
       },
       loadingKey: 'loading',
       update (data) {
-        //console.log(data)
         this.LoadUi(data.Usuarios)
       }
     },
@@ -147,10 +146,9 @@ export default {
       query: GRUPOS,
       loadingKey: 'loading',
       update (data) {
-        //console.log(data)
         this.ItemsGrupo = data.Grupos
       }
-    },
+    }
   },
   watch: {
     SelectedGrupos () {

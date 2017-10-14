@@ -345,8 +345,8 @@ var Query = new GraphQLObjectType({
           return Db.models.Escenario.findAll({where: args});
         }
       },
-      Cuenta: {
-        type: new GraphQLList(Escenario),
+      Cuentas: {
+        type: new GraphQLList(Cuenta),
         args: {
           Id: {type: GraphQLInt},
           UsuarioId: {type: GraphQLInt},
@@ -356,8 +356,8 @@ var Query = new GraphQLObjectType({
           return Db.models.Cuenta.findAll({where: args});
         }
       },
-      Compra: {
-        type: new GraphQLList(Escenario),
+      Compras: {
+        type: new GraphQLList(Compra),
         args: {
           Id: {type: GraphQLInt},
           UsuarioId: {type: GraphQLInt},
@@ -592,6 +592,23 @@ var Mutation = new GraphQLObjectType({
           return Db.models.Cuenta.create({
             UsuarioId: args.UsuarioId,
             Saldo: args.Saldo
+          });
+        }
+      },
+      UpdateCuenta: {
+        type: Cuenta,
+        args: {
+          Id: {type: GraphQLInt},
+          UsuarioId: {type: GraphQLInt},
+          Saldo: {type: GraphQLFloat}
+        },
+        resolve(_, args) {
+          return Db.models.Cuenta.findOne({
+            where: {UsuarioId: args.UsuarioId}
+          }).then(R => {
+            R.Saldo = args.Saldo
+            R.save()
+            return R;
           });
         }
       },

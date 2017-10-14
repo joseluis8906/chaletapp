@@ -1,8 +1,10 @@
-mutation CreateCuenta (
+mutation UpdateCuenta (
+  $Id: Int,
   $UsuarioId: Int,
   $Saldo: Float
 ) {
-  CreateCuenta (
+  UpdateCuenta (
+    Id: $Id,
     UsuarioId: $UsuarioId,
     Saldo: $Saldo
   ) {

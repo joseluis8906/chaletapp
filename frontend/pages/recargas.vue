@@ -51,7 +51,7 @@ v-layout( align-center justify-center )
       v-card-actions
         v-spacer
         v-btn( dark @click.native="Reset" ) Cancelar
-        v-btn( dark primary @click.native="CryptPassword" ) Guardar
+        v-btn( dark primary @click.native="Guardar" ) Guardar
 
 </template>
 
@@ -65,6 +65,9 @@ h5.bold
 
 <script>
 import USUARIOS from '~/queries/Usuarios.gql'
+import CUENTAS from '~/queries/Cuentas.gql'
+import CREATE_CUENTA from '~/queries/CreateCuenta.gql'
+import UPDATE_CUENTA from '~/queries/UpdateCuenta.gql'
 
 import VMoney from '~/components/MonetaryInput.vue'
 import axios from 'axios'
@@ -78,6 +81,7 @@ export default {
       text: 'Cargando'
     },
     ItemsUsuario: [],
+    Id: null,
     UsuarioId: null,
     Saldo: null,
     Recarga: null,
@@ -101,17 +105,19 @@ export default {
       query: USUARIOS,
       loadingKey: 'loading',
       update (data) {
-        //console.log(data)
-        this.ItemsUsuario = []
-        for(let j=0; j<data.Usuarios.length; j++){
-          for (let i=0; i < data.Usuarios[j].Grupos.length; i++){
-            if (data.Usuarios[j].Grupos[i].Nombre === 'Cliente') {
-              var tmp = Object.assign({}, data.Usuarios[j])
-              tmp.Buscar = tmp.Nombre + " " +tmp.Apellido + " " + tmp.Cedula + tmp.UserName
-              this.ItemsUsuario.push(tmp)
-            }
-          }
+        this.CargarClientes (data.Usuarios)
+      }
+    },
+    Cuentas: {
+      query: CUENTAS,
+      loadingKey: 'loading',
+      variables () {
+        return {
+          UsuarioId: this.UsuarioId
         }
+      },
+      update (data) {
+        this.LoadUi(data.Cuentas)
       }
     }
   },
@@ -126,8 +132,8 @@ export default {
 
       switch (Method) {
         case 'StoreUsuario': this.StoreUsuario(Obj)
+        case 'StoreCuenta': this.StoreCuenta(Obj)
       }
-
     }
   },
   methods: {
@@ -135,11 +141,167 @@ export default {
       //console.log('enviando: ' + this.Msg)
       this.$mqtt.publish('chaletapp/apollo/mutation', this.Msg)
     },*/
-    LoadUi () {
+    StoreCuenta (Cuenta) {
+      var store = this.$apollo.provider.defaultClient
+
+      try {
+        var data = store.readQuery({
+          query: CUENTAS,
+          variables: {
+            UsuarioId: Cuenta.UsuarioId
+          }
+        })
+
+        var Existe = false
+
+        for (let i=0; i<data.Cuentas.length; i++) {
+          if (data.Cuentas[i].Id === Cuenta.Id) {
+            Existe = true
+            data.Cuentas[i] = Cuenta
+          }
+        }
+
+        (!Existe) ? data.Cuentas.push(Cuenta) : null;
+
+        store.writeQuery({
+          query: CUENTAS,
+          variables: {
+            UsuarioId: Cuenta.UsuarioId
+          },
+          data: data
+        })
+
+      } catch (Err) {
+
+        var data = {Cuentas: []}
+
+        data.Cuentas.push(Cuenta)
+
+        store.writeQuery({
+          query: CUENTAS,
+          variables: {
+            UsuarioId: Cuenta.UsuarioId
+          },
+          data: data
+        })
+      }
+
+    },
+    StoreUsuario (Usuario) {
+      var store = this.$apollo.provider.defaultClient
+
+      try {
+        var data = store.readQuery({
+          query: USUARIOS
+        })
+
+        var Existe = false
+
+        for (let i=0; i<data.Usuarios.length; i++) {
+          if (data.Usuarios[i].Id === Usuario.Id) {
+            Existe = true
+            data.Usuarios[i] = Usuario
+          }
+        }
+
+        (!Existe) ? data.Usuarios.push(Usuario) : null;
+
+        store.writeQuery({
+          query: USUARIOS,
+          data: data
+        })
+
+      } catch (Err) {
+
+        var data = {Usuarios: []}
+
+        data.Usuarios.push(Usuario)
+
+        store.writeQuery({
+          query: USUARIOS,
+          data: data
+        })
+      }
+
+      this.CargarClientes(data.Usuarios)
+
+    },
+    CargarClientes (Usuarios) {
+      this.ItemsUsuario = []
+      for(let j = 0; j < Usuarios.length; j++){
+        for (let i=0; i < Usuarios[j].Grupos.length; i++){
+          if (Usuarios[j].Grupos[i].Nombre === 'Cliente') {
+            var tmp = Object.assign({}, Usuarios[j])
+            tmp.Buscar = tmp.Nombre + " " +tmp.Apellido + " " + tmp.Cedula + tmp.UserName
+            this.ItemsUsuario.push(tmp)
+          }
+        }
+      }
+    },
+    LoadUi (Cuentas) {
+      if(Cuentas.length > 0){
+        this.Id = Cuentas[0].Id
+        this.Saldo = Cuentas[0].Saldo
+      }else{
+        this.Id = null
+        this.Saldo = null
+      }
+    },
+    Guardar () {
+      if(this.Id === null){
+
+        let NuevoSaldo = this.Saldo ? this.Saldo + this.Recarga : this.Recarga
+
+        const Cuenta = {
+          UsuarioId: this.UsuarioId,
+          Saldo: NuevoSaldo
+        };
+
+        this.Reset()
+
+        this.$apollo.mutate ({
+          mutation: CREATE_CUENTA,
+          variables: {
+            UsuarioId: Cuenta.UsuarioId,
+            Saldo: Cuenta.Saldo
+          },
+          loadingKey: 'loading',
+          update: (store, { data: res }) => {
+            this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreCuenta', Obj: res.CreateCuenta}))
+          }
+        })
+      }else{
+
+        let NuevoSaldo = this.Saldo ? this.Saldo + this.Recarga : this.Recarga
+
+        const Cuenta = {
+          Id: this.Id,
+          UsuarioId: this.UsuarioId,
+          Saldo: NuevoSaldo
+        };
+
+        console.log(Cuenta)
+
+        this.Reset()
+
+        this.$apollo.mutate ({
+          mutation: UPDATE_CUENTA,
+          variables: {
+            Id: Cuenta.Id,
+            UsuarioId: Cuenta.UsuarioId,
+            Saldo: Cuenta.Saldo
+          },
+          loadingKey: 'loading',
+          update: (store, { data: res }) => {
+            this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreCuenta', Obj: res.UpdateCuenta}))
+          }
+        })
+      }
     },
     Reset () {
-      this.Usuario = null,
-      this.Saldo = null,
+      this.Id = null
+      this.UsuarioId = null
+      this.Saldo = null
       this.Recarga = null
     }
   },
