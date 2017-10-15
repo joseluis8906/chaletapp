@@ -18,6 +18,7 @@ v-layout( align-center justify-center )
   v-flex(xs12 mt-5)
     v-layout(row wrap justify-space-around class="g-layout")
       v-fliped-card(v-for="(item, i) in itemsEscenario" :key="i"
+                    :Id="item.Id"
                     :title="item.Nombre"
                     :src="item.Imagen"
                     :esp1="item.Esp1"
@@ -55,11 +56,13 @@ export default {
     loading: 0
   }),
   beforeMount () {
-    if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
+    if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === undefined) {
       this.$router.push('/')
     } else {
       var Roles = JSON.parse(sessionStorage.getItem('x-access-roles'))
+      var UserName = sessionStorage.getItem('x-access-username')
       this.$store.commit('security/AddRoles', Roles);
+      this.$store.commit('security/SetUserName', UserName);
     }
   },
   mounted () {
@@ -72,7 +75,7 @@ export default {
       query: ESCENARIOS,
       loadingKey: 'loading',
       update (data) {
-        this.itemsEscenario = data.Escenarios;
+        this.CargarEscenarios(data.Escenarios)
       }
     },
   },
@@ -127,6 +130,10 @@ export default {
 
       }
 
+    },
+    CargarEscenarios (Escenarios) {
+      //console.log(this.$store.state.security.UserName)
+      this.itemsEscenario = Escenarios
     }
   },
   components: {

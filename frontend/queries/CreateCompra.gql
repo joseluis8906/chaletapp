@@ -1,6 +1,8 @@
 mutation CreateCompra (
   $UsuarioId: Int,
   $EscenarioId: Int,
+  $HoraInicial: String,
+  $HoraFinal: String,
   $Tiempo: Int,
   $Precio: Float,
   $Estado: String,
@@ -10,6 +12,8 @@ mutation CreateCompra (
   CreateCompra (
     UsuarioId: $UsuarioId,
     EscenarioId: $EscenarioId,
+    HoraInicial: $HoraInicial,
+    HoraFinal: $HoraFinal,
     Tiempo: $Tiempo,
     Precio: $Precio,
     Estado: $Estado,
@@ -19,6 +23,8 @@ mutation CreateCompra (
     Id
     UsuarioId
     EscenarioId
+    HoraInicial
+    HoraFinal
     Tiempo
     Precio
     Estado

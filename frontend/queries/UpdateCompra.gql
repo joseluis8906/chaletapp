@@ -2,6 +2,8 @@ mutation UpdateCompra (
   $Id: Int,
   $UsuarioId: Int,
   $EscenarioId: Int,
+  $HoraInicial: String,
+  $HoraFinal: String,
   $Tiempo: Int,
   $Precio: Float,
   $Estado: String,
@@ -12,6 +14,8 @@ mutation UpdateCompra (
     Id: $Id,
     UsuarioId: $UsuarioId,
     EscenarioId: $EscenarioId,
+    HoraInicial: $HoraInicial,
+    HoraFinal: $HoraFinal,
     Tiempo: $Tiempo,
     Precio: $Precio,
     Estado: $Estado,
@@ -21,6 +25,8 @@ mutation UpdateCompra (
     Id
     UsuarioId
     EscenarioId
+    HoraInicial
+    HoraFinal
     Tiempo
     Precio
     Estado

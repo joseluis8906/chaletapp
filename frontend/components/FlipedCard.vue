@@ -63,7 +63,7 @@ v-flex(xs12 sm4 md4 lg3 class="g-card-container")
                     maskType="currency"
                     light)
 
-            v-btn(light primary class="blue white--text") APARTAR
+            v-btn(light primary class="blue white--text" @click.native="Guardar()") APARTAR
             v-btn(light error class="white--text" v-on:click.native="reset()") CANCELAR
 
 
@@ -84,7 +84,6 @@ ul li
   position relative
   height 390px
   box-shadow 0px 0px 10px rgb(230,230,230)
-
 
 .front
   width 100%
@@ -113,13 +112,18 @@ ul li
 </style>
 
 <script>
+import USUARIOS from '~/queries/Usuarios.gql'
+import CREATE_COMPRA from '~/queries/CreateCompra.gql'
 import VMoney from '~/components/MonetaryInput.vue'
+
 export default {
   data () {
     return {
       over: false,
+      UsuarioId: null,
       horaInicial: '8:00am',
       horaFinal: '8:00am',
+      tiempo: null,
       total: 0,
       modal1: false,
       modal2: false,
@@ -130,6 +134,7 @@ export default {
     }
   },
   props: {
+    Id: Number,
     src: String,
     title: String,
     esp1: String,
@@ -137,6 +142,40 @@ export default {
     esp3: String,
     likes: Number,
     precio: Number
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.$mqtt.subscribe('chaletapp/apollo/mutation')
+    })
+  },
+  apollo: {
+    Usuarios: {
+      query: USUARIOS,
+      variables () {
+        return {
+          UserName: this.$store.state.security.UserName
+        }
+      },
+      loadingKey: 'loading',
+      update (data) {
+        for (let i = 0; i < data.Usuarios.length; i++) {
+          this.UsuarioId = data.Usuarios[i].Id
+        }
+      }
+    },
+  },
+  mqtt: {
+    'chaletapp/apollo/mutation': function (val) {
+      console.log('mqtt')
+      var res = (JSON.parse(val))
+      var Method = res.Method
+      var Obj = res.Obj
+
+      switch (Method) {
+        //case 'StoreUsuario': this.StoreUsuario(Obj)
+        //case 'StoreCuenta': this.StoreCuenta(Obj)
+      }
+    }
   },
   watch: {
     horaInicial (value) {
@@ -154,14 +193,60 @@ export default {
     calcularPrecio () {
       let inicial = Number(this.horaInicial.split(':')[0])
       let final = Number(this.horaFinal.split(':')[0])
+      this.tiempo = final-inicial
       let precio = Number(this.precio)
-      this.total = (final-inicial) * precio
+      this.total = this.tiempo > 0 ? this.tiempo * precio : 0
+    },
+    Guardar () {
+      var Ahora = new Date(Date.now())
+      var Fecha = `${Ahora.getFullYear()}-${(Ahora.getMonth() + 1) < 10 ? '0' + (Ahora.getMonth() + 1) : Ahora.getMonth() + 1}-${Ahora.getDate()}`
+
+      var Hora = Ahora.getHours() > 12 ? Ahora.getHours() - 12 : Ahora.getHours();
+      var AmPm = Ahora.getHours() >= 12 ? "pm" : "am";
+      Hora = Hora < 10 ? "0" + Hora : Hora;
+      var Minutos = Ahora.getMinutes() < 10 ? "0" + Ahora.getMinutes() : Ahora.getMinutes();
+      Hora = Hora + ":" + Minutos + AmPm;
+
+      const Compra = {
+        UsuarioId: this.UsuarioId,
+        EscenarioId: this.Id,
+        HoraInicial: this.horaInicial,
+        HoraFinal: this.horaFinal,
+        Tiempo: this.tiempo,
+        Precio: this.total,
+        Estado: "Completado",
+        Fecha: Fecha,
+        Hora: Hora
+      }
+
+      this.reset ()
+
+      this.$apollo.mutate ({
+        mutation: CREATE_COMPRA,
+        variables: {
+          UsuarioId: Compra.UsuarioId,
+          EscenarioId: Compra.EscenarioId,
+          HoraInicial: Compra.HoraInicial,
+          HoraFinal: Compra.HoraFinal,
+          Tiempo: Compra.Tiempo,
+          Precio: Compra.Precio,
+          Estado: Compra.Estado,
+          Fecha: Compra.Fecha,
+          Hora: Compra.Hora
+        },
+        loadingKey: 'loading',
+        update: (store, { data: res }) => {
+          this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreCompra', Obj: res.CreateCompra}))
+        }
+      })
+
     },
     reset () {
       this.over = false
       this.horaInicial = '8:00am'
       this.horaFinal = '8:00am'
       this.total = 0
+      this.tiempo = null
     }
   },
   components: {
