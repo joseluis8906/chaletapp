@@ -279,6 +279,18 @@ var Compra = new GraphQLObjectType({
         resolve(Compra) {
           return Compra.Hora;
         }
+      },
+      Usuario: {
+        type: Usuario,
+        resolve(Compra) {
+          return Compra.getUsuario();
+        }
+      },
+      Escenario: {
+        type: Escenario,
+        resolve(Compra) {
+          return Compra.getEscenario();
+        }
       }
     }
   }

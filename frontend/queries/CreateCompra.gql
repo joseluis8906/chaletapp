@@ -30,5 +30,15 @@ mutation CreateCompra (
     Estado
     Fecha
     Hora
+    Usuario {
+      Id
+      Nombre
+      Apellido
+      Cedula
+    }
+    Escenario {
+      Id
+      Nombre
+    }
   }
 }

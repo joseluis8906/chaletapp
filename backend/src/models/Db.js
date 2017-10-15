@@ -83,6 +83,9 @@ const Cuenta = Db.define('Cuenta', {
   freezeTableName: true
 });
 
+Cuenta.belongsTo(Usuario);
+Usuario.hasOne(Cuenta);
+
 
 //Historial
 const Historial = Db.define('Historial', {
@@ -97,6 +100,9 @@ const Historial = Db.define('Historial', {
   timestamps: false,
   freezeTableName: true
 });
+
+Historial.belongsTo(Usuario);
+Usuario.hasMany(Historial);
 
 
 //Compra
@@ -116,6 +122,12 @@ const Compra = Db.define('Compra', {
   timestamps: false,
   freezeTableName: true
 });
+
+Compra.belongsTo(Usuario);
+Usuario.hasMany(Compra);
+
+Compra.belongsTo(Escenario);
+Escenario.hasMany(Compra);
 
 
 //open connection
