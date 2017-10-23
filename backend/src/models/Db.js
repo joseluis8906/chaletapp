@@ -16,7 +16,7 @@ const Db = new Sequelize('unixjs02', 'unixjs', 'K3J9 8LMN 02F3 B3LW', {
 
 const Usuario = Db.define('Usuario', {
   Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
-  UserName: {type: Sequelize.STRING, unique: true},
+  //UserName: {type: Sequelize.STRING, unique: true},
   Password: Sequelize.STRING,
   Cedula: {type: Sequelize.STRING, unique: true},
   Nombre: Sequelize.STRING,

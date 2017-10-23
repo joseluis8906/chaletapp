@@ -18,12 +18,12 @@ var Usuario = new GraphQLObjectType({
           return Usuario.Id;
         }
       },
-      UserName: {
+      /*UserName: {
         type: GraphQLString,
         resolve(Usuario) {
           return Usuario.UserName;
         }
-      },
+      },*/
       Password: {
         type: GraphQLString,
         resolve(Usuario) {
@@ -315,7 +315,7 @@ var Query = new GraphQLObjectType({
         type: new GraphQLList(Usuario),
         args: {
           Id: {type: GraphQLInt},
-          UserName: {type: GraphQLString},
+          //UserName: {type: GraphQLString},
           Password: {type: GraphQLString},
           Cedula: {type: GraphQLString},
           Nombre: {type: GraphQLString},
@@ -400,7 +400,7 @@ var Mutation = new GraphQLObjectType({
       CreateUsuario: {
         type: Usuario,
         args: {
-          UserName: {type: GraphQLString},
+          //UserName: {type: GraphQLString},
           Password: {type: GraphQLString},
           Cedula: {type: GraphQLString},
           Nombre: {type: GraphQLString},
@@ -413,7 +413,7 @@ var Mutation = new GraphQLObjectType({
         },
         resolve(_, args) {
           return Db.models.Usuario.create({
-            UserName: args.UserName,
+            //UserName: args.UserName,
             Password: args.Password,
             Cedula: args.Cedula,
             Nombre: args.Nombre,
@@ -430,7 +430,7 @@ var Mutation = new GraphQLObjectType({
         type: Usuario,
         args: {
           Id: {type: GraphQLInt},
-          UserName: {type: GraphQLString},
+          //UserName: {type: GraphQLString},
           Password: {type: GraphQLString},
           Cedula: {type: GraphQLString},
           Nombre: {type: GraphQLString},
