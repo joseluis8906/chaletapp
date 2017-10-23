@@ -4,7 +4,7 @@ query Escenarios (
   $Imagen: String,
   $Esp1: String,
   $Esp2: String,
-  $Esp3: String,
+  ###$Esp3: String,
   $Precio: Float,
   $Likes: Int,
   $Activo: String
@@ -15,7 +15,7 @@ query Escenarios (
     Imagen: $Imagen,
     Esp1: $Esp1,
     Esp2: $Esp2,
-    Esp3: $Esp3,
+    ###Esp3: $Esp3,
     Precio: $Precio,
     Likes: $Likes,
     Activo: $Activo
@@ -25,7 +25,7 @@ query Escenarios (
     Imagen
     Esp1
     Esp2
-    Esp3
+    ###Esp3
     Precio
     Likes
     Activo

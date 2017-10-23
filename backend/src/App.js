@@ -8,6 +8,7 @@ import Schema from './models/Schema';
 import Db from './models/Db'
 import Jwt from 'jsonwebtoken';
 import Bcrypt from 'bcrypt';
+import fileUpload from 'express-fileupload';
 
 const app = express();
 
@@ -55,6 +56,21 @@ app.use(favicon(path.join(__dirname, '../public', 'favicon.ico')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.use('/private/upload',  (req, res) => {
+  if(!req.files) {
+    return req.json({Result: 0, Error: 'El archivo no fue subido'});
+  }
+
+  let sampleFile = req.files.sampleFile;
+
+  sampleFile.mv('../frontend/static/' + req.files.sampleFile.name, function(err) {
+    if(Err){
+      return res.json({Result: 0, Error: Err})
+    }
+
+    res.json({Result: 1, Name: sampleFile.name});
+  })
+})
 
 app.use('/private/graphql', graphqlExpress({ schema: Schema }));
 app.use('/private/graphiql', graphiqlExpress({endpointURL: '/private/graphql'}));
@@ -138,6 +154,8 @@ app.post('/login/', (req, res, next) => {
 app.get('/', (req, res) => {
   res.render('index', {title: 'Express', message: 'Hello Express!'});
 });
+
+
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

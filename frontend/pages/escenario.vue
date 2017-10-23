@@ -28,13 +28,14 @@ v-layout( align-center justify-center )
 
             v-text-field( label="Nombre" v-model="Nombre" dark )
 
-            v-text-field( label="Imagen" v-model="Imagen" dark )
+            //- v-text-field( label="Imagen" v-model="Imagen" dark )
+            v-upload-image(v-model="Imagen" label="Cambiar Imagen" :file="Imagen")
 
             v-text-field( label="Especificación 1" v-model="Esp1" dark )
 
             v-text-field( label="Especificación 2" v-model="Esp2" dark )
 
-            v-text-field( label="Especificación 3" v-model="Esp3" dark )
+            //- v-text-field( label="Especificación 3" v-model="Esp3" dark )
 
             v-money(label="Precio" v-model="Precio" maskType="currency")
 
@@ -60,6 +61,7 @@ import CREATE_ESCENARIO from '~/queries/CreateEscenario.gql'
 import UPDATE_ESCENARIO from '~/queries/UpdateEscenario.gql'
 
 import VMoney from '~/components/MonetaryInput.vue'
+import VUploadImage from '~/components/UploadImage.vue'
 
 export default {
   data: () => ({
@@ -74,7 +76,7 @@ export default {
     Imagen: null,
     Esp1: null,
     Esp2: null,
-    Esp3: null,
+    //Esp3: null,
     Precio: null,
     Likes: null,
     Activo: null,
@@ -221,7 +223,7 @@ export default {
         Imagen: this.Imagen,
         Esp1: this.Esp1,
         Esp2: this.Esp2,
-        Esp3: this.Esp3,
+        //Esp3: this.Esp3,
         Precio: this.Precio,
         Likes: this.Likes,
         Activo: this.Activo
@@ -236,7 +238,7 @@ export default {
           Imagen: Escenario.Imagen,
           Esp1: Escenario.Esp1,
           Esp2: Escenario.Esp2,
-          Esp3: Escenario.Esp3,
+          //Esp3: Escenario.Esp3,
           Precio: Escenario.Precio,
           Likes: Escenario.Likes,
           Activo: Escenario.Activo
@@ -255,7 +257,7 @@ export default {
         Imagen: this.Imagen,
         Esp1: this.Esp1,
         Esp2: this.Esp2,
-        Esp3: this.Esp3,
+        //Esp3: this.Esp3,
         Precio: this.Precio,
         Likes: this.Likes,
         Activo: this.Activo
@@ -271,7 +273,7 @@ export default {
           Imagen: Escenario.Imagen,
           Esp1: Escenario.Esp1,
           Esp2: Escenario.Esp2,
-          Esp3: Escenario.Esp3,
+          //Esp3: Escenario.Esp3,
           Precio: Escenario.Precio,
           Likes: Escenario.Likes,
           Activo: Escenario.Activo
@@ -288,7 +290,7 @@ export default {
       this.Imagen = null
       this.Esp1 = null
       this.Esp2 = null
-      this.Esp3 = null
+      //this.Esp3 = null
       this.Precio = null
       this.Likes = null
       this.Activo = null
@@ -296,6 +298,14 @@ export default {
     LoadUi (Escenarios) {
       if( Escenarios.length === 0 ) {
         this.Id = null
+        //this.Nombre = null
+        this.Imagen = null
+        this.Esp1 = null
+        this.Esp2 = null
+        //this.Esp3 = null
+        this.Precio = null
+        this.Likes = null
+        this.Activo = null
       }
 
       for (let i=0; i<Escenarios.length; i++) {
@@ -305,7 +315,7 @@ export default {
           this.Imagen = Escenarios[i].Imagen
           this.Esp1 = Escenarios[i].Esp1
           this.Esp2 = Escenarios[i].Esp2
-          this.Esp3 = Escenarios[i].Esp3
+          //this.Esp3 = Escenarios[i].Esp3
           this.Precio = Escenarios[i].Precio
           this.Likes = Escenarios[i].Likes
           this.Activo = Escenarios[i].Activo
@@ -317,7 +327,8 @@ export default {
     }
   },
   components: {
-    VMoney
+    VMoney,
+    VUploadImage,
   }
 };
 

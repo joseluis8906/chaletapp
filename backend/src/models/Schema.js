@@ -158,12 +158,12 @@ var Escenario = new GraphQLObjectType({
           return Escenario.Esp2;
         }
       },
-      Esp3: {
+      /*Esp3: {
         type: GraphQLString,
         resolve(Escenario) {
           return Escenario.Esp3;
         }
-      },
+      },*/
       Precio: {
         type: GraphQLFloat,
         resolve(Escenario) {
@@ -348,7 +348,7 @@ var Query = new GraphQLObjectType({
           Imagen: {type: GraphQLString},
           Esp1: {type: GraphQLString},
           Esp2: {type: GraphQLString},
-          Esp3: {type: GraphQLString},
+          //Esp3: {type: GraphQLString},
           Precio: {type: GraphQLFloat},
           Likes: {type: GraphQLInt},
           Activo: {type: GraphQLString}
@@ -546,7 +546,7 @@ var Mutation = new GraphQLObjectType({
           Imagen: {type: GraphQLString},
           Esp1: {type: GraphQLString},
           Esp2: {type: GraphQLString},
-          Esp3: {type: GraphQLString},
+          //Esp3: {type: GraphQLString},
           Precio: {type: GraphQLFloat},
           Likes: {type: GraphQLInt},
           Activo: {type: GraphQLString}
@@ -557,7 +557,7 @@ var Mutation = new GraphQLObjectType({
             Imagen: args.Imagen,
             Esp1: args.Esp1,
             Esp2: args.Esp2,
-            Esp3: args.Esp3,
+            //Esp3: args.Esp3,
             Precio: args.Precio,
             Likes: args.Likes,
             Activo: args.Activo
@@ -572,7 +572,7 @@ var Mutation = new GraphQLObjectType({
           Imagen: {type: GraphQLString},
           Esp1: {type: GraphQLString},
           Esp2: {type: GraphQLString},
-          Esp3: {type: GraphQLString},
+          //Esp3: {type: GraphQLString},
           Precio: {type: GraphQLFloat},
           Likes: {type: GraphQLInt},
           Activo: {type: GraphQLString}
@@ -585,7 +585,7 @@ var Mutation = new GraphQLObjectType({
             R.Imagen = args.Imagen
             R.Esp1 = args.Esp1
             R.Esp2 = args.Esp2
-            R.Esp3 = args.Esp3
+            //R.Esp3 = args.Esp3
             R.Precio = args.Precio
             R.Likes = args.Likes
             R.Activo = args.Activo
