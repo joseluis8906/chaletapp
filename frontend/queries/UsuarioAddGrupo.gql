@@ -7,7 +7,7 @@ mutation UsuarioAddGrupo(
     GrupoId: $GrupoId,
   ) {
     Id
-    UserName
+    ###UserName
     Password
     Cedula
     Nombre

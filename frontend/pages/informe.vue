@@ -248,7 +248,7 @@ export default {
         for (let i=0; i < Usuarios[j].Grupos.length; i++){
           if (Usuarios[j].Grupos[i].Nombre === 'Cliente') {
             var tmp = Object.assign({}, Usuarios[j])
-            tmp.Buscar = tmp.Nombre + " " +tmp.Apellido + " " + tmp.Cedula + tmp.UserName
+            tmp.Buscar = tmp.Nombre + " " +tmp.Apellido + " " + tmp.Cedula
             this.ItemsUsuario.push(tmp)
           }
         }

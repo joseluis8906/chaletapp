@@ -25,11 +25,11 @@ v-layout( align-center justify-center )
       v-card-text
         v-layout( row wrap)
           v-flex( xs12 )
-            v-text-field( label="Nombre De Usuario" v-model="UserName" dark )
-
-            v-text-field( label="Contraseña" v-model="UiPassword" type="Password" maxlength="4" dark )
+            //- v-text-field( label="Nombre De Usuario" v-model="UserName" dark )
 
             v-text-field( label="Cedula" v-model="Cedula" dark )
+
+            v-text-field( label="Contraseña" v-model="UiPassword" type="Password" maxlength="4" dark )
 
             v-text-field( label="Nombre" v-model="Nombre" dark )
 
@@ -90,7 +90,7 @@ export default {
       text: 'Cargando'
     },
     Id: null,
-    UserName: null,
+    //UserName: null,
     Password: null,
     Cedula: null,
     Nombre: null,
@@ -134,7 +134,8 @@ export default {
       query: USUARIOS,
       variables () {
         return {
-          UserName: this.UserName
+          //UserName: this.UserName
+          Cedula: this.Cedula
         }
       },
       loadingKey: 'loading',
@@ -183,7 +184,8 @@ export default {
         var data = store.readQuery({
           query: USUARIOS,
           variables: {
-            UserName: Usuario.UserName
+            //UserName: Usuario.UserName
+            Cedula: this.Cedula
           }
         })
 
@@ -201,7 +203,8 @@ export default {
         store.writeQuery({
           query: USUARIOS,
           variables: {
-            UserName: Usuario.UserName
+            //UserName: Usuario.UserName
+            Cedula: this.Cedula
           },
           data: data
         })
@@ -215,7 +218,8 @@ export default {
         store.writeQuery({
           query: USUARIOS,
           variables: {
-            UserName: Usuario.UserName
+            //UserName: Usuario.UserName
+            Cedula: this.Cedaula
           },
           data: data
         })
@@ -300,7 +304,7 @@ export default {
     },
     Create () {
       const Usuario = {
-        UserName: this.UserName,
+        //UserName: this.UserName,
         Password: this.Password,
         Cedula: this.Cedula,
         Nombre: this.Nombre,
@@ -317,7 +321,7 @@ export default {
       this.$apollo.mutate ({
         mutation: CREATE_USUARIO,
         variables: {
-          UserName: Usuario.UserName,
+          //UserName: Usuario.UserName,
           Password: Usuario.Password,
           Cedula: Usuario.Cedula,
           Nombre: Usuario.Nombre,
@@ -338,7 +342,7 @@ export default {
       //console.log(this.Password)
       const Usuario = {
         Id: this.Id,
-        UserName: this.UserName,
+        //UserName: this.UserName,
         Password: this.Password,
         Cedula: this.Cedula,
         Nombre: this.Nombre,
@@ -356,7 +360,7 @@ export default {
         mutation: UPDATE_USUARIO,
         variables: {
           Id: Usuario.Id,
-          UserName: Usuario.UserName,
+          //UserName: Usuario.UserName,
           Password: Usuario.Password,
           Cedula: Usuario.Cedula,
           Nombre: Usuario.Nombre,
@@ -376,7 +380,7 @@ export default {
     },
     Reset () {
       this.Id = null
-      this.UserName = null
+      //this.UserName = null
       this.Password = null
       this.Cedula = null
       this.Nombre = null
@@ -392,9 +396,10 @@ export default {
     LoadUi (Usuarios) {
       if( Usuarios.length === 0 ) {
         this.Id = null
+        //this.UserName = null
         this.Password = null
         this.UiPassword = null
-        this.Cedula = null
+        //this.Cedula = null
         this.Nombre = null
         this.Apellido = null
         this.Edad = null
@@ -407,11 +412,11 @@ export default {
       }
 
       for (let i=0; i<Usuarios.length; i++) {
-        if ( this.UserName === Usuarios[i].UserName ) {
+        if ( /*this.UserName === Usuarios[i].UserName*/ this.Cedula === Usuarios[i].Cedula ) {
           this.Id = Usuarios[i].Id
-          this.UserName = Usuarios[i].UserName
+          //this.UserName = Usuarios[i].UserName
           this.Password = Usuarios[i].Password
-          this.Cedula = Usuarios[i].Cedula
+          //this.Cedula = Usuarios[i].Cedula
           this.Nombre = Usuarios[i].Nombre
           this.Apellido = Usuarios[i].Apellido
           this.Edad = Usuarios[i].Edad

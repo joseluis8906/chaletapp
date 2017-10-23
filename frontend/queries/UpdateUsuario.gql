@@ -1,6 +1,6 @@
 mutation UpdateUsuario (
   $Id: Int,
-  $UserName: String,
+  ###$UserName: String,
   $Password: String,
   $Cedula: String,
   $Nombre: String,
@@ -13,7 +13,7 @@ mutation UpdateUsuario (
 ) {
   UpdateUsuario (
     Id: $Id,
-    UserName: $UserName,
+    ###UserName: $UserName,
     Password: $Password,
     Cedula: $Cedula,
     Nombre: $Nombre,
@@ -25,7 +25,7 @@ mutation UpdateUsuario (
     Activo: $Activo
   ) {
     Id
-    UserName
+    ###UserName
     Password
     Cedula
     Nombre
