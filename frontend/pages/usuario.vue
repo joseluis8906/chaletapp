@@ -185,7 +185,7 @@ export default {
           query: USUARIOS,
           variables: {
             //UserName: Usuario.UserName
-            Cedula: this.Cedula
+            Cedula: Usuario.Cedula
           }
         })
 
@@ -204,7 +204,7 @@ export default {
           query: USUARIOS,
           variables: {
             //UserName: Usuario.UserName
-            Cedula: this.Cedula
+            Cedula: Usuario.Cedula
           },
           data: data
         })
@@ -219,7 +219,7 @@ export default {
           query: USUARIOS,
           variables: {
             //UserName: Usuario.UserName
-            Cedula: this.Cedaula
+            Cedula: Usuario.Cedaula
           },
           data: data
         })
@@ -305,6 +305,7 @@ export default {
     Create () {
       const Usuario = {
         //UserName: this.UserName,
+        UserName: this.Cedula,
         Password: this.Password,
         Cedula: this.Cedula,
         Nombre: this.Nombre,
@@ -321,7 +322,7 @@ export default {
       this.$apollo.mutate ({
         mutation: CREATE_USUARIO,
         variables: {
-          //UserName: Usuario.UserName,
+          UserName: Usuario.UserName,
           Password: Usuario.Password,
           Cedula: Usuario.Cedula,
           Nombre: Usuario.Nombre,
@@ -342,7 +343,7 @@ export default {
       //console.log(this.Password)
       const Usuario = {
         Id: this.Id,
-        //UserName: this.UserName,
+        UserName: this.Cedula,
         Password: this.Password,
         Cedula: this.Cedula,
         Nombre: this.Nombre,
@@ -360,7 +361,7 @@ export default {
         mutation: UPDATE_USUARIO,
         variables: {
           Id: Usuario.Id,
-          //UserName: Usuario.UserName,
+          UserName: Usuario.UserName,
           Password: Usuario.Password,
           Cedula: Usuario.Cedula,
           Nombre: Usuario.Nombre,
@@ -380,7 +381,7 @@ export default {
     },
     Reset () {
       this.Id = null
-      //this.UserName = null
+      this.UserName = null
       this.Password = null
       this.Cedula = null
       this.Nombre = null
@@ -396,7 +397,7 @@ export default {
     LoadUi (Usuarios) {
       if( Usuarios.length === 0 ) {
         this.Id = null
-        //this.UserName = null
+        this.UserName = null
         this.Password = null
         this.UiPassword = null
         //this.Cedula = null
@@ -414,7 +415,7 @@ export default {
       for (let i=0; i<Usuarios.length; i++) {
         if ( /*this.UserName === Usuarios[i].UserName*/ this.Cedula === Usuarios[i].Cedula ) {
           this.Id = Usuarios[i].Id
-          //this.UserName = Usuarios[i].UserName
+          this.UserName = Usuarios[i].UserName
           this.Password = Usuarios[i].Password
           //this.Cedula = Usuarios[i].Cedula
           this.Nombre = Usuarios[i].Nombre

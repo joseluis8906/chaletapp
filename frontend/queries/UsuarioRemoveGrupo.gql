@@ -7,7 +7,7 @@ mutation UsuarioRemoveGrupo(
     GrupoId: $GrupoId,
   ) {
     Id
-    ###UserName
+    UserName
     Password
     Cedula
     Nombre

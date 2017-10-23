@@ -1,5 +1,5 @@
 mutation CreateUsuario (
-  ###$UserName: String,
+  $UserName: String,
   $Password: String,
   $Cedula: String,
   $Nombre: String,
@@ -11,7 +11,7 @@ mutation CreateUsuario (
   $Activo: String
 ) {
   CreateUsuario (
-    ###UserName: $UserName,
+    UserName: $UserName,
     Password: $Password,
     Cedula: $Cedula,
     Nombre: $Nombre,
@@ -23,7 +23,7 @@ mutation CreateUsuario (
     Activo: $Activo
   ) {
     Id
-    ###UserName
+    UserName
     Password
     Cedula
     Nombre
