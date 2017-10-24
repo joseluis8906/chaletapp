@@ -82,98 +82,31 @@ export default {
       loadingKey: "loading",
       update (data) {
         //console.log(data)
+        this.Expedicion.AAAA = data.Compras[0].Fecha.split('-')[0]
+        this.Expedicion.MM = data.Compras[0].Fecha.split('-')[1]
+        this.Expedicion.DD = data.Compras[0].Fecha.split('-')[2]
 
-        if (data.Compras.length > 0) {
+        this.items = []
 
-          this.Expedicion.AAAA = data.Compras[0].Fecha.split('-')[0]
-          this.Expedicion.MM = data.Compras[0].Fecha.split('-')[1]
-          this.Expedicion.DD = data.Compras[0].Fecha.split('-')[2]
+        for (let i=0; i<data.Compras.length; i++) {
 
-          this.items = []
-
-          for (let i=0; i<data.Compras.length; i++) {
-
-            let tmp = {
-              Usuario: {
-                Cedula: data.Compras[i].Usuario.Cedula,
-                Apellido: data.Compras[i].Usuario.Apellido,
-                Nombre: data.Compras[i].Usuario.Nombre,
-              },
-              Escenario: {
-                Nombre: data.Compras[i].Escenario.Nombre
-              },
-              HoraInicial: data.Compras[i].HoraInicial,
-              HoraFinal: data.Compras[i].HoraFinal,
-              Tiempo: data.Compras[i].Tiempo,
-              Precio: data.Compras[i].Precio,
-              Estado: data.Compras[i].Estado,
-              Fecha: data.Compras[i].Fecha
-            }
-
-            this.items.push(tmp)
-
+          let tmp = {
+            Usuario: {
+              Cedula: data.Compras[i].Usuario.Cedula,
+              Apellido: data.Compras[i].Usuario.Apellido,
+              Nombre: data.Compras[i].Usuario.Nombre,
+            },
+            Escenario: {
+              Nombre: data.Compras[i].Escenario.Nombre
+            },
+            HoraInicial: data.Compras[i].HoraInicial,
+            HoraFinal: data.Compras[i].HoraFinal,
+            Tiempo: data.Compras[i].Tiempo,
+            Precio: data.Compras[i].Precio,
+            Estado: data.Compras[i].Estado,
+            Fecha: data.Compras[i].Fecha
           }
-
-          if (this.items.length<12) {
-            this.pages[0] = {Size: 'Letter', Layout: 'Landscape'}
-
-            for (let i=this.items.length; i<12; i++)
-            {
-              let tmp = {
-                Usuario: {
-                  Cedula: data.Compras[i].Usuario.Cedula,
-                  Apellido: data.Compras[i].Usuario.Apellido,
-                  Nombre: data.Compras[i].Usuario.Nombre,
-                },
-                Escenario: {
-                  Nombre: data.Compras[i].Escenario.Nombre
-                },
-                HoraInicial: data.Compras[i].HoraInicial,
-                HoraFinal: data.Compras[i].HoraFinal,
-                Tiempo: data.Compras[i].Tiempo,
-                Precio: data.Compras[i].Precio,
-                Estado: data.Compras[i].Estado,
-                Fecha: data.Compras[i].Fecha
-              }
-
-              this.items.push(tmp)
-
-            }
-
-            console.log(this.items)
-
-          } else if (this.items.length>=12 && this.items.length<40) {
-
-            for (let i=this.items.length; i<40; i++)
-            {
-              let tmp = {
-                Usuario: {
-                  Cedula: data.Compras[i].Usuario.Cedula,
-                  Apellido: data.Compras[i].Usuario.Apellido,
-                  Nombre: data.Compras[i].Usuario.Nombre,
-                },
-                Escenario: {
-                  Nombre: data.Compras[i].Escenario.Nombre
-                },
-                HoraInicial: data.Compras[i].HoraInicial,
-                HoraFinal: data.Compras[i].HoraFinal,
-                Tiempo: data.Compras[i].Tiempo,
-                Precio: data.Compras[i].Precio,
-                Estado: data.Compras[i].Estado,
-                Fecha: data.Compras[i].Fecha
-              }
-
-              this.items.push(tmp)
-
-            }
-
-          }
-
-
-        } else {
-
-          console.log('error')
-
+          this.items.push(tmp)
         }
       }
     }
