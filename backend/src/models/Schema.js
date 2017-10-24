@@ -452,15 +452,15 @@ var Mutation = new GraphQLObjectType({
           return Db.models.Usuario.findOne({
             where: {Id: args.Id}
           }).then( R => {
-            R.Password = args.Password
-            R.Cedula = args.Cedula
-            R.Nombre = args.Nombre
-            R.Apellido = args.Apellido
-            R.Edad = args.Edad
-            R.Telefono = args.Telefono
-            R.Email = args.Email
-            R.Direccion = args.Direccion
-            R.Activo = args.Activo
+            args.Password ? R.Password = args.Password : null
+            args.Cedula ? R.Cedula = args.Cedula : null
+            args.Nombre ? R.Nombre = args.Nombre : null
+            args.Apellido ? R.Apellido = args.Apellido : null
+            args.Edad? R.Edad = args.Edad : null
+            args.Telefono ? R.Telefono = args.Telefono : null
+            args.Email ? R.Email = args.Email : null
+            args.Direccion ? R.Direccion = args.Direccion : null
+            args.Activo ? R.Activo = args.Activo : null
             R.save()
             return R
           });
@@ -487,7 +487,7 @@ var Mutation = new GraphQLObjectType({
           return Db.models.Grupo.findOne({
             where: {Id: args.Id}
           }).then (R => {
-            R.Nombre = args.Nombre;
+            args.Nombre ? R.Nombre = args.Nombre : null
             R.save();
             return R;
           });
@@ -591,15 +591,15 @@ var Mutation = new GraphQLObjectType({
           return Db.models.Escenario.findOne({
             where: {Id: args.Id}
           }).then(R => {
-            R.Nombre = args.Nombre
-            R.Imagen = args.Imagen
-            R.Esp1 = args.Esp1
-            R.Esp2 = args.Esp2
+            args.Nombre ? R.Nombre = args.Nombre : null
+            args.Imagen ? R.Imagen = args.Imagen : null
+            args.Esp1 ? R.Esp1 = args.Esp1 : null
+            args.Esp2 ? R.Esp2 = args.Esp2 : null
             //R.Esp3 = args.Esp3
-            R.PrecioDiurno = args.PrecioDiurno
-            R.PrecioNocturno = args.PrecioNocturno
-            R.Likes = args.Likes
-            R.Activo = args.Activo
+            args.PrecioDiurno ? R.PrecioDiurno = args.PrecioDiurno : null
+            args.PrecioNocturno ? R.PrecioNocturno = args.PrecioNocturno : null
+            args.Likes ? R.Likes = args.Likes : null
+            args.Activo ? R.Activo = args.Activo : null
             R.save()
             return R;
           });
@@ -629,7 +629,7 @@ var Mutation = new GraphQLObjectType({
           return Db.models.Cuenta.findOne({
             where: {UsuarioId: args.UsuarioId}
           }).then(R => {
-            R.Saldo = args.Saldo
+            args.Saldo ? R.Saldo = args.Saldo : null
             R.save()
             return R;
           });
@@ -680,16 +680,16 @@ var Mutation = new GraphQLObjectType({
           return Db.models.Compra.findOne({
             where: {Id: args.Id}
           }).then(R => {
-            R.UsuarioId = args.UsuarioId
-            R.EscenarioId = args.EscenarioId
-            R.HoraInicial = args.HoraInicial
-            R.HoraFinal = args.HoraFinal
-            R.Tiempo = args.Tiempo
-            R.Precio = args.Precio
-            R.Estado = args.Estado
-            R.Activo = args.Activo
-            R.Fecha = args.Fecha
-            R.Hora = args.Hora
+            args.UsuarioId ? R.UsuarioId = args.UsuarioId : null
+            args.EscenarioId ? R.EscenarioId = args.EscenarioId : null
+            args.HoraInicial ? R.HoraInicial = args.HoraInicial : null
+            args.HoraFinal ? R.HoraFinal = args.HoraFinal : null
+            args.Tiempo ? R.Tiempo = args.Tiempo : null
+            args.Precio ? R.Precio = args.Precio : null
+            args.Estado ? R.Estado = args.Estado : null
+            args.Activo ? R.Activo = args.Activo : null
+            args.Fecha ? R.Fecha = args.Fecha : null
+            args.Hora ? R.Hora = args.Hora : null
             R.save()
             return R;
           });

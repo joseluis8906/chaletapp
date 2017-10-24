@@ -77,11 +77,11 @@ export default {
       update (data) {
         this.CargarEscenarios(data.Escenarios)
       }
-    },
+    }
   },
   mqtt: {
     'chaletapp/apollo/mutation': function (val) {
-      console.log('mqtt')
+      console.log('mqtt apartar')
       var res = (JSON.parse(val))
       var Method = res.Method
       var Obj = res.Obj
@@ -127,13 +127,33 @@ export default {
           query: ESCENARIOS,
           data: data
         })
+      }
 
+      for(let i=0;  i < this.itemsEscenario.length; i++){
+        if(this.itemsEscenario[i].Nombre === Escenario.Nombre){
+          var tmp = Object.assign({}, Escenario)
+          this.itemsEscenario[i] = tmp
+        }
       }
 
     },
     CargarEscenarios (Escenarios) {
       //console.log(this.$store.state.security.UserName)
-      this.itemsEscenario = Escenarios
+      this.itemsEscenario = []
+      for (let i=0; i<Escenarios.length; i++){
+        var tmp = {
+          Id: Escenarios[i].Id,
+          Nombre: Escenarios[i].Nombre,
+          Imagen: Escenarios[i].Imagen,
+          Esp1: Escenarios[i].Esp1,
+          Esp2: Escenarios[i].Esp2,
+          PrecioDiurno: Escenarios[i].PrecioDiurno,
+          PrecioNocturno: Escenarios[i].PrecioNocturno,
+          Likes: Escenarios[i].Likes
+        }
+
+        this.itemsEscenario.push(tmp)
+      }
     }
   },
   components: {

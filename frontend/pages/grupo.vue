@@ -84,7 +84,7 @@ export default {
   },
   mqtt: {
     'chaletapp/apollo/mutation': function (val) {
-      console.log('mqtt')
+      console.log('mqtt grupo')
       var res = (JSON.parse(val))
       var Method = res.Method
       var Obj = res.Obj

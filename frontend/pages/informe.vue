@@ -62,7 +62,7 @@ v-layout( align-center justify-center )
 
       v-card-actions
         v-spacer
-        v-btn( dark @click.native="Reset" ) Limpiar
+        v-btn(warning dark @click.native="Reset" ) Limpiar
 
 </template>
 

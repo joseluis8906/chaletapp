@@ -2,7 +2,7 @@
 v-flex(xs12 sm4 md4 lg3 class="g-card-container")
   v-card(class="g-card" v-bind:class="{ flipped: over }" light)
     div(class="front" v-on:click="over=true")
-      div(:style="{backgroundImage:'url('+src+')', backgroundSize:'cover', height:'180px', width: '100%', verticalAlign:'bottom'}" class="g-card-img")
+      div(:style="{backgroundImage: `url(${src || 'default.png'}?random=${Math.random(100)})`, backgroundSize:'cover', height:'180px', width: '100%', verticalAlign:'bottom'}" class="g-card-img")
         h3(class="text-xs-left title white--text ml-2" style="text-shadow: 2px 2px rgba(40,40,40,0.75); margin-top: 140px; display: inline-block") {{ title }}
 
       div(class="pl-2 pt-2" style="height:165px; border-bottom: 1px solid rgb(180,180,180)")
@@ -36,8 +36,8 @@ v-flex(xs12 sm4 md4 lg3 class="g-card-container")
                          readonly
                          light)
               v-time-picker(v-model="horaInicial"
-                            :allowed-hours="horarioPermitido.horas"
-                            :allowed-minutes="horarioPermitido.minutos"
+                            :allowed-hours="horarioPermitidoInicial.horas"
+                            :allowed-minutes="horarioPermitidoInicial.minutos"
                             autosave)
 
             v-dialog(persistent
@@ -51,8 +51,8 @@ v-flex(xs12 sm4 md4 lg3 class="g-card-container")
                          readonly
                          light)
               v-time-picker(v-model="horaFinal"
-                            :allowed-hours="horarioPermitido.horas"
-                            :allowed-minutes="horarioPermitido.minutos"
+                            :allowed-hours="horarioPermitidoFinal.horas"
+                            :allowed-minutes="horarioPermitidoFinal.minutos"
                             autosave)
 
             v-money(label="Total"
@@ -113,6 +113,9 @@ ul li
 <script>
 import USUARIOS from '~/queries/Usuarios.gql'
 import CREATE_COMPRA from '~/queries/CreateCompra.gql'
+import CUENTAS from '~/queries/Cuentas.gql'
+import UPDATE_CUENTA from '~/queries/UpdateCuenta.gql'
+import UPDATE_ESCENARIO from '~/queries/UpdateEscenario.gql'
 import VMoney from '~/components/MonetaryInput.vue'
 
 export default {
@@ -120,16 +123,21 @@ export default {
     return {
       over: false,
       UsuarioId: null,
+      Cuenta: null,
       horaInicial: '8:00am',
-      horaFinal: '8:00am',
+      horaFinal: '9:00am',
       tiempo: null,
-      total: 0,
+      total: null,
       modal1: false,
       modal2: false,
-      horarioPermitido: {
+      horarioPermitidoInicial: {
         horas: [8,9,10,11],
         minutos: {min: '00', max: '00'}
-      }
+      },
+      horarioPermitidoFinal: {
+        horas: [9,10,11],
+        minutos: {min: '00', max: '00'}
+      },
     }
   },
   props: {
@@ -153,7 +161,7 @@ export default {
       query: USUARIOS,
       variables () {
         return {
-          UserName: this.$store.state.security.UserName
+          Cedula: this.$store.state.security.UserName
         }
       },
       loadingKey: 'loading',
@@ -163,33 +171,96 @@ export default {
         }
       }
     },
+    Cuentas: {
+      query: CUENTAS,
+      loadingKey: 'loading',
+      variables () {
+        return {
+          UsuarioId: this.UsuarioId
+        }
+      },
+      update (data) {
+        for(let i=0; i<data.Cuentas.length; i++){
+          this.Cuenta = data.Cuentas[i]
+          this.calcularPrecio()
+        }
+      }
+    }
   },
   mqtt: {
     'chaletapp/apollo/mutation': function (val) {
-      console.log('mqtt')
+      console.log('mqtt FlipedCard')
       var res = (JSON.parse(val))
       var Method = res.Method
       var Obj = res.Obj
 
       switch (Method) {
         //case 'StoreUsuario': this.StoreUsuario(Obj)
-        //case 'StoreCuenta': this.StoreCuenta(Obj)
+        case 'StoreCuenta': this.StoreCuenta(Obj)
       }
     }
   },
   watch: {
     horaInicial (value) {
       let ampm = value.split(':')[1].substr(2,2)
-      this.horarioPermitido.horas = (ampm === 'am') ? [8,9,10,11] : [12,1,2,3,4,5,6,7,8]
+      this.horarioPermitidoInicial.horas = (ampm === 'am') ? [8,9,10,11] : [12,1,2,3,4,5,6,7,8]
       this.calcularPrecio()
     },
     horaFinal (value) {
       let ampm = value.split(':')[1].substr(2,2)
-      this.horarioPermitido.horas = (ampm === 'am') ? [8,9,10,11] : [12,1,2,3,4,5,6,7,8,9,10]
+      this.horarioPermitidoFinal.horas = (ampm === 'am') ? [9,10,11] : [12,1,2,3,4,5,6,7,8,9,10]
       this.calcularPrecio()
     }
   },
   methods: {
+    StoreCuenta (Cuenta) {
+      var store = this.$apollo.provider.defaultClient
+
+      try {
+        var data = store.readQuery({
+          query: CUENTAS,
+          variables: {
+            UsuarioId: Cuenta.UsuarioId
+          }
+        })
+
+        var Existe = false
+
+        for (let i=0; i<data.Cuentas.length; i++) {
+          if (data.Cuentas[i].Id === Cuenta.Id) {
+            Existe = true
+            data.Cuentas[i] = Cuenta
+          }
+        }
+
+        (!Existe) ? data.Cuentas.push(Cuenta) : null;
+
+        store.writeQuery({
+          query: CUENTAS,
+          variables: {
+            UsuarioId: Cuenta.UsuarioId
+          },
+          data: data
+        })
+
+      } catch (Err) {
+
+        var data = {Cuentas: []}
+
+        data.Cuentas.push(Cuenta)
+
+        store.writeQuery({
+          query: CUENTAS,
+          variables: {
+            UsuarioId: Cuenta.UsuarioId
+          },
+          data: data
+        })
+      }
+
+      this.Cuenta = Cuenta
+
+    },
     calcularPrecio () {
       let inicial = Number(this.horaInicial.split(':')[0])
       let final = Number(this.horaFinal.split(':')[0])
@@ -204,8 +275,6 @@ export default {
       }
       let precioDiurno = Number(this.precioDiurno)
       let precioNocturno = Number(this.precioNocturno)
-
-      console.log('el tiempo fue de: '+this.tiempo + 'hrs')
 
       if(this.tiempo > 0){
         if(this.horaInicial.endsWith('am') && this.horaFinal.endsWith('am')){
@@ -233,6 +302,11 @@ export default {
 
     },
     Guardar () {
+      if(! (this.Cuenta.Saldo >= (this.total*0.20)) ){
+        console.log('Fondos insuficientes')
+        return null
+      }
+
       var Ahora = new Date(Date.now())
       var Fecha = `${Ahora.getFullYear()}-${(Ahora.getMonth() + 1) < 10 ? '0' + (Ahora.getMonth() + 1) : Ahora.getMonth() + 1}-${Ahora.getDate()}`
 
@@ -248,11 +322,24 @@ export default {
         HoraInicial: this.horaInicial,
         HoraFinal: this.horaFinal,
         Tiempo: this.tiempo,
-        Precio: this.total,
+        Precio: this.total*0.20,
         Estado: "Completado",
         Fecha: Fecha,
         Hora: Hora
       }
+
+      let NuevoSaldo = this.Cuenta.Saldo - this.total*0.20
+
+      const Cuenta = {
+        Id: this.Cuenta.Id,
+        UsuarioId: this.UsuarioId,
+        Saldo: NuevoSaldo
+      };
+
+      const Escenario = {
+        Id: this.Id,
+        Likes: this.likes + 1
+      };
 
       this.reset ()
 
@@ -275,12 +362,37 @@ export default {
         }
       })
 
+      this.$apollo.mutate ({
+        mutation: UPDATE_CUENTA,
+        variables: {
+          Id: Cuenta.Id,
+          UsuarioId: Cuenta.UsuarioId,
+          Saldo: Cuenta.Saldo
+        },
+        loadingKey: 'loading',
+        update: (store, { data: res }) => {
+          this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreCuenta', Obj: res.UpdateCuenta}))
+        }
+      })
+
+      this.$apollo.mutate ({
+        mutation: UPDATE_ESCENARIO,
+        variables: {
+          Id: Escenario.Id,
+          Likes: Escenario.Likes
+        },
+        loadingKey: 'loading',
+        update: (store, { data: res }) => {
+          this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreEscenario', Obj: res.UpdateEscenario}))
+        }
+      })
+
     },
     reset () {
       this.over = false
       this.horaInicial = '8:00am'
       this.horaFinal = '8:00am'
-      this.total = 0
+      this.total = null
       this.tiempo = null
     }
   },

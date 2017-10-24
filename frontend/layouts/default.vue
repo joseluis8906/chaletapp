@@ -54,7 +54,7 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
           { icon: 'account_balance', text: 'Escenario', to: '/escenario', Roles: ["Administrador"] },
           { icon: 'attach_money', text: 'Recargas', to: '/recargas', Roles: ["Empleado"] },
           { icon: 'assignment', text: 'Apartar', to: '/apartar', Roles: ["Cliente"] },
-          { icon: 'description', text: 'Informe', to: '/informe', Roles: ["Administrador"] }
+          { icon: 'description', text: 'Informe', to: '/informe', Roles: ["Administrador", "Empleado"] }
         ],
         title: 'Chalet Escenarios Deportivos',
         StoreRoles: []
