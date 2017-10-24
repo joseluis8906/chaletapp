@@ -25,7 +25,7 @@ v-layout( align-center justify-center )
       v-card-text
         v-layout(row wrap)
           v-flex(xs12)
-            v-select(v-bind:items="ItemsUsuario"
+            //- v-select(v-bind:items="ItemsUsuario"
                      v-model="UsuarioId"
                      label="Usuario"
                      item-text="Buscar"
@@ -38,6 +38,33 @@ v-layout( align-center justify-center )
               template(slot="item" scope="data")
                 v-list-tile-content(style="font-size: 12pt")
                   v-list-tile-title(v-html="(data.item.Nombre ? data.item.Nombre : 'no data available') + ' ' + (data.item.Apellido ? data.item.Apellido: '')")
+
+
+            v-menu( lazy
+                    :close-on-content-click="true"
+                    v-model="menu1"
+                    transition="scale-transition"
+                    offset-y
+                    full-width
+                    :nudge-left="40"
+                    max-width="290px" )
+
+              v-text-field( slot="activator"
+                            label="Fecha"
+                            v-model="Fecha"
+                            readonly )
+
+              v-date-picker( :months="months"
+                             :days="days"
+                             first-day-of-week="D"
+                             :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
+                             v-model="Fecha"
+                             no-title
+                             autosave
+                             dark )
+               template( scope="{ save, cancel }" )
+                 v-card-actions
+                   v-btn( dark warning @click.native="Fecha=null" ) Limpiar
 
             v-data-table(v-bind:headers="headers"
                         :items="itemsCompra"
@@ -63,6 +90,7 @@ v-layout( align-center justify-center )
       v-card-actions
         v-spacer
         v-btn(warning dark @click.native="Reset" ) Limpiar
+        v-btn(primary dark @click.native="Generar" ) Generar
 
 </template>
 
@@ -86,6 +114,8 @@ export default {
       timeout: 6000,
       text: 'Cargando'
     },
+    menu1: false,
+    Fecha: null,
     ItemsUsuario: [],
     headers: [
       {text: 'Nombre', value: 'Nombre'},
@@ -100,6 +130,21 @@ export default {
       {text: 'Hora', value: 'Hora'}
     ],
     itemsCompra: [],
+
+    months: [
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre'],
+    days: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
     UsuarioId: null,
     loading: 0
   }),
@@ -129,7 +174,7 @@ export default {
       loadingKey: 'loading',
       variables () {
         return {
-          UsuarioId: this.UsuarioId
+          Fecha: this.Fecha
         }
       },
       update (data) {
@@ -153,6 +198,10 @@ export default {
     }
   },
   methods: {
+    Generar () {
+      this.$store.commit('informe/changeFecha', this.Fecha)
+      this.$router.push('/reporte/informe')
+    },
     /*PubMsg () {
       //console.log('enviando: ' + this.Msg)
       this.$mqtt.publish('chaletapp/apollo/mutation', this.Msg)

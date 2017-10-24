@@ -38,7 +38,7 @@ export default {
     box-shadow none !important
     border none !important
 
-  page
+  page[size="A8"][layout="Portrait"]
     margin 5mm !important
 
   .toolbar
