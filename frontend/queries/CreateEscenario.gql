@@ -26,7 +26,8 @@ mutation CreateEscenario (
     Esp1
     Esp2
     ###Esp3
-    Precio
+    PrecioDiurno
+    PrecioNocturno
     Likes
     Activo
   }

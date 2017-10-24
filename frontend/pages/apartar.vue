@@ -16,15 +16,15 @@ v-layout( align-center justify-center )
       v-icon autorenew
 
   v-flex(xs12 mt-5)
-    v-layout(row wrap justify-space-around class="g-layout")
+    v-layout(row wrap justify-space-bettwen align-center class="g-layout")
       v-fliped-card(v-for="(item, i) in itemsEscenario" :key="i"
                     :Id="item.Id"
                     :title="item.Nombre"
                     :src="item.Imagen"
                     :esp1="item.Esp1"
                     :esp2="item.Esp2"
-                    :esp3="item.Esp3"
-                    :precio="item.Precio"
+                    :precioDiurno="item.PrecioDiurno"
+                    :precioNocturno="item.PrecioNocturno"
                     :likes="item.Likes")
 
 </template>

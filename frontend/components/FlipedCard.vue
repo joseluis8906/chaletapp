@@ -10,12 +10,11 @@ v-flex(xs12 sm4 md4 lg3 class="g-card-container")
         ul
           li {{ esp1 }}
           li {{ esp2 }}
-          li {{ esp3 }}
+          li Precio Diurno: {{ precioDiurno | currency('$', 0) }}/hr
+          li Precio Nocturno: {{ precioNocturno | currency('$', 0) }}/hr
 
       v-layout(row wrap grey lighten-2 pt-2 pb-2)
-        v-flex(xs6 pl-3 grey--text text--darken-1 mt-1)
-          | ${{ precio }}/hr
-        v-flex(xs6 text-xs-right pr-3 blue--text mt-1)
+        v-flex(xs12 text-xs-right pr-3 blue--text mt-1)
           <span style="vertical-align: bottom"> {{ likes }} </span>
           v-icon(fa class="blue--text") thumbs-up
 
@@ -141,7 +140,8 @@ export default {
     esp2: String,
     esp3: String,
     likes: Number,
-    precio: Number
+    precioDiurno: Number,
+    precioNocturno: Number
   },
   mounted () {
     this.$nextTick(() => {
@@ -185,7 +185,7 @@ export default {
     },
     horaFinal (value) {
       let ampm = value.split(':')[1].substr(2,2)
-      this.horarioPermitido.horas = (ampm === 'am') ? [8,9,10,11] : [12,1,2,3,4,5,6,7,8]
+      this.horarioPermitido.horas = (ampm === 'am') ? [8,9,10,11] : [12,1,2,3,4,5,6,7,8,9,10]
       this.calcularPrecio()
     }
   },
@@ -193,9 +193,44 @@ export default {
     calcularPrecio () {
       let inicial = Number(this.horaInicial.split(':')[0])
       let final = Number(this.horaFinal.split(':')[0])
-      this.tiempo = final-inicial
-      let precio = Number(this.precio)
-      this.total = this.tiempo > 0 ? this.tiempo * precio : 0
+      if(this.horaInicial.endsWith('am') && (this.horaFinal.endsWith('am') || final === 12)){
+        this.tiempo = final-inicial
+      }else if(this.horaInicial.endsWith('am') && this.horaFinal.endsWith('pm') && final !== 12){
+        this.tiempo = (final+12) - inicial
+      }else if(inicial === 12 && this.horaFinal.endsWith('pm')){
+        this.tiempo = (final+12)-inicial
+      }else{
+        this.tiempo = final-inicial
+      }
+      let precioDiurno = Number(this.precioDiurno)
+      let precioNocturno = Number(this.precioNocturno)
+
+      console.log('el tiempo fue de: '+this.tiempo + 'hrs')
+
+      if(this.tiempo > 0){
+        if(this.horaInicial.endsWith('am') && this.horaFinal.endsWith('am')){
+          this.total = this.tiempo * precioDiurno
+        }else if (this.horaInicial.endsWith('am') && this.horaFinal.endsWith('pm')){
+          if (final === 12 || final <= 6){
+            this.total = this.tiempo * precioDiurno
+          }else{
+            let phr = ((inicial-18)*(-1)*(precioDiurno))
+            this.total = phr < 1 ? (phr*(-1)) + ((final-6) * precioNocturno) : phr + ((final-6) * precioNocturno)
+          }
+        }else if (this.horaInicial.endsWith('pm') && this.horaFinal.endsWith('pm')){
+          if((inicial === 12 || inicial <= 6) && final <= 6){
+            this.total = this.tiempo * precioDiurno
+          }else if((inicial === 12 || inicial <= 6) && final > 6 ){
+            let phr = ((inicial-6)*(-1)*(precioDiurno))
+            this.total = phr < 1 ? (phr*(-1)) + ((final-6) * precioNocturno) : phr + ((final-6) * precioNocturno)
+          }else {
+            this.total = this.tiempo * precioNocturno
+          }
+        }
+      }else {
+        this.total = 0
+      }
+
     },
     Guardar () {
       var Ahora = new Date(Date.now())
