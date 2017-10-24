@@ -56,18 +56,18 @@ app.use(favicon(path.join(__dirname, '../public', 'favicon.ico')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.use('/private/upload',  (req, res) => {
+app.use(fileUpload());
+app.use('/upload/',  (req, res) => {
   if(!req.files) {
-    return req.json({Result: 0, Error: 'El archivo no fue subido'});
+    return res.json({Result: 0, Error: 'El archivo no fue subido'});
   }
 
   let sampleFile = req.files.sampleFile;
 
-  sampleFile.mv('../frontend/static/' + req.files.sampleFile.name, function(err) {
-    if(Err){
+  sampleFile.mv('../frontend/static/' + req.files.sampleFile.name, (err) => {
+    if(err){
       return res.json({Result: 0, Error: Err})
     }
-
     res.json({Result: 1, Name: sampleFile.name});
   })
 })

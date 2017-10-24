@@ -5,7 +5,8 @@ query Escenarios (
   $Esp1: String,
   $Esp2: String,
   ###$Esp3: String,
-  $Precio: Float,
+  $PrecioDiurno: Float,
+  $PrecioNocturno: Float,
   $Likes: Int,
   $Activo: String
 ) {
@@ -16,7 +17,8 @@ query Escenarios (
     Esp1: $Esp1,
     Esp2: $Esp2,
     ###Esp3: $Esp3,
-    Precio: $Precio,
+    PrecioDiurno: $PrecioDiurno,
+    PrecioNocturno: $PrecioNocturno,
     Likes: $Likes,
     Activo: $Activo
   ) {

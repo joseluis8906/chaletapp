@@ -62,7 +62,8 @@ const Escenario = Db.define('Escenario', {
   Esp1: Sequelize.STRING,
   Esp2: Sequelize.STRING,
   //Esp3: Sequelize.STRING,
-  Precio: Sequelize.DECIMAL,
+  PrecioDiurno: Sequelize.DECIMAL,
+  PrecioNocturno: Sequelize.DECIMAL,
   Likes: Sequelize.INTEGER,
   Activo: Sequelize.STRING
 },

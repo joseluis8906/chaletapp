@@ -164,10 +164,16 @@ var Escenario = new GraphQLObjectType({
           return Escenario.Esp3;
         }
       },*/
-      Precio: {
+      PrecioDiurno: {
         type: GraphQLFloat,
         resolve(Escenario) {
-          return Escenario.Precio;
+          return Escenario.PrecioDiurno;
+        }
+      },
+      PrecioNocturno: {
+        type: GraphQLFloat,
+        resolve(Escenario) {
+          return Escenario.PrecioNocturno;
         }
       },
       Likes: {
@@ -349,7 +355,8 @@ var Query = new GraphQLObjectType({
           Esp1: {type: GraphQLString},
           Esp2: {type: GraphQLString},
           //Esp3: {type: GraphQLString},
-          Precio: {type: GraphQLFloat},
+          PrecioDiurno: {type: GraphQLFloat},
+          PrecioNocturno: {type: GraphQLFloat},
           Likes: {type: GraphQLInt},
           Activo: {type: GraphQLString}
         },
@@ -547,7 +554,8 @@ var Mutation = new GraphQLObjectType({
           Esp1: {type: GraphQLString},
           Esp2: {type: GraphQLString},
           //Esp3: {type: GraphQLString},
-          Precio: {type: GraphQLFloat},
+          PrecioDiurno: {type: GraphQLFloat},
+          PrecioNocturno: {type: GraphQLFloat},
           Likes: {type: GraphQLInt},
           Activo: {type: GraphQLString}
         },
@@ -558,7 +566,8 @@ var Mutation = new GraphQLObjectType({
             Esp1: args.Esp1,
             Esp2: args.Esp2,
             //Esp3: args.Esp3,
-            Precio: args.Precio,
+            PrecioDiurno: args.PrecioDiurno,
+            PrecioNocturno: args.PrecioNocturno,
             Likes: args.Likes,
             Activo: args.Activo
           });
@@ -573,7 +582,8 @@ var Mutation = new GraphQLObjectType({
           Esp1: {type: GraphQLString},
           Esp2: {type: GraphQLString},
           //Esp3: {type: GraphQLString},
-          Precio: {type: GraphQLFloat},
+          PrecioDiurno: {type: GraphQLFloat},
+          PrecioNocturno: {type: GraphQLFloat},
           Likes: {type: GraphQLInt},
           Activo: {type: GraphQLString}
         },
@@ -586,7 +596,8 @@ var Mutation = new GraphQLObjectType({
             R.Esp1 = args.Esp1
             R.Esp2 = args.Esp2
             //R.Esp3 = args.Esp3
-            R.Precio = args.Precio
+            R.PrecioDiurno = args.PrecioDiurno
+            R.PrecioNocturno = args.PrecioNocturno
             R.Likes = args.Likes
             R.Activo = args.Activo
             R.save()

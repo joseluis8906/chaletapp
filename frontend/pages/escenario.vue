@@ -29,7 +29,7 @@ v-layout( align-center justify-center )
             v-text-field( label="Nombre" v-model="Nombre" dark )
 
             //- v-text-field( label="Imagen" v-model="Imagen" dark )
-            v-upload-image(v-model="Imagen" label="Cambiar Imagen" :file="Imagen")
+            v-upload-image(v-model="Imagen" label="Cambiar Imagen" :src="Imagen" :name="Nombre")
 
             v-text-field( label="Especificación 1" v-model="Esp1" dark )
 
@@ -37,7 +37,9 @@ v-layout( align-center justify-center )
 
             //- v-text-field( label="Especificación 3" v-model="Esp3" dark )
 
-            v-money(label="Precio" v-model="Precio" maskType="currency")
+            v-money(label="Precio Diurno" v-model="PrecioDiurno" maskType="currency")
+
+            v-money(label="Precio Nocturno" v-model="PrecioNocturno" maskType="currency")
 
             v-text-field( label="Likes" v-model="Likes" dark )
 
@@ -77,7 +79,8 @@ export default {
     Esp1: null,
     Esp2: null,
     //Esp3: null,
-    Precio: null,
+    PrecioDiurno: null,
+    PrecioNocturno: null,
     Likes: null,
     Activo: null,
     ItemsActivo: [
@@ -129,6 +132,8 @@ export default {
       }
 
     }
+  },
+  watch: {
   },
   methods: {
     StoreEscenario (Escenario) {
@@ -224,7 +229,8 @@ export default {
         Esp1: this.Esp1,
         Esp2: this.Esp2,
         //Esp3: this.Esp3,
-        Precio: this.Precio,
+        PrecioDiurno: this.PrecioDiurno,
+        PrecioNocturno: this.PrecioNocturno,
         Likes: this.Likes,
         Activo: this.Activo
       };
@@ -239,7 +245,8 @@ export default {
           Esp1: Escenario.Esp1,
           Esp2: Escenario.Esp2,
           //Esp3: Escenario.Esp3,
-          Precio: Escenario.Precio,
+          PrecioDiurno: Escenario.PrecioDiurno,
+          PrecioNocturno: Escenario.PrecioNocturno,
           Likes: Escenario.Likes,
           Activo: Escenario.Activo
         },
@@ -258,7 +265,8 @@ export default {
         Esp1: this.Esp1,
         Esp2: this.Esp2,
         //Esp3: this.Esp3,
-        Precio: this.Precio,
+        PrecioDiurno: this.PrecioDiurno,
+        PrecioNocturno: this.PrecioNocturno,
         Likes: this.Likes,
         Activo: this.Activo
       };
@@ -274,7 +282,8 @@ export default {
           Esp1: Escenario.Esp1,
           Esp2: Escenario.Esp2,
           //Esp3: Escenario.Esp3,
-          Precio: Escenario.Precio,
+          PrecioDiurno: Escenario.PrecioDiurno,
+          PrecioNocturno: Escenario.PrecioNocturno,
           Likes: Escenario.Likes,
           Activo: Escenario.Activo
         },
@@ -291,7 +300,8 @@ export default {
       this.Esp1 = null
       this.Esp2 = null
       //this.Esp3 = null
-      this.Precio = null
+      this.PrecioDiurno = null
+      this.PrecioNocturno = null
       this.Likes = null
       this.Activo = null
     },
@@ -303,7 +313,8 @@ export default {
         this.Esp1 = null
         this.Esp2 = null
         //this.Esp3 = null
-        this.Precio = null
+        this.PrecioDiurno = null
+        this.PrecioNocturno = null
         this.Likes = null
         this.Activo = null
       }
@@ -316,7 +327,8 @@ export default {
           this.Esp1 = Escenarios[i].Esp1
           this.Esp2 = Escenarios[i].Esp2
           //this.Esp3 = Escenarios[i].Esp3
-          this.Precio = Escenarios[i].Precio
+          this.PrecioDiurno = Escenarios[i].PrecioDiurno
+          this.PrecioNocturno = Escenarios[i].PrecioNocturno
           this.Likes = Escenarios[i].Likes
           this.Activo = Escenarios[i].Activo
           break

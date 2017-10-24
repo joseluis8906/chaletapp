@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS "Escenario" (
   "Esp1" TEXT,
   "Esp2" TEXT,
   "Esp3" TEXT,
-  "Precio" DECIMAL,
+  "PrecioDiurno" DECIMAL,
+  "PrecioNocturno" DECIMAL,
   "Likes" INTEGER,
   "Activo" TEXT
 );
