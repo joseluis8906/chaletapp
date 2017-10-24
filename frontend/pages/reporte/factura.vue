@@ -1,6 +1,6 @@
 <template lang="pug">
 v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
-  page(v-bind:size="page.Size" v-bind:layout="page.Layout" style="width: 57mm; min-height: 74mm; padding: 2mm" v-for="(page, i) in pages" :key="i")
+  page(v-bind:size="page.Size" v-bind:layout="page.Layout" v-for="(page, i) in pages" :key="i")
     table(style="width: 100%; height: auto; border: none; margin-bottom: 3mm")
       thead
       tbody
@@ -11,43 +11,43 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
 
         tr
           td Expedición
-          td {{ Fecha }}
+          td(class="text-xs-right") {{ Fecha }}
 
         tr
           td Cédula
-          td {{ Cedula }}
+          td(class="text-xs-right") {{ Cedula }}
 
         tr
           td Apellido
-          td {{ ApellidoCliente }}
+          td(class="text-xs-right") {{ Apellido }}
 
         tr
           td Nombre
-          td {{ NombreCliente }}
+          td(class="text-xs-right") {{ Nombre }}
 
         tr
           td Escenario
-          td {{ NombreEscenario }}
+          td(class="text-xs-right") {{ Escenario }}
 
         tr
           td Fecha
-          td {{ Fecha }}
+          td(class="text-xs-right") {{ Fecha }}
 
         tr
           td HoraInicial
-          td {{ HoraInicial }}
+          td(class="text-xs-right") {{ HoraInicial }}
 
         tr
           td HoraFinal
-          td {{ HoraFinal }}
+          td(class="text-xs-right") {{ HoraFinal }}
 
         tr
           td Tiempo
-          td {{ Tiempo }}
+          td(class="text-xs-right") {{ Tiempo }} hr(s)
 
         tr
           td Precio
-          td {{ Precio }}
+          td(class="text-xs-right") {{ Precio | currency('$', 0) }}
 
 
 </template>
@@ -64,144 +64,44 @@ export default {
       pages: [
         {Size: 'A8', Layout: 'Portrait'}
       ],
-      Fecha: null,
-      Cedula: null,
-      NombreCliente: null,
-      ApellidoCliente: null,
-      NombreEscenario: null,
-      HoraInicial: null,
-      HoraFinal: null,
-      Precio: null,
-      Tiempo: null,
-      Fecha: null,
       items: []
     }
   },
   computed: {
-    Numero () {
-      return this.$store.state.remision.Numero
+    Expedicion () {
+      return this.$store.state.compra.Expedicion
+    },
+    Cedula () {
+      return this.$store.state.compra.Cedula
+    },
+    Nombre () {
+      return this.$store.state.compra.Nombre
+    },
+    Apellido () {
+      return this.$store.state.compra.Apellido
+    },
+    Escenario () {
+      return this.$store.state.compra.Escenario
+    },
+    HoraInicial () {
+      return this.$store.state.compra.HoraInicial
+    },
+    HoraFinal () {
+      return this.$store.state.compra.HoraFinal
+    },
+    Tiempo () {
+      return this.$store.state.compra.Tiempo
+    },
+    Precio () {
+      return this.$store.state.compra.Precio
+    },
+    Fecha () {
+      return this.$store.state.compra.Fecha
     }
   },
   layout: 'report',
   fetch ({ store }) {
     store.commit('reports/changeTitle', 'Factura')
-  },
-  apollo: {
-    /*Remisions:{
-      query: REMISIONS,
-      variables () {
-        return {
-          Numero: this.Numero
-        }
-      },
-      loadingKey: "loading",
-      update (data) {
-        //console.log(data)
-
-        if (data.Remisions.length > 0) {
-
-          this.Fecha.AAAA = data.Remisions[0].Fecha.split('-')[0]
-          this.Fecha.MM = data.Remisions[0].Fecha.split('-')[1]
-          this.Fecha.DD = data.Remisions[0].Fecha.split('-')[2]
-          this.Cliente = data.Remisions[0].Ente
-
-          this.items = []
-
-          for (let i=0; i<data.Remisions.length; i++) {
-
-            let tmp = {
-              Produccion: {
-                Cantidad: data.Remisions[i].Produccion.Cantidad,
-                FechaFabricacion: data.Remisions[i].Produccion.FechaFabricacion,
-                FechaVencimiento: data.Remisions[i].Produccion.FechaVencimiento,
-                Lote: data.Remisions[i].Produccion.Lote,
-                Envase: {
-                  Numero: data.Remisions[i].Produccion.Envase.Numero
-                },
-                Producto: {
-                  Nombre: data.Remisions[i].Produccion.Producto.Nombre,
-                  UnidadDeMedida: data.Remisions[i].Produccion.Producto.UnidadDeMedida
-                }
-              },
-              Envase: {
-                Numero: data.Remisions[i].Envase.Numero
-              },
-              Total: data.Remisions[i].Total
-            }
-
-            this.items.push(tmp)
-
-          }
-
-          if (this.items.length<12) {
-            this.pages[0] = {Size: 'MidLetter', Layout: 'Landscape'}
-
-            for (let i=this.items.length; i<12; i++)
-            {
-              let tmp = {
-                Produccion: {
-                  Cantidad: null,
-                  FechaFabricacion: null,
-                  FechaVencimiento: null,
-                  Lote: null,
-                  Envase: {
-                    Numero: null
-                  },
-                  Producto: {
-                    Nombre: null,
-                    UnidadDeMedida: null
-                  }
-                },
-                Envase: {
-                  Numero: null
-                },
-                Total: null
-              }
-
-              this.items.push(tmp)
-
-            }
-
-            console.log(this.items)
-
-          } else if (this.items.length>=12 && this.items.length<40) {
-
-            for (let i=this.items.length; i<40; i++)
-            {
-              let tmp = {
-                Produccion: {
-                  Cantidad: null,
-                  FechaFabricacion: null,
-                  FechaVencimiento: null,
-                  Lote: null,
-                  Envase: {
-                    Numero: null
-                  },
-                  Producto: {
-                    Nombre: null,
-                    UnidadDeMedida: null
-                  }
-                },
-                Envase: {
-                  Numero: null
-                },
-                Total: null
-              }
-
-              this.items.push(tmp)
-
-            }
-
-          }
-
-
-        } else {
-
-          console.log('error')
-
-        }
-      }
-    }*/
   }
 }
 </script>

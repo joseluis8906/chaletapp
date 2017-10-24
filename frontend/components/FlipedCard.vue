@@ -123,6 +123,9 @@ export default {
     return {
       over: false,
       UsuarioId: null,
+      Cedula: null,
+      NombreCliente: null,
+      ApellidoCliente: null,
       Cuenta: null,
       horaInicial: '8:00am',
       horaFinal: '9:00am',
@@ -168,6 +171,8 @@ export default {
       update (data) {
         for (let i = 0; i < data.Usuarios.length; i++) {
           this.UsuarioId = data.Usuarios[i].Id
+          this.NombreCliente = data.Usuarios[i].Nombre
+          this.ApellidoCliente = data.Usuarios[i].Apellido
         }
       }
     },
@@ -213,6 +218,9 @@ export default {
     }
   },
   methods: {
+    Recibo (){
+
+    },
     StoreCuenta (Cuenta) {
       var store = this.$apollo.provider.defaultClient
 
@@ -328,6 +336,18 @@ export default {
         Hora: Hora
       }
 
+      this.$store.commit('compra/changeExpedicion', Compra.Fecha)
+      this.$store.commit('compra/changeCedula', this.$store.state.security.UserName)
+      this.$store.commit('compra/changeApellido', this.ApellidoCliente)
+      this.$store.commit('compra/changeNombre', this.NombreCliente)
+      this.$store.commit('compra/changeEscenario', this.title)
+      this.$store.commit('compra/changeFecha', Compra.Fecha)
+      this.$store.commit('compra/changeHoraInicial', Compra.HoraInicial)
+      this.$store.commit('compra/changeHoraFinal', Compra.HoraFinal)
+      this.$store.commit('compra/changeTiempo', Compra.Tiempo)
+      this.$store.commit('compra/changePrecio', Compra.Precio)
+
+
       let NuevoSaldo = this.Cuenta.Saldo - this.total*0.20
 
       const Cuenta = {
@@ -386,6 +406,8 @@ export default {
           this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreEscenario', Obj: res.UpdateEscenario}))
         }
       })
+
+      this.$router.push('/reporte/factura')
 
     },
     reset () {
