@@ -128,7 +128,9 @@ export default {
       var Obj = res.Obj
 
       switch (Method) {
-        case 'StoreEscenario': this.StoreEscenario(Obj)
+        case 'StoreEscenario':
+          this.StoreEscenario(Obj)
+          break;
       }
 
     }

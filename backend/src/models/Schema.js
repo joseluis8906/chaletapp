@@ -280,6 +280,12 @@ var Compra = new GraphQLObjectType({
           return Compra.Fecha;
         }
       },
+      Expedicion: {
+        type: GraphQLString,
+        resolve(Compra) {
+          return Compra.Expedicion;
+        }
+      },
       Hora: {
         type: GraphQLString,
         resolve(Compra) {
@@ -387,6 +393,7 @@ var Query = new GraphQLObjectType({
           Precio: {type: GraphQLFloat},
           Estado: {type: GraphQLString},
           Fecha: {type: GraphQLString},
+          Expedicion: {type: GraphQLString},
           Hora: {type: GraphQLString}
         },
         resolve(root, args) {
@@ -646,6 +653,7 @@ var Mutation = new GraphQLObjectType({
           Precio: {type: GraphQLFloat},
           Estado: {type: GraphQLString},
           Fecha: {type: GraphQLString},
+          Expedicion: {type: GraphQLString},
           Hora: {type: GraphQLString}
         },
         resolve(_, args) {
@@ -658,6 +666,7 @@ var Mutation = new GraphQLObjectType({
             Precio: args.Precio,
             Estado: args.Estado,
             Fecha: args.Fecha,
+            Expedicion: args.Expedicion,
             Hora: args.Hora
           });
         }
@@ -674,6 +683,7 @@ var Mutation = new GraphQLObjectType({
           Precio: {type: GraphQLFloat},
           Estado: {type: GraphQLString},
           Fecha: {type: GraphQLString},
+          Expedicion: {type: GraphQLString},
           Hora: {type: GraphQLString}
         },
         resolve(_, args) {
@@ -689,6 +699,7 @@ var Mutation = new GraphQLObjectType({
             args.Estado ? R.Estado = args.Estado : null
             args.Activo ? R.Activo = args.Activo : null
             args.Fecha ? R.Fecha = args.Fecha : null
+            args.Expedicion ? R.Expedicion = args.Expedicion : null
             args.Hora ? R.Hora = args.Hora : null
             R.save()
             return R;

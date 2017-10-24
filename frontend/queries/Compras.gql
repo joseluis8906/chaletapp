@@ -8,6 +8,7 @@ query Compras (
   $Precio: Float,
   $Estado: String,
   $Fecha: String,
+  $Expedicion: String,
   $Hora: String,
 ) {
   Compras (
@@ -20,6 +21,7 @@ query Compras (
     Precio: $Precio,
     Estado: $Estado,
     Fecha: $Fecha,
+    Expedicion: $Expedicion,
     Hora: $Hora
   ) {
     Id
@@ -31,6 +33,7 @@ query Compras (
     Precio
     Estado
     Fecha
+    Expedicion
     Hora
     Usuario {
       Id

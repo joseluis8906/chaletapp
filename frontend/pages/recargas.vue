@@ -131,8 +131,12 @@ export default {
       var Obj = res.Obj
 
       switch (Method) {
-        case 'StoreUsuario': this.StoreUsuario(Obj)
-        case 'StoreCuenta': this.StoreCuenta(Obj)
+        case 'StoreUsuario':
+          this.StoreUsuario(Obj)
+          break;
+        case 'StoreCuenta':
+          this.StoreCuenta(Obj)
+          break;
       }
     }
   },

@@ -7,6 +7,7 @@ mutation CreateCompra (
   $Precio: Float,
   $Estado: String,
   $Fecha: String,
+  $Expedicion: String,
   $Hora: String,
 ) {
   CreateCompra (
@@ -18,6 +19,7 @@ mutation CreateCompra (
     Precio: $Precio,
     Estado: $Estado,
     Fecha: $Fecha,
+    Expedicion: $Expedicion,
     Hora: $Hora
   ) {
     Id
@@ -29,6 +31,7 @@ mutation CreateCompra (
     Precio
     Estado
     Fecha
+    Expedicion
     Hora
     Usuario {
       Id

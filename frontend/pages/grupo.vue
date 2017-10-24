@@ -90,7 +90,9 @@ export default {
       var Obj = res.Obj
 
       switch (Method) {
-        case 'StoreGrupo': this.StoreGrupo(Obj)
+        case 'StoreGrupo':
+          this.StoreGrupo(Obj)
+          break;
       }
 
     }

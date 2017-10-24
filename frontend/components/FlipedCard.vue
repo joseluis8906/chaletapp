@@ -5,7 +5,7 @@ v-flex(xs12 sm4 md4 lg3 class="g-card-container")
       div(:style="{backgroundImage: `url(${src || 'default.png'}?random=${Math.random(100)})`, backgroundSize:'cover', height:'180px', width: '100%', verticalAlign:'bottom'}" class="g-card-img")
         h3(class="text-xs-left title white--text ml-2" style="text-shadow: 2px 2px rgba(40,40,40,0.75); margin-top: 140px; display: inline-block") {{ title }}
 
-      div(class="pl-2 pt-2" style="height:165px; border-bottom: 1px solid rgb(180,180,180)")
+      div(class="pl-2 pt-2" style="height:235px; border-bottom: 1px solid rgb(180,180,180)")
         p(class="subheading text-xs-left") Especificaciones:
         ul
           li {{ esp1 }}
@@ -24,6 +24,37 @@ v-flex(xs12 sm4 md4 lg3 class="g-card-container")
         v-layout(justify-space-around)
           v-flex(xs12)
             h6(class="title text-xs-center pt-2") {{ title }}
+
+            v-menu( lazy
+                    :close-on-content-click="true"
+                    v-model="menu1"
+                    transition="scale-transition"
+                    offset-y
+                    full-width
+                    :nudge-left="40"
+                    max-width="290px"
+                    dark )
+
+              v-text-field( slot="activator"
+                            label="Fecha"
+                            v-model="Fecha"
+                            readonly
+                            prepend-icon="event"
+                            light )
+
+              v-date-picker( :months="months"
+                             :days="days"
+                             first-day-of-week="D"
+                             :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
+                             v-model="Fecha"
+                             :allowed-dates="allowedDates"
+                             no-title
+                             dark
+                             autosave)
+
+               template( scope="{ save, cancel }" light)
+                 v-card-actions
+                   v-btn( dark warning @click.native="Fecha=null" ) Limpiar
 
             v-dialog(persistent
                      v-model="modal1"
@@ -72,6 +103,7 @@ v-flex(xs12 sm4 md4 lg3 class="g-card-container")
 
 ul li
   text-align left
+  line-height 2
 
 .g-card-container
   perspective 800px
@@ -81,12 +113,12 @@ ul li
   transition transform 1s
   border-radius 5px
   position relative
-  height 390px
+  height 460px
   box-shadow 0px 0px 10px rgb(230,230,230)
 
 .front
   width 100%
-  height 390px
+  height 460px
   position absolute
   backface-visibility hidden
   border-radius 5px
@@ -95,7 +127,7 @@ ul li
 .back
   transform rotateY( 180deg )
   width 100%
-  height 390px
+  height 460px
   backface-visibility hidden
   border-radius 5px
   overflow hidden
@@ -112,6 +144,7 @@ ul li
 
 <script>
 import USUARIOS from '~/queries/Usuarios.gql'
+import COMPRAS from '~/queries/Compras.gql'
 import CREATE_COMPRA from '~/queries/CreateCompra.gql'
 import CUENTAS from '~/queries/Cuentas.gql'
 import UPDATE_CUENTA from '~/queries/UpdateCuenta.gql'
@@ -122,6 +155,8 @@ export default {
   data () {
     return {
       over: false,
+      menu1: false,
+      Fecha: null,
       UsuarioId: null,
       Cedula: null,
       NombreCliente: null,
@@ -141,6 +176,26 @@ export default {
         horas: [9,10,11],
         minutos: {min: '00', max: '00'}
       },
+      allowedDates: {
+        min: '2017-10-25',
+        max: '2017-11-01'
+      },
+      months: [
+        'Enero',
+        'Febrero',
+        'Marzo',
+        'Abril',
+        'Mayo',
+        'Junio',
+        'Julio',
+        'Agosto',
+        'Septiembre',
+        'Octubre',
+        'Noviembre',
+        'Diciembre'],
+      days: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+      horasAm: [8,9,10,11],
+      horasPm: [12,1,2,3,4,5,6,7,8,9,10]
     }
   },
   props: {
@@ -157,6 +212,7 @@ export default {
   mounted () {
     this.$nextTick(() => {
       this.$mqtt.subscribe('chaletapp/apollo/mutation')
+      this.CalcularFechasPermitidas()
     })
   },
   apollo: {
@@ -190,6 +246,19 @@ export default {
           this.calcularPrecio()
         }
       }
+    },
+    Compras: {
+      query: COMPRAS,
+      loadingKey: 'loading',
+      variables () {
+        return {
+          EscenarioId : this.Id,
+          Fecha: this.Fecha
+        }
+      },
+      update (data) {
+        this.FiltrarHorarios(data.Compras)
+      }
     }
   },
   mqtt: {
@@ -201,25 +270,58 @@ export default {
 
       switch (Method) {
         //case 'StoreUsuario': this.StoreUsuario(Obj)
-        case 'StoreCuenta': this.StoreCuenta(Obj)
+        case 'StoreCuenta':
+          this.StoreCuenta(Obj)
+          break;
+        case 'StoreCompra':
+          this.StoreCompra(Obj)
+          break;
       }
     }
   },
   watch: {
     horaInicial (value) {
       let ampm = value.split(':')[1].substr(2,2)
-      this.horarioPermitidoInicial.horas = (ampm === 'am') ? [8,9,10,11] : [12,1,2,3,4,5,6,7,8]
+      this.horarioPermitidoInicial.horas = (ampm === 'am') ? this.horasAm : this.horasPm.slice(0,-2)
       this.calcularPrecio()
     },
     horaFinal (value) {
       let ampm = value.split(':')[1].substr(2,2)
-      this.horarioPermitidoFinal.horas = (ampm === 'am') ? [9,10,11] : [12,1,2,3,4,5,6,7,8,9,10]
+      this.horarioPermitidoFinal.horas = (ampm === 'am') ? this.horasAm.slice(1) : this.horasPm
       this.calcularPrecio()
     }
   },
   methods: {
-    Recibo (){
+    FiltrarHorarios(Compras) {
+      //console.log(Compras)
+      for(let i=0; i<Compras.length; i++){
+        let horaTmp = Number(Compras[i].HoraInicial.split(':')[0])
+        if(horaTmp < 12){
+          this.horasAm.splice(this.horasAm.indexOf(horaTmp), Compras[i].Tiempo)
+        }else if(horaTmp >= 12){
+          if(horaTmp===12){
 
+          }else{
+            horaTmp = horaTmp-12
+          }
+
+          this.horasPm.splice(this.horasPm.indexOf(horaTmp), Compras[i].Tiempo)
+
+        }
+      }
+      let amPmInicial = this.horaInicial.split(':')[1].substr(2,2)
+      this.horarioPermitidoInicial.horas = (amPmInicial === 'am') ? this.horasAm : this.horasPm.slice(0,-2)
+
+      let amPmFinal = this.horaFinal.split(':')[1].substr(2,2)
+      this.horarioPermitidoFinal.horas = (amPmFinal === 'am') ? this.horasAm.slice(1) : this.horasPm
+    },
+    CalcularFechasPermitidas (){
+      let hoy = new Date((Date.now()+(1000*60*60*24)))
+      this.allowedDates.min = `${hoy.getFullYear()}-${hoy.getMonth()+1}-${hoy.getDate()}`
+      let dentroDeUnMes = new Date((Date.now()+(1000*60*60*24*21)))
+      this.allowedDates.max = `${dentroDeUnMes.getFullYear()}-${dentroDeUnMes.getMonth()+1}-${dentroDeUnMes.getDate()}`
+      let hoy2 = new Date(Date.now())
+      this.Fecha = `${hoy2.getFullYear()}-${hoy2.getMonth()+1}-${hoy2.getDate()}`
     },
     StoreCuenta (Cuenta) {
       var store = this.$apollo.provider.defaultClient
@@ -265,8 +367,60 @@ export default {
           data: data
         })
       }
-
       this.Cuenta = Cuenta
+    },
+    StoreCompra (Compra) {
+      //console.log(Compra)
+      var store = this.$apollo.provider.defaultClient
+
+      try {
+        var data = store.readQuery({
+          query: COMPRAS,
+          variables: {
+            EscenarioId: Compra.EscenarioId,
+            Fecha: Compra.Fecha
+          }
+        })
+
+        var Existe = false
+
+        for (let i=0; i<data.Compras.length; i++) {
+          if (data.Compras[i].Id === Compra.Id) {
+            Existe = true
+            data.Compras[i] = Compra
+          }
+        }
+
+        (!Existe) ? data.Compras.push(Compra) : null;
+
+        store.writeQuery({
+          query: COMPRAS,
+          variables: {
+            EscenarioId: Compra.EscenarioId,
+            Fecha: Compra.Fecha
+          },
+          data: data
+        })
+
+        data.compras ? this.FiltrarHorarios(data.Compras) : null;
+
+      } catch (Err) {
+
+        var data = {Compras: []}
+
+        data.Compras.push(Compra)
+
+        store.writeQuery({
+          query: COMPRAS,
+          variables: {
+            EscenarioId: Compra.EscenarioId,
+            Fecha: Compra.Fecha
+          },
+          data: data
+        })
+
+        data.compras ? this.FiltrarHorarios(data.Compras) : null;
+      }
 
     },
     calcularPrecio () {
@@ -316,7 +470,7 @@ export default {
       }
 
       var Ahora = new Date(Date.now())
-      var Fecha = `${Ahora.getFullYear()}-${(Ahora.getMonth() + 1) < 10 ? '0' + (Ahora.getMonth() + 1) : Ahora.getMonth() + 1}-${Ahora.getDate()}`
+      var FechaHoy = `${Ahora.getFullYear()}-${(Ahora.getMonth() + 1) < 10 ? '0' + (Ahora.getMonth() + 1) : Ahora.getMonth() + 1}-${Ahora.getDate()}`
 
       var Hora = Ahora.getHours() > 12 ? Ahora.getHours() - 12 : Ahora.getHours();
       var AmPm = Ahora.getHours() >= 12 ? "pm" : "am";
@@ -331,8 +485,9 @@ export default {
         HoraFinal: this.horaFinal,
         Tiempo: this.tiempo,
         Precio: this.total*0.20,
-        Estado: "Completado",
-        Fecha: Fecha,
+        Estado: "Apartado",
+        Fecha: this.Fecha,
+        Expedicion: FechaHoy,
         Hora: Hora
       }
 
@@ -374,6 +529,7 @@ export default {
           Precio: Compra.Precio,
           Estado: Compra.Estado,
           Fecha: Compra.Fecha,
+          Expedicion: Compra.Expedicion,
           Hora: Compra.Hora
         },
         loadingKey: 'loading',
@@ -413,7 +569,7 @@ export default {
     reset () {
       this.over = false
       this.horaInicial = '8:00am'
-      this.horaFinal = '8:00am'
+      this.horaFinal = '9:00am'
       this.total = null
       this.tiempo = null
     }

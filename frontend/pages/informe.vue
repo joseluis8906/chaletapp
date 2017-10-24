@@ -130,7 +130,6 @@ export default {
       {text: 'Hora', value: 'Hora'}
     ],
     itemsCompra: [],
-
     months: [
       'Enero',
       'Febrero',
@@ -192,8 +191,12 @@ export default {
       var Obj = res.Obj
 
       switch (Method) {
-        case 'StoreUsuario': this.StoreUsuario(Obj)
-        case 'StoreCompra': this.StoreCompra(Obj)
+        case 'StoreUsuario':
+          this.StoreUsuario(Obj)
+          break;
+        case 'StoreCompra':
+          this.StoreCompra(Obj)
+          break;
       }
     }
   },
