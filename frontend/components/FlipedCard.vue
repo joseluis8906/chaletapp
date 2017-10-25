@@ -124,6 +124,7 @@ ul li
   position relative
   height 460px
   box-shadow 0px 0px 10px rgb(230,230,230)
+  margin-bottom 64px
 
 .front
   width 100%
