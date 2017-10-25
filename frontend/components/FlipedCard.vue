@@ -486,14 +486,16 @@ export default {
 
     },
     Recibo () {
-      if(this.StoreCompraReady && this.StoreCuentaReady){
-        this.StoreCompraReady = false
-        this.StoreCuentaReady = false
-        this.$store.commit('reports/changeVolver', '/apartar')
-        this.$router.push('/reporte/factura')
-      }else{
-        console.log('esperando store compra y store cuenta')
-      }
+      setTimeout(()=>{
+        if(this.StoreCompraReady && this.StoreCuentaReady){
+          this.StoreCompraReady = false
+          this.StoreCuentaReady = false
+          this.$store.commit('reports/changeVolver', '/apartar')
+          this.$router.push('/reporte/factura')
+        }else{
+          console.log('esperando store compra y store cuenta')
+        }
+      }, 3000);
     },
     Guardar () {
       this.aviso=false

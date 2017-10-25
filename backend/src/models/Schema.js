@@ -373,7 +373,7 @@ var Query = new GraphQLObjectType({
           Activo: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Escenario.findAll({where: args});
+          return Db.models.Escenario.findAll({where: args, order: [['Id', 'ASC']]});
         }
       },
       Cuentas: {
@@ -404,7 +404,7 @@ var Query = new GraphQLObjectType({
           Hora: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Compra.findAll({where: args});
+          return Db.models.Compra.findAll({where: args, order: [['Expedicion', 'ASC'], ['Hora', 'ASC']]});
         }
       }
     };

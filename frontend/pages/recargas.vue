@@ -57,12 +57,14 @@ v-layout( align-center justify-center )
             v-money(label="Saldo"
                     maskType="currency"
                     v-model="Saldo"
-                    readonly)
+                    readonly
+                    dark)
 
             v-money(label="Recarga"
                      maskType="currency"
                      :rules="[rules.required]"
-                     v-model="Recarga")
+                     v-model="Recarga"
+                     dark)
 
       v-card-actions
         v-spacer
@@ -230,10 +232,6 @@ export default {
         })
       }
 
-      setTimeout(() => {
-        this.$store.commit('reports/changeVolver', '/recargas')
-        this.$router.push('/reporte/recibo')
-      }, 4000)
 
     },
     StoreUsuario (Usuario) {
@@ -334,6 +332,12 @@ export default {
           this.$store.commit('notificaciones/changeIcon', 'done_all')
           this.$store.commit('notificaciones/changeMsg', 'Transacción Exitosa')
           this.$store.commit('notificaciones/changeState', 1)
+
+          setTimeout(() => {
+            this.$store.commit('reports/changeVolver', '/recargas')
+            this.$router.push('/reporte/recibo')
+          }, 3000)
+          
         }).catch(() => {
           this.$store.commit('notificaciones/changeContext', 'error')
           this.$store.commit('notificaciones/changeIcon', 'error_outline')
@@ -377,6 +381,12 @@ export default {
           this.$store.commit('notificaciones/changeIcon', 'done_all')
           this.$store.commit('notificaciones/changeMsg', 'Transacción Exitosa')
           this.$store.commit('notificaciones/changeState', 1)
+
+          setTimeout(() => {
+            this.$store.commit('reports/changeVolver', '/recargas')
+            this.$router.push('/reporte/recibo')
+          }, 3000)
+
         }).catch(() => {
           this.$store.commit('notificaciones/changeContext', 'error')
           this.$store.commit('notificaciones/changeIcon', 'error_outline')

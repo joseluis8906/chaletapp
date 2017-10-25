@@ -15,6 +15,20 @@ v-layout( align-center justify-center )
       h6(class="grey--text text--lighten-4 mb-0") {{ snackbar.text }}
       v-icon autorenew
 
+  v-snackbar( :timeout="$store.state.notificaciones.Timeout"
+              :success="$store.state.notificaciones.Context === 'success'"
+              :info="$store.state.notificaciones.Context === 'info'"
+              :warning="$store.state.notificaciones.Context === 'warning'"
+              :error="$store.state.notificaciones.Context === 'error'"
+              :primary="$store.state.notificaciones.Context === 'primary'"
+              :secondary="$store.state.notificaciones.Context === 'secondary'"
+              :multi-line="$store.state.notificaciones.Mode === 'multi-line'"
+              :vertical="$store.state.notificaciones.Mode === 'vertical'"
+              :top="true"
+              v-model="$store.state.notificaciones.State" )
+      h6(class="grey--text text--lighten-4 mb-0") {{ $store.state.notificaciones.Msg }}
+      v-icon {{ $store.state.notificaciones.Icon }}
+
   v-flex( xs12 mt-3 md8 lg6 )
     v-card
       v-layout(row wrap pt-3 light-blue)
@@ -247,9 +261,20 @@ export default {
         },
         loadingKey: 'loading',
         update: (store, { data: res }) => {
-          console.log(res.UpdateCompra)
+          //console.log(res.UpdateCompra)
           this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreCompra', Obj: res.UpdateCompra}))
         }
+      }).then(() => {
+        this.Consultar()
+        this.$store.commit('notificaciones/changeContext', 'success')
+        this.$store.commit('notificaciones/changeIcon', 'done_all')
+        this.$store.commit('notificaciones/changeMsg', 'Transacción Exitosa')
+        this.$store.commit('notificaciones/changeState', 1)
+      }).catch(() => {
+        this.$store.commit('notificaciones/changeContext', 'error')
+        this.$store.commit('notificaciones/changeIcon', 'error_outline')
+        this.$store.commit('notificaciones/changeMsg', 'Error en Transacción')
+        this.$store.commit('notificaciones/changeState', 1)
       })
 
     },
@@ -339,7 +364,7 @@ export default {
           data: data
         })
       }
-      this.Consultar()
+
     },
     StoreUsuario (Usuario) {
       var store = this.$apollo.provider.defaultClient
