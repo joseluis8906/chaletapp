@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-layout(column justify-center align-center pt-0 pb-0)
+  v-layout(row wrap justify-center align-center pt-0 pb-0)
     v-snackbar( :timeout="$store.state.notificaciones.Timeout"
                 :success="$store.state.notificaciones.Context === 'success'"
                 :info="$store.state.notificaciones.Context === 'info'"
@@ -14,11 +14,11 @@
         h6(class="grey--text text--lighten-4 mb-0") {{ $store.state.notificaciones.Msg }}
         v-icon {{ $store.state.notificaciones.Icon }}
 
-    v-flex(xs12 sm9 md6 )
+    v-flex(xs12 sm6 md2 )
       v-card(class="mt-5 pa-3")
         v-card-text
           div(class="text-xs-center")
-            img(src="/football-player.svg" alt="logo.gis")
+            img(src="/football-player.svg" alt="logo")
 
           h6(class="pt-4 grey--text text--lighten-4") Iniciar Sessión
 
