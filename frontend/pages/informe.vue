@@ -203,6 +203,7 @@ export default {
   methods: {
     Generar () {
       this.$store.commit('informe/changeFecha', this.Fecha)
+      this.$store.commit('reports/changeVolver', '/informe')
       this.$router.push('/reporte/informe')
     },
     /*PubMsg () {

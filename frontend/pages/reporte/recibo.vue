@@ -80,7 +80,7 @@ export default {
   },
   layout: 'report',
   fetch ({ store }) {
-    store.commit('reports/changeTitle', 'Factura')
+    store.commit('reports/changeTitle', 'Recibo de Recarga')
   }
 }
 </script>

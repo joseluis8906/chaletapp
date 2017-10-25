@@ -492,7 +492,7 @@ export default {
         Hora: Hora
       }
 
-      this.$store.commit('compra/changeExpedicion', Compra.Fecha)
+      this.$store.commit('compra/changeExpedicion', Compra.Expedicion)
       this.$store.commit('compra/changeCedula', this.$store.state.security.UserName)
       this.$store.commit('compra/changeApellido', this.ApellidoCliente)
       this.$store.commit('compra/changeNombre', this.NombreCliente)
@@ -566,6 +566,7 @@ export default {
         }
       })
 
+      this.$store.commit('reports/changeVolver', '/apartar')
       this.$router.push('/reporte/factura')
 
     },

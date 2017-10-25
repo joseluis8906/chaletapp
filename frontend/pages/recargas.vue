@@ -26,11 +26,12 @@ v-layout( align-center justify-center )
         v-layout(row wrap)
           v-flex(xs12)
             v-select(v-bind:items="ItemsUsuario"
-                     v-model="UsuarioId"
+                     v-model="Usuario"
                      label="Usuario"
                      item-text="Buscar"
                      item-value="Id"
                      autocomplete
+                     return-object
                      dark)
               template(slot="selection" scope="data")
                 v-list-tile-content(style="font-size: 12pt")
@@ -82,7 +83,12 @@ export default {
     },
     ItemsUsuario: [],
     Id: null,
-    UsuarioId: null,
+    Usuario:{
+      Id: null,
+      Cedula: null,
+      Nombre: null,
+      Apellido: null
+    },
     Saldo: null,
     Recarga: null,
     loading: 0
@@ -113,7 +119,7 @@ export default {
       loadingKey: 'loading',
       variables () {
         return {
-          UsuarioId: this.UsuarioId
+          UsuarioId: this.Usuario.Id
         }
       },
       update (data) {
@@ -190,6 +196,9 @@ export default {
         })
       }
 
+      this.$store.commit('reports/changeVolver', '/recargas')
+      this.$router.push('/reporte/recibo')
+
     },
     StoreUsuario (Usuario) {
       var store = this.$apollo.provider.defaultClient
@@ -252,14 +261,25 @@ export default {
       }
     },
     Guardar () {
+      var Ahora = new Date(Date.now())
+      var FechaHoy = `${Ahora.getFullYear()}-${(Ahora.getMonth() + 1) < 10 ? '0' + (Ahora.getMonth() + 1) : Ahora.getMonth() + 1}-${Ahora.getDate()}`
+
       if(this.Id === null){
 
         let NuevoSaldo = this.Saldo ? this.Saldo + this.Recarga : this.Recarga
 
         const Cuenta = {
-          UsuarioId: this.UsuarioId,
+          UsuarioId: this.Usuario.Id,
           Saldo: NuevoSaldo
         };
+
+        this.$store.commit('recarga/changeExpedicion', FechaHoy)
+        this.$store.commit('recarga/changeCedula', this.Usuario.Cedula)
+        this.$store.commit('recarga/changeApellido', this.Usuario.Apellido)
+        this.$store.commit('recarga/changeNombre', this.Usuario.Nombre)
+        this.$store.commit('recarga/changeSaldo', this.Saldo)
+        this.$store.commit('recarga/changeRecarga', this.Recarga)
+        this.$store.commit('recarga/changeTotal', NuevoSaldo)
 
         this.Reset()
 
@@ -280,11 +300,17 @@ export default {
 
         const Cuenta = {
           Id: this.Id,
-          UsuarioId: this.UsuarioId,
+          UsuarioId: this.Usuario.Id,
           Saldo: NuevoSaldo
         };
 
-        console.log(Cuenta)
+        this.$store.commit('recarga/changeExpedicion', FechaHoy)
+        this.$store.commit('recarga/changeCedula', this.Usuario.Cedula)
+        this.$store.commit('recarga/changeApellido', this.Usuario.Apellido)
+        this.$store.commit('recarga/changeNombre', this.Usuario.Nombre)
+        this.$store.commit('recarga/changeSaldo', this.Saldo)
+        this.$store.commit('recarga/changeRecarga', this.Recarga)
+        this.$store.commit('recarga/changeTotal', NuevoSaldo)
 
         this.Reset()
 
@@ -300,11 +326,18 @@ export default {
             this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreCuenta', Obj: res.UpdateCuenta}))
           }
         })
+
       }
+
     },
     Reset () {
       this.Id = null
-      this.UsuarioId = null
+      this.Usuario = {
+        Id: null,
+        Nombre: null,
+        Apellido: null,
+        Cedula: null
+      }
       this.Saldo = null
       this.Recarga = null
     }

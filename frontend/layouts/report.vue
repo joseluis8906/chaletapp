@@ -2,7 +2,12 @@
 doctype html
 v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
   v-toolbar
+    v-btn(flat @click.native="volver")
+      v-icon settings_backup_restore
     v-toolbar-title {{ $store.state.reports.title }}
+    v-btn(flat @click.native="imprimir")
+      v-icon print
+
   main
     v-container(fluid ml-0 mt-0 mr-0 mb-0 pl-0 pt-3 pr-0 pb-3 class="blue-grey lighten-4")
       nuxt
@@ -22,7 +27,16 @@ export default {
     footer: {
       fixed: true
     }
-  })
+  }),
+  methods: {
+    imprimir () {
+      window.print()
+    },
+    volver () {
+      console.log(this.$store.state.reports)
+      this.$router.push(this.$store.state.reports.volver)
+    }
+  }
 }
 </script>
 
