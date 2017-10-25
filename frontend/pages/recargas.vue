@@ -232,7 +232,6 @@ export default {
         })
       }
 
-
     },
     StoreUsuario (Usuario) {
       var store = this.$apollo.provider.defaultClient
@@ -337,7 +336,7 @@ export default {
             this.$store.commit('reports/changeVolver', '/recargas')
             this.$router.push('/reporte/recibo')
           }, 3000)
-          
+
         }).catch(() => {
           this.$store.commit('notificaciones/changeContext', 'error')
           this.$store.commit('notificaciones/changeIcon', 'error_outline')
