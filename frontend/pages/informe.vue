@@ -95,7 +95,7 @@ v-layout( align-center justify-center )
                 td(class="text-xs-center" :style="{minWidth: ''+(props.item.Escenario.length*10)+'px'}") {{ props.item.Escenario }}
                 td(class="text-xs-center") {{ props.item.HoraInicial }}
                 td(class="text-xs-center") {{ props.item.HoraFinal }}
-                td(class="text-xs-center") {{ props.item.Tiempo }}
+                td(class="text-xs-center") {{ props.item.Tiempo }} hr
                 td(class="text-xs-center") {{ props.item.Precio }}
                 td(class="text-xs-center" :style="{minWidth: ''+(props.item.Estado.length*10)+'px'}") {{ props.item.Estado }}
                 td(class="text-xs-center" :style="{minWidth: ''+(props.item.Fecha.length*12)+'px'}") {{ props.item.Fecha }}
@@ -137,7 +137,7 @@ export default {
       {text: 'Escenario', value: 'Escenario'},
       {text: 'Hora Inicial', value: 'HoraInicial'},
       {text: 'Hora Final', value: 'HoraFinal'},
-      {text: 'Tiempo (hr)', value: 'Tiempo'},
+      {text: 'Tiempo', value: 'Tiempo'},
       {text: 'Precio', value: 'Precio'},
       {text: 'Estado', value: 'Estado'},
       {text: 'Fecha', value: 'Fecha'},
