@@ -52,7 +52,7 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
           { icon: 'person', text: 'Usuario', to: '/usuario', Roles: ["Administrador"] },
           //{ icon: 'group', text: 'Grupo', to: '/grupo', Roles: ["Administrador"] },
           { icon: 'account_balance', text: 'Escenario', to: '/escenario', Roles: ["Administrador"] },
-          { icon: 'attach_money', text: 'Recargas', to: '/recargas', Roles: ["Empleado"] },
+          { icon: 'attach_money', text: 'Recargas', to: '/recargas', Roles: ["Administrador", "Empleado"] },
           { icon: 'assignment', text: 'Apartar', to: '/apartar', Roles: ["Cliente"] },
           { icon: 'description', text: 'Informe', to: '/informe', Roles: ["Administrador", "Empleado"] }
         ],
