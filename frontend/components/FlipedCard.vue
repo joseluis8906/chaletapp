@@ -484,7 +484,8 @@ export default {
         HoraInicial: this.horaInicial,
         HoraFinal: this.horaFinal,
         Tiempo: this.tiempo,
-        Precio: this.total*0.20,
+        Abono: this.total*0.20,
+        Saldo: this.total*0.80,
         Estado: "Apartado",
         Fecha: this.Fecha,
         Expedicion: FechaHoy,
@@ -500,7 +501,8 @@ export default {
       this.$store.commit('compra/changeHoraInicial', Compra.HoraInicial)
       this.$store.commit('compra/changeHoraFinal', Compra.HoraFinal)
       this.$store.commit('compra/changeTiempo', Compra.Tiempo)
-      this.$store.commit('compra/changePrecio', Compra.Precio)
+      this.$store.commit('compra/changeAbono', Compra.Abono)
+      this.$store.commit('compra/changeSaldo', Compra.Saldo)
 
 
       let NuevoSaldo = this.Cuenta.Saldo - this.total*0.20
@@ -526,7 +528,8 @@ export default {
           HoraInicial: Compra.HoraInicial,
           HoraFinal: Compra.HoraFinal,
           Tiempo: Compra.Tiempo,
-          Precio: Compra.Precio,
+          Abono: Compra.Abono,
+          Saldo: Compra.Saldo,
           Estado: Compra.Estado,
           Fecha: Compra.Fecha,
           Expedicion: Compra.Expedicion,

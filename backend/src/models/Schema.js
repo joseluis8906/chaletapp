@@ -262,10 +262,16 @@ var Compra = new GraphQLObjectType({
           return Compra.Tiempo;
         }
       },
-      Precio: {
+      Abono: {
         type: GraphQLFloat,
         resolve(Compra) {
-          return Compra.Precio;
+          return Compra.Abono;
+        }
+      },
+      Saldo: {
+        type: GraphQLFloat,
+        resolve(Compra) {
+          return Compra.Saldo;
         }
       },
       Estado: {
@@ -390,11 +396,12 @@ var Query = new GraphQLObjectType({
           HoraInicial: {type: GraphQLString},
           HoraFinal: {type: GraphQLString},
           Tiempo: {type: GraphQLInt},
-          Precio: {type: GraphQLFloat},
+          Abono: {type: GraphQLFloat},
           Estado: {type: GraphQLString},
           Fecha: {type: GraphQLString},
           Expedicion: {type: GraphQLString},
-          Hora: {type: GraphQLString}
+          Hora: {type: GraphQLString},
+          Saldo: {type: GraphQLFloat}
         },
         resolve(root, args) {
           return Db.models.Compra.findAll({where: args});
@@ -650,11 +657,12 @@ var Mutation = new GraphQLObjectType({
           HoraInicial: {type: GraphQLString},
           HoraFinal: {type: GraphQLString},
           Tiempo: {type: GraphQLInt},
-          Precio: {type: GraphQLFloat},
+          Abono: {type: GraphQLFloat},
           Estado: {type: GraphQLString},
           Fecha: {type: GraphQLString},
           Expedicion: {type: GraphQLString},
-          Hora: {type: GraphQLString}
+          Hora: {type: GraphQLString},
+          Saldo: {type: GraphQLFloat}
         },
         resolve(_, args) {
           return Db.models.Compra.create({
@@ -663,11 +671,12 @@ var Mutation = new GraphQLObjectType({
             HoraInicial: args.HoraInicial,
             HoraFinal: args.HoraFinal,
             Tiempo: args.Tiempo,
-            Precio: args.Precio,
+            Abono: args.Abono,
             Estado: args.Estado,
             Fecha: args.Fecha,
             Expedicion: args.Expedicion,
-            Hora: args.Hora
+            Hora: args.Hora,
+            Saldo: args.Saldo
           });
         }
       },
@@ -680,11 +689,12 @@ var Mutation = new GraphQLObjectType({
           HoraInicial: {type: GraphQLString},
           HoraFinal: {type: GraphQLString},
           Tiempo: {type: GraphQLInt},
-          Precio: {type: GraphQLFloat},
+          Abono: {type: GraphQLFloat},
           Estado: {type: GraphQLString},
           Fecha: {type: GraphQLString},
           Expedicion: {type: GraphQLString},
-          Hora: {type: GraphQLString}
+          Hora: {type: GraphQLString},
+          Saldo: {type: GraphQLFloat}
         },
         resolve(_, args) {
           return Db.models.Compra.findOne({
@@ -701,6 +711,7 @@ var Mutation = new GraphQLObjectType({
             args.Fecha ? R.Fecha = args.Fecha : null
             args.Expedicion ? R.Expedicion = args.Expedicion : null
             args.Hora ? R.Hora = args.Hora : null
+            args.Saldo ? R.Saldo = args.Saldo : null
             R.save()
             return R;
           });

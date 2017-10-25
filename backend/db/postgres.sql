@@ -61,8 +61,10 @@ CREATE TABLE IF NOT EXISTS "Compra" (
   "HoraInicial" TIME,
   "HoraFinal" TIME,
   "Tiempo" INTEGER,
-  "Precio" DECIMAL,
+  "Abono" DECIMAL,
   "Estado" TEXT,
   "Fecha" DATE,
-  "Hora" TIME
+  "Hora" TIME,
+  "Expedicion" DATE,
+  "Saldo" DECIMAL
 );

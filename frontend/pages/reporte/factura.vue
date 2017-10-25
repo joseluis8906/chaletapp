@@ -46,8 +46,12 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           td(class="text-xs-right") {{ Tiempo }} hr(s)
 
         tr
-          td Precio
-          td(class="text-xs-right") {{ Precio | currency('$', 0) }}
+          td Abono
+          td(class="text-xs-right") {{ Abono | currency('$', 0) }}
+
+        tr
+          td Saldo
+          td(class="text-xs-right") {{ Saldo | currency('$', 0) }}
 
 
 </template>
@@ -92,8 +96,11 @@ export default {
     Tiempo () {
       return this.$store.state.compra.Tiempo
     },
-    Precio () {
-      return this.$store.state.compra.Precio
+    Abono () {
+      return this.$store.state.compra.Abono
+    },
+    Saldo () {
+      return this.$store.state.compra.Saldo
     },
     Fecha () {
       return this.$store.state.compra.Fecha

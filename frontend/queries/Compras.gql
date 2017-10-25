@@ -5,11 +5,12 @@ query Compras (
   $HoraInicial: String,
   $HoraFinal: String,
   $Tiempo: Int,
-  $Precio: Float,
+  $Abono: Float,
+  $Saldo: Float,
   $Estado: String,
   $Fecha: String,
   $Expedicion: String,
-  $Hora: String,
+  $Hora: String
 ) {
   Compras (
     Id: $Id,
@@ -18,7 +19,8 @@ query Compras (
     HoraInicial: $HoraInicial,
     HoraFinal: $HoraFinal,
     Tiempo: $Tiempo,
-    Precio: $Precio,
+    Abono: $Abono,
+    Saldo: $Saldo,
     Estado: $Estado,
     Fecha: $Fecha,
     Expedicion: $Expedicion,
@@ -30,7 +32,8 @@ query Compras (
     HoraInicial
     HoraFinal
     Tiempo
-    Precio
+    Abono
+    Saldo
     Estado
     Fecha
     Expedicion

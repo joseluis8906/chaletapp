@@ -8,7 +8,8 @@ export const state = {
   HoraInicial: null,
   HoraFinal: null,
   Tiempo: null,
-  Precio: null
+  Abono: null,
+  Saldo: null
 }
 
 export const mutations = {
@@ -39,7 +40,10 @@ export const mutations = {
   changeTiempo (state, Tiempo) {
     state.Tiempo = Tiempo
   },
-  changePrecio (state, Precio) {
-    state.Precio = Precio
+  changeAbono (state, Abono) {
+    state.Abono = Abono
+  },
+  changeSaldo (state, Saldo) {
+    state.Saldo = Saldo
   },
 }

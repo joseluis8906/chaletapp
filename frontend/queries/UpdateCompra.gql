@@ -5,11 +5,12 @@ mutation UpdateCompra (
   $HoraInicial: String,
   $HoraFinal: String,
   $Tiempo: Int,
-  $Precio: Float,
+  $Abono: Float,
   $Estado: String,
   $Fecha: String,
   $Expedicion: String,
   $Hora: String,
+  $Saldo: Float
 ) {
   UpdateCompra (
     Id: $Id,
@@ -18,11 +19,12 @@ mutation UpdateCompra (
     HoraInicial: $HoraInicial,
     HoraFinal: $HoraFinal,
     Tiempo: $Tiempo,
-    Precio: $Precio,
+    Abono: $Abono,
     Estado: $Estado,
     Fecha: $Fecha,
     Expedicion: $Expedicion,
-    Hora: $Hora
+    Hora: $Hora,
+    Saldo: $Saldo
   ) {
     Id
     UsuarioId
@@ -30,11 +32,12 @@ mutation UpdateCompra (
     HoraInicial
     HoraFinal
     Tiempo
-    Precio
+    Abono
     Estado
     Fecha
     Expedicion
     Hora
+    Saldo
     Usuario {
       Id
       Nombre
