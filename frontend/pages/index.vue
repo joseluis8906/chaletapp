@@ -2,14 +2,6 @@
 v-container(fluid style="max-width:1024px")
   v-layout(row wrap)
     v-flex(xs12 blue style="min-height: 320px")
-      v-container(pa-1)
-        v-layout(row)
-        v-layout(row)
-          v-flex(xs12 md9)
-
-          v-flex(xs12 md3)
-            h5(class="title") Los Mejores Escenarios
-
 
   v-layout(row wrap mt-2)
     v-flex(xs12 md8 black style="min-height: 256px") negro izquierdo
