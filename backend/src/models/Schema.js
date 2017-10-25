@@ -397,11 +397,11 @@ var Query = new GraphQLObjectType({
           HoraFinal: {type: GraphQLString},
           Tiempo: {type: GraphQLInt},
           Abono: {type: GraphQLFloat},
+          Saldo: {type: GraphQLFloat},
           Estado: {type: GraphQLString},
           Fecha: {type: GraphQLString},
           Expedicion: {type: GraphQLString},
-          Hora: {type: GraphQLString},
-          Saldo: {type: GraphQLFloat}
+          Hora: {type: GraphQLString}
         },
         resolve(root, args) {
           return Db.models.Compra.findAll({where: args});
@@ -466,15 +466,15 @@ var Mutation = new GraphQLObjectType({
           return Db.models.Usuario.findOne({
             where: {Id: args.Id}
           }).then( R => {
-            args.Password ? R.Password = args.Password : null
-            args.Cedula ? R.Cedula = args.Cedula : null
-            args.Nombre ? R.Nombre = args.Nombre : null
-            args.Apellido ? R.Apellido = args.Apellido : null
-            args.Edad? R.Edad = args.Edad : null
-            args.Telefono ? R.Telefono = args.Telefono : null
-            args.Email ? R.Email = args.Email : null
-            args.Direccion ? R.Direccion = args.Direccion : null
-            args.Activo ? R.Activo = args.Activo : null
+            args.Password !== undefined ? R.Password = args.Password : R.Password
+            args.Cedula !== undefined ? R.Cedula = args.Cedula : R.Cedula
+            args.Nombre !== undefined ? R.Nombre = args.Nombre : R.Nombre
+            args.Apellido !== undefined ? R.Apellido = args.Apellido : R.Apellido
+            args.Edad !== undefined ? R.Edad = args.Edad : R.Edad
+            args.Telefono !== undefined ? R.Telefono = args.Telefono : R.Telefono
+            args.Email !== undefined ? R.Email = args.Email : R.Email
+            args.Direccion !== undefined ? R.Direccion = args.Direccion : R.Direccion
+            args.Activo !== undefined ? R.Activo = args.Activo : R.Activo
             R.save()
             return R
           });
@@ -501,7 +501,7 @@ var Mutation = new GraphQLObjectType({
           return Db.models.Grupo.findOne({
             where: {Id: args.Id}
           }).then (R => {
-            args.Nombre ? R.Nombre = args.Nombre : null
+            args.Nombre !== undefined ? R.Nombre = args.Nombre : R.Nombre
             R.save();
             return R;
           });
@@ -605,15 +605,15 @@ var Mutation = new GraphQLObjectType({
           return Db.models.Escenario.findOne({
             where: {Id: args.Id}
           }).then(R => {
-            args.Nombre ? R.Nombre = args.Nombre : null
-            args.Imagen ? R.Imagen = args.Imagen : null
-            args.Esp1 ? R.Esp1 = args.Esp1 : null
-            args.Esp2 ? R.Esp2 = args.Esp2 : null
+            args.Nombre !== undefined ? R.Nombre = args.Nombre : R.Nombre
+            args.Imagen !== undefined ? R.Imagen = args.Imagen : R.Imagen
+            args.Esp1 !== undefined ? R.Esp1 = args.Esp1 : R.Esp1
+            args.Esp2 !== undefined ? R.Esp2 = args.Esp2 : R.Esp2
             //R.Esp3 = args.Esp3
-            args.PrecioDiurno ? R.PrecioDiurno = args.PrecioDiurno : null
-            args.PrecioNocturno ? R.PrecioNocturno = args.PrecioNocturno : null
-            args.Likes ? R.Likes = args.Likes : null
-            args.Activo ? R.Activo = args.Activo : null
+            args.PrecioDiurno !== undefined ? R.PrecioDiurno = args.PrecioDiurno : R.PrecioDiurno
+            args.PrecioNocturno !== undefined ? R.PrecioNocturno = args.PrecioNocturno : R.PrecioNocturno
+            args.Likes !== undefined ? R.Likes = args.Likes : R.Likes
+            args.Activo !== undefined ? R.Activo = args.Activo : R.Activo
             R.save()
             return R;
           });
@@ -643,7 +643,7 @@ var Mutation = new GraphQLObjectType({
           return Db.models.Cuenta.findOne({
             where: {UsuarioId: args.UsuarioId}
           }).then(R => {
-            args.Saldo ? R.Saldo = args.Saldo : null
+            args.Saldo !== undefined ? R.Saldo = args.Saldo : R.Saldo
             R.save()
             return R;
           });
@@ -658,11 +658,11 @@ var Mutation = new GraphQLObjectType({
           HoraFinal: {type: GraphQLString},
           Tiempo: {type: GraphQLInt},
           Abono: {type: GraphQLFloat},
+          Saldo: {type: GraphQLFloat},
           Estado: {type: GraphQLString},
           Fecha: {type: GraphQLString},
           Expedicion: {type: GraphQLString},
-          Hora: {type: GraphQLString},
-          Saldo: {type: GraphQLFloat}
+          Hora: {type: GraphQLString}
         },
         resolve(_, args) {
           return Db.models.Compra.create({
@@ -672,11 +672,11 @@ var Mutation = new GraphQLObjectType({
             HoraFinal: args.HoraFinal,
             Tiempo: args.Tiempo,
             Abono: args.Abono,
+            Saldo: args.Saldo,
             Estado: args.Estado,
             Fecha: args.Fecha,
             Expedicion: args.Expedicion,
             Hora: args.Hora,
-            Saldo: args.Saldo
           });
         }
       },
@@ -690,28 +690,28 @@ var Mutation = new GraphQLObjectType({
           HoraFinal: {type: GraphQLString},
           Tiempo: {type: GraphQLInt},
           Abono: {type: GraphQLFloat},
+          Saldo: {type: GraphQLFloat},
           Estado: {type: GraphQLString},
           Fecha: {type: GraphQLString},
           Expedicion: {type: GraphQLString},
-          Hora: {type: GraphQLString},
-          Saldo: {type: GraphQLFloat}
+          Hora: {type: GraphQLString}
         },
         resolve(_, args) {
           return Db.models.Compra.findOne({
             where: {Id: args.Id}
           }).then(R => {
-            args.UsuarioId ? R.UsuarioId = args.UsuarioId : null
-            args.EscenarioId ? R.EscenarioId = args.EscenarioId : null
-            args.HoraInicial ? R.HoraInicial = args.HoraInicial : null
-            args.HoraFinal ? R.HoraFinal = args.HoraFinal : null
-            args.Tiempo ? R.Tiempo = args.Tiempo : null
-            args.Precio ? R.Precio = args.Precio : null
-            args.Estado ? R.Estado = args.Estado : null
-            args.Activo ? R.Activo = args.Activo : null
-            args.Fecha ? R.Fecha = args.Fecha : null
-            args.Expedicion ? R.Expedicion = args.Expedicion : null
-            args.Hora ? R.Hora = args.Hora : null
-            args.Saldo ? R.Saldo = args.Saldo : null
+            args.UsuarioId !== undefined ? R.UsuarioId = args.UsuarioId : R.UsuarioId
+            args.EscenarioId !== undefined ? R.EscenarioId = args.EscenarioId : R.EscenarioId
+            args.HoraInicial !== undefined ? R.HoraInicial = args.HoraInicial : R.HoraInicial
+            args.HoraFinal !== undefined ? R.HoraFinal = args.HoraFinal : R.HoraFinal
+            args.Tiempo !== undefined ? R.Tiempo = args.Tiempo : R.Tiempo
+            args.Abono !== undefined ? R.Abono = args.Abono : R.Abono
+            args.Saldo !== undefined ? R.Saldo = args.Saldo : R.Saldo
+            args.Estado !== undefined ? R.Estado = args.Estado : R.Estado
+            args.Activo !== undefined ? R.Activo = args.Activo : R.Activo
+            args.Fecha !== undefined ? R.Fecha = args.Fecha : R.Fecha
+            args.Expedicion !== undefined ? R.Expedicion = args.Expedicion : R.Expedicion
+            args.Hora !== undefined ? R.Hora = args.Hora : R.Hora
             R.save()
             return R;
           });

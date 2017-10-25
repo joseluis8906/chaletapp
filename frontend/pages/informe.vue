@@ -90,16 +90,20 @@ v-layout( align-center justify-center )
                   class="text-xs-center") {{ header.text }}
 
               template(slot="items" scope="props")
-                td(class="text-xs-center" :style="{minWidth: ''+(props.item.Nombre.length*10)+'px'}") {{ props.item.Nombre }}
-                td(class="text-xs-center" :style="{minWidth: ''+(props.item.Documento.length*10)+'px'}") {{ props.item.Documento }}
-                td(class="text-xs-center" :style="{minWidth: ''+(props.item.Escenario.length*10)+'px'}") {{ props.item.Escenario }}
+                td(class="text-xs-center" :style="{minWidth: ''+(props.item.Nombre.length*12)+'px'}") {{ props.item.Nombre }}
+                td(class="text-xs-center" :style="{minWidth: ''+(props.item.Documento.length*12)+'px'}") {{ props.item.Documento }}
+                td(class="text-xs-center" :style="{minWidth: ''+(props.item.Escenario.length*12)+'px'}") {{ props.item.Escenario }}
                 td(class="text-xs-center") {{ props.item.HoraInicial }}
                 td(class="text-xs-center") {{ props.item.HoraFinal }}
                 td(class="text-xs-center") {{ props.item.Tiempo }} hr
-                td(class="text-xs-center") {{ props.item.Precio }}
+                td(class="text-xs-center" :style="{minWidth: ''+(props.item.Abono.length*12)+'px'}") {{ props.item.Abono | currency("$", 0) }}
+                td(class="text-xs-center" :style="{minWidth: ''+(props.item.Saldo.length*12)+'px'}") {{ props.item.Saldo | currency("$", 0) }}
                 td(class="text-xs-center" :style="{minWidth: ''+(props.item.Estado.length*10)+'px'}") {{ props.item.Estado }}
                 td(class="text-xs-center" :style="{minWidth: ''+(props.item.Fecha.length*12)+'px'}") {{ props.item.Fecha }}
                 td(class="text-xs-center") {{ props.item.Hora }}
+                td(class="text-xs-center")
+                  v-btn(fab small class="teal" dark @click.native="Pagar(props.item)" :disabled="props.item.Saldo === 0")
+                    v-icon check
 
       v-card-actions
         v-spacer
@@ -119,6 +123,7 @@ h5.bold
 <script>
 import USUARIOS from '~/queries/Usuarios.gql'
 import COMPRAS from '~/queries/Compras.gql'
+import UPDATE_COMPRA from '~/queries/UpdateCompra.gql'
 
 export default {
   data: () => ({
@@ -138,10 +143,12 @@ export default {
       {text: 'Hora Inicial', value: 'HoraInicial'},
       {text: 'Hora Final', value: 'HoraFinal'},
       {text: 'Tiempo', value: 'Tiempo'},
-      {text: 'Precio', value: 'Precio'},
+      {text: 'Abono', value: 'Abono'},
+      {text: 'Saldo', value: 'Saldo'},
       {text: 'Estado', value: 'Estado'},
       {text: 'Fecha', value: 'Fecha'},
-      {text: 'Hora', value: 'Hora'}
+      {text: 'Hora', value: 'Hora'},
+      {text: 'Pago', value: 'Pago'},
     ],
     itemsCompra: [],
     months: [
@@ -222,6 +229,30 @@ export default {
     }
   },
   methods: {
+    Pagar (item) {
+      const Compra = {
+        Id: item.Id,
+        Abono: (item.Abono+item.Saldo),
+        Saldo: 0,
+        Estado: "Pagado"
+      }
+
+      this.$apollo.mutate ({
+        mutation: UPDATE_COMPRA,
+        variables: {
+          Id: Compra.Id,
+          Abono: Compra.Abono,
+          Saldo: Compra.Saldo,
+          Estado: "Pagado"
+        },
+        loadingKey: 'loading',
+        update: (store, { data: res }) => {
+          console.log(res.UpdateCompra)
+          this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreCompra', Obj: res.UpdateCompra}))
+        }
+      })
+
+    },
     Consultar() {
       let variables = {}
       if (this.Tipo==='Por Fecha'){
@@ -367,13 +398,15 @@ export default {
       this.itemsCompra = []
       for (let i=0; i<Compras.length; i++){
         var tmp = {
+          Id: Compras[i].Id,
           Nombre: `${Compras[i].Usuario.Nombre} ${Compras[i].Usuario.Apellido}`,
           Documento: Compras[i].Usuario.Cedula,
           Escenario: Compras[i].Escenario.Nombre,
           HoraInicial: Compras[i].HoraInicial,
           HoraFinal: Compras[i].HoraFinal,
           Tiempo: Compras[i].Tiempo,
-          Precio: Compras[i].Precio,
+          Abono: Compras[i].Abono,
+          Saldo: Compras[i].Saldo,
           Estado: Compras[i].Estado,
           Fecha: Compras[i].Fecha,
           Hora: Compras[i].Hora

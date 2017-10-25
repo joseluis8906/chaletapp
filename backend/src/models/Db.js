@@ -115,11 +115,11 @@ const Compra = Db.define('Compra', {
   HoraFinal: Sequelize.TIME,
   Tiempo: Sequelize.INTEGER,
   Abono: Sequelize.DECIMAL,
+  Saldo: Sequelize.DECIMAL,
   Estado: Sequelize.STRING,
   Fecha: Sequelize.DATEONLY,
   Expedicion: Sequelize.DATEONLY,
   Hora: Sequelize.TIME,
-  Saldo: Sequelize.DECIMAL
 },
 {
   timestamps: false,
