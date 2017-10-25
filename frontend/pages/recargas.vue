@@ -15,6 +15,20 @@ v-layout( align-center justify-center )
       h6(class="grey--text text--lighten-4 mb-0") {{ snackbar.text }}
       v-icon autorenew
 
+  v-snackbar( :timeout="$store.state.notificaciones.Timeout"
+              :success="$store.state.notificaciones.Context === 'success'"
+              :info="$store.state.notificaciones.Context === 'info'"
+              :warning="$store.state.notificaciones.Context === 'warning'"
+              :error="$store.state.notificaciones.Context === 'error'"
+              :primary="$store.state.notificaciones.Context === 'primary'"
+              :secondary="$store.state.notificaciones.Context === 'secondary'"
+              :multi-line="$store.state.notificaciones.Mode === 'multi-line'"
+              :vertical="$store.state.notificaciones.Mode === 'vertical'"
+              :top="true"
+              v-model="$store.state.notificaciones.State" )
+      h6(class="grey--text text--lighten-4 mb-0") {{ $store.state.notificaciones.Msg }}
+      v-icon {{ $store.state.notificaciones.Icon }}
+
   v-flex( xs12 mt-3 md8 lg6 )
     v-card
       v-layout(row wrap pt-3 light-blue)
@@ -29,7 +43,7 @@ v-layout( align-center justify-center )
                      v-model="Usuario"
                      label="Usuario"
                      item-text="Buscar"
-                     item-value="Id"
+                     :rules="[rules.required]"
                      autocomplete
                      return-object
                      dark)
@@ -47,12 +61,13 @@ v-layout( align-center justify-center )
 
             v-money(label="Recarga"
                      maskType="currency"
+                     :rules="[rules.required]"
                      v-model="Recarga")
 
       v-card-actions
         v-spacer
         v-btn( dark @click.native="Reset" ) Cancelar
-        v-btn( dark primary @click.native="Guardar" ) Guardar
+        v-btn( dark primary @click.native="Guardar" :disabled="!Completo") Guardar
 
 </template>
 
@@ -76,22 +91,25 @@ import axios from 'axios'
 export default {
   data: () => ({
     snackbar: {
-      context: 'secondary',
+      context: 'primary',
       mode: '',
-      timeout: 6000,
+      timeout: 3000,
       text: 'Cargando'
     },
     ItemsUsuario: [],
     Id: null,
-    Usuario:{
-      Id: null,
-      Cedula: null,
-      Nombre: null,
-      Apellido: null
-    },
+    Usuario:null,
     Saldo: null,
     Recarga: null,
-    loading: 0
+    loading: 0,
+    Completo: false,
+    rules: {
+      required: (value) => !!value || 'Obligatorio.',
+      email: (value) => {
+        const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        return pattern.test(value) || 'Correo Inválido.'
+      }
+    }
   }),
   beforeMount () {
     if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
@@ -119,7 +137,7 @@ export default {
       loadingKey: 'loading',
       variables () {
         return {
-          UsuarioId: this.Usuario.Id
+          UsuarioId: this.Usuario ? this.Usuario.Id : null
         }
       },
       update (data) {
@@ -128,6 +146,12 @@ export default {
     }
   },
   watch: {
+    Usuario () {
+      this.Validar()
+    },
+    Recarga () {
+      this.Validar()
+    }
   },
   mqtt: {
     'chaletapp/apollo/mutation': function (val) {
@@ -147,6 +171,16 @@ export default {
     }
   },
   methods: {
+    Validar () {
+      if(
+        this.Usuario !== null &&
+        this.Recarga !== null && this.Recarga !== '' && this.Recarga >= 5000
+      ){
+        this.Completo = true
+      }else {
+        this.Completo = false
+      }
+    },
     /*PubMsg () {
       //console.log('enviando: ' + this.Msg)
       this.$mqtt.publish('chaletapp/apollo/mutation', this.Msg)
@@ -196,8 +230,10 @@ export default {
         })
       }
 
-      this.$store.commit('reports/changeVolver', '/recargas')
-      this.$router.push('/reporte/recibo')
+      setTimeout(() => {
+        this.$store.commit('reports/changeVolver', '/recargas')
+        this.$router.push('/reporte/recibo')
+      }, 4000)
 
     },
     StoreUsuario (Usuario) {
@@ -293,7 +329,18 @@ export default {
           update: (store, { data: res }) => {
             this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreCuenta', Obj: res.CreateCuenta}))
           }
+        }).then(() => {
+          this.$store.commit('notificaciones/changeContext', 'success')
+          this.$store.commit('notificaciones/changeIcon', 'done_all')
+          this.$store.commit('notificaciones/changeMsg', 'Transacción Exitosa')
+          this.$store.commit('notificaciones/changeState', 1)
+        }).catch(() => {
+          this.$store.commit('notificaciones/changeContext', 'error')
+          this.$store.commit('notificaciones/changeIcon', 'error_outline')
+          this.$store.commit('notificaciones/changeMsg', 'Error en Transacción')
+          this.$store.commit('notificaciones/changeState', 1)
         })
+
       }else{
 
         let NuevoSaldo = this.Saldo ? this.Saldo + this.Recarga : this.Recarga
@@ -325,6 +372,16 @@ export default {
           update: (store, { data: res }) => {
             this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreCuenta', Obj: res.UpdateCuenta}))
           }
+        }).then(() => {
+          this.$store.commit('notificaciones/changeContext', 'success')
+          this.$store.commit('notificaciones/changeIcon', 'done_all')
+          this.$store.commit('notificaciones/changeMsg', 'Transacción Exitosa')
+          this.$store.commit('notificaciones/changeState', 1)
+        }).catch(() => {
+          this.$store.commit('notificaciones/changeContext', 'error')
+          this.$store.commit('notificaciones/changeIcon', 'error_outline')
+          this.$store.commit('notificaciones/changeMsg', 'Error en Transacción')
+          this.$store.commit('notificaciones/changeState', 1)
         })
 
       }
@@ -332,12 +389,7 @@ export default {
     },
     Reset () {
       this.Id = null
-      this.Usuario = {
-        Id: null,
-        Nombre: null,
-        Apellido: null,
-        Cedula: null
-      }
+      this.Usuario = null
       this.Saldo = null
       this.Recarga = null
     }

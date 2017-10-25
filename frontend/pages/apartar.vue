@@ -64,7 +64,7 @@ export default {
     snackbar: {
       context: 'primary',
       mode: '',
-      timeout: 6000,
+      timeout: 3000,
       text: 'Cargando'
     },
     itemsEscenario: null,

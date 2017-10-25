@@ -30,6 +30,7 @@ v-layout( align-center justify-center )
                    v-model="Tipo"
                    label="Tipo"
                    @change="Reset"
+                   :rules="[rules.required]"
                    dark)
 
             v-menu( v-show="Tipo==='Por Fecha' || Tipo==='Por Usuario Y Fecha'"
@@ -45,7 +46,9 @@ v-layout( align-center justify-center )
               v-text-field( slot="activator"
                             label="Fecha"
                             v-model="Fecha"
-                            readonly )
+                            :rules="[rules.required]"
+                            readonly
+                            dark )
 
               v-date-picker( :months="months"
                              :days="days"
@@ -54,6 +57,7 @@ v-layout( align-center justify-center )
                              v-model="Fecha"
                              no-title
                              autosave
+                             :rules="[rules.required]"
                              dark )
                template( scope="{ save, cancel }" )
                  v-card-actions
@@ -66,6 +70,7 @@ v-layout( align-center justify-center )
                      item-text="Buscar"
                      item-value="Id"
                      autocomplete
+                     :rules="[rules.required]"
                      dark)
               template(slot="selection" scope="data")
                 v-list-tile-content(style="font-size: 12pt")
@@ -120,7 +125,7 @@ export default {
     snackbar: {
       context: 'primary',
       mode: '',
-      timeout: 6000,
+      timeout: 3000,
       text: 'Cargando'
     },
     menu1: false,
@@ -160,7 +165,14 @@ export default {
       'Por Usuario Y Fecha'
     ],
     Tipo: null,
-    loading: 0
+    loading: 0,
+    rules: {
+      required: (value) => !!value || 'Obligatorio.',
+      email: (value) => {
+        const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        return pattern.test(value) || 'Correo Inválido.'
+      }
+    }
   }),
   beforeMount () {
     if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
