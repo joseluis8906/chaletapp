@@ -53,7 +53,7 @@ v-layout( align-center justify-center )
 
             v-money(label="Precio Diurno" v-model="PrecioDiurno" :rules="[rules.required]" maskType="currency" dark)
 
-            v-money(label="Precio Nocturno" v-model="PrecioNocturno" :rules="[rules.required]" maskType="currency")
+            v-money(label="Precio Nocturno" v-model="PrecioNocturno" :rules="[rules.required]" maskType="currency" dark)
 
             //- v-text-field(type="number" label="Likes" v-model="Likes" :rules="[rules.required]" dark )
 

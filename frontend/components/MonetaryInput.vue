@@ -3,11 +3,11 @@
                 :label="label"
                 :readonly="readonly"
                 :prepend-icon="prependIcon"
-                :light="light"
+                :light="light || false"
                 :rules="rules"
                 @blur="handleInputState"
                 @focus="handleInputState"
-                dark="dark" )
+                :dark="dark || false" )
 </template>
 
 <script>
