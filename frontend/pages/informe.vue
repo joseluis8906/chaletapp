@@ -25,22 +25,15 @@ v-layout( align-center justify-center )
       v-card-text
         v-layout(row wrap)
           v-flex(xs12)
-            //- v-select(v-bind:items="ItemsUsuario"
-                     v-model="UsuarioId"
-                     label="Usuario"
-                     item-text="Buscar"
-                     item-value="Id"
-                     autocomplete
-                     dark)
-              template(slot="selection" scope="data")
-                v-list-tile-content(style="font-size: 12pt")
-                  v-list-tile-title(v-html="data.item.Nombre + ' ' + data.item.Apellido")
-              template(slot="item" scope="data")
-                v-list-tile-content(style="font-size: 12pt")
-                  v-list-tile-title(v-html="(data.item.Nombre ? data.item.Nombre : 'no data available') + ' ' + (data.item.Apellido ? data.item.Apellido: '')")
 
+            v-select(v-bind:items="ItemsTipo"
+                   v-model="Tipo"
+                   label="Tipo"
+                   @change="Reset"
+                   dark)
 
-            v-menu( lazy
+            v-menu( v-show="Tipo==='Por Fecha' || Tipo==='Por Usuario Y Fecha'"
+                    lazy
                     :close-on-content-click="true"
                     v-model="menu1"
                     transition="scale-transition"
@@ -66,6 +59,22 @@ v-layout( align-center justify-center )
                  v-card-actions
                    v-btn( dark warning @click.native="Fecha=null" ) Limpiar
 
+            v-select(v-show="Tipo==='Por Usuario' || Tipo==='Por Usuario Y Fecha'"
+                     v-bind:items="ItemsUsuario"
+                     v-model="UsuarioId"
+                     label="Usuario"
+                     item-text="Buscar"
+                     item-value="Id"
+                     autocomplete
+                     dark)
+              template(slot="selection" scope="data")
+                v-list-tile-content(style="font-size: 12pt")
+                  v-list-tile-title(v-html="data.item.Nombre + ' ' + data.item.Apellido")
+              template(slot="item" scope="data")
+                v-list-tile-content(style="font-size: 12pt")
+                  v-list-tile-title(v-html="(data.item.Nombre ? data.item.Nombre : 'no data available') + ' ' + (data.item.Apellido ? data.item.Apellido: '')")
+
+
             v-data-table(v-bind:headers="headers"
                         :items="itemsCompra"
                         hide-actions
@@ -90,7 +99,7 @@ v-layout( align-center justify-center )
       v-card-actions
         v-spacer
         v-btn(warning dark @click.native="Reset" ) Limpiar
-        v-btn(primary dark @click.native="Generar" ) Generar
+        v-btn(primary dark @click.native="Generar" :disabled="itemsCompra.length===0") Generar
 
 </template>
 
@@ -109,7 +118,7 @@ import COMPRAS from '~/queries/Compras.gql'
 export default {
   data: () => ({
     snackbar: {
-      context: 'secondary',
+      context: 'primary',
       mode: '',
       timeout: 6000,
       text: 'Cargando'
@@ -145,6 +154,12 @@ export default {
       'Diciembre'],
     days: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
     UsuarioId: null,
+    ItemsTipo: [
+      'Por Fecha',
+      'Por Usuario',
+      'Por Usuario Y Fecha'
+    ],
+    Tipo: null,
     loading: 0
   }),
   beforeMount () {
@@ -167,21 +182,15 @@ export default {
       update (data) {
         this.CargarClientes (data.Usuarios)
       }
-    },
-    Compras: {
-      query: COMPRAS,
-      loadingKey: 'loading',
-      variables () {
-        return {
-          Fecha: this.Fecha
-        }
-      },
-      update (data) {
-        this.LoadUi(data.Compras)
-      }
     }
   },
   watch: {
+    UsuarioId () {
+      this.Consultar()
+    },
+    Fecha () {
+      this.Consultar()
+    }
   },
   mqtt: {
     'chaletapp/apollo/mutation': function (val) {
@@ -201,8 +210,41 @@ export default {
     }
   },
   methods: {
+    Consultar() {
+      let variables = {}
+      if (this.Tipo==='Por Fecha'){
+         variables = {
+           Fecha: this.Fecha
+         }
+      }else if(this.Tipo==='Por Usuario'){
+        variables = {
+          UsuarioId: this.UsuarioId
+        }
+      }else if(this.Tipo==='Por Usuario Y Fecha'){
+        variables = {
+          Fecha: this.Fecha,
+          UsuarioId: this.UsuarioId
+        }
+      }
+
+      if(this.Tipo !== null){
+        this.$apollo.query(
+          {
+            query: COMPRAS,
+            loadingKey: 'loading',
+            variables: variables
+          }
+        ).then( res => {
+          this.LoadUi(res.data.Compras)
+        });
+      }
+    },
     Generar () {
+      var Ahora = new Date(Date.now())
+      var FechaHoy = `${Ahora.getFullYear()}-${(Ahora.getMonth() + 1) < 10 ? '0' + (Ahora.getMonth() + 1) : Ahora.getMonth() + 1}-${Ahora.getDate()}`
+      this.$store.commit('informe/changeExpedicion', FechaHoy)
       this.$store.commit('informe/changeFecha', this.Fecha)
+      this.$store.commit('informe/changeUsuarioId', this.UsuarioId)
       this.$store.commit('reports/changeVolver', '/informe')
       this.$router.push('/reporte/informe')
     },
@@ -254,6 +296,8 @@ export default {
           data: data
         })
       }
+
+      this.Consultar()
 
     },
     StoreUsuario (Usuario) {
@@ -325,62 +369,12 @@ export default {
         this.itemsCompra.push(tmp)
       }
     },
-    Guardar () {
-      if(this.Id === null){
-
-        let NuevoSaldo = this.Saldo ? this.Saldo + this.Recarga : this.Recarga
-
-        const Cuenta = {
-          UsuarioId: this.UsuarioId,
-          Saldo: NuevoSaldo
-        };
-
-        this.Reset()
-
-        this.$apollo.mutate ({
-          mutation: CREATE_CUENTA,
-          variables: {
-            UsuarioId: Cuenta.UsuarioId,
-            Saldo: Cuenta.Saldo
-          },
-          loadingKey: 'loading',
-          update: (store, { data: res }) => {
-            this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreCuenta', Obj: res.CreateCuenta}))
-          }
-        })
-      }else{
-
-        let NuevoSaldo = this.Saldo ? this.Saldo + this.Recarga : this.Recarga
-
-        const Cuenta = {
-          Id: this.Id,
-          UsuarioId: this.UsuarioId,
-          Saldo: NuevoSaldo
-        };
-
-        console.log(Cuenta)
-
-        this.Reset()
-
-        this.$apollo.mutate ({
-          mutation: UPDATE_CUENTA,
-          variables: {
-            Id: Cuenta.Id,
-            UsuarioId: Cuenta.UsuarioId,
-            Saldo: Cuenta.Saldo
-          },
-          loadingKey: 'loading',
-          update: (store, { data: res }) => {
-            this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreCuenta', Obj: res.UpdateCuenta}))
-          }
-        })
-      }
-    },
     Reset () {
       this.Id = null
+      this.Tipo = null,
       this.UsuarioId = null
-      this.Saldo = null
-      this.Recarga = null
+      this.Fecha = null
+      this.itemsCompra = []
     }
   },
   components: {

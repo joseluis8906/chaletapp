@@ -91,7 +91,6 @@ export default {
           this.StoreEscenario(Obj)
           break;
       }
-
     }
   },
   methods: {

@@ -10,9 +10,9 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           th(colspan=3 style="width: 14%;") Fecha Expedición
           th(rowspan="2" style="text-align: center; width: 65%") INFORME DE APARTADOS
         tr
-          td(style="text-align: center") {{ Expedicion.AAAA }}
-          td(style="text-align: center") {{ Expedicion.MM }}
-          td(style="text-align: center") {{ Expedicion.DD }}
+          td(style="text-align: center") {{ FechaExpedicion.AAAA }}
+          td(style="text-align: center") {{ FechaExpedicion.MM }}
+          td(style="text-align: center") {{ FechaExpedicion.DD }}
 
     table(style="width: 100%; height: auto" class="table-kardex" )
       thead
@@ -54,7 +54,7 @@ export default {
       pages: [
         {Size: 'Letter', Layout: 'Landscape'}
       ],
-      Expedicion: {
+      FechaExpedicion: {
         AAAA: null,
         MM: null,
         DD: null
@@ -63,53 +63,82 @@ export default {
     }
   },
   computed: {
+    Expedicion () {
+      return this.$store.state.informe.Expedicion
+    },
     Fecha () {
       return this.$store.state.informe.Fecha
+    },
+    UsuarioId () {
+      return this.$store.state.informe.UsuarioId
     }
   },
   layout: 'report',
   fetch ({ store }) {
     store.commit('reports/changeTitle', 'Informe de Apartados')
   },
-  apollo: {
-    Compras:{
-      query: COMPRAS,
-      variables () {
-        return {
+  mounted(){
+    this.$nextTick(() => {
+      this.Consultar()
+    })
+  },
+  methods: {
+    Consultar() {
+
+      this.FechaExpedicion.AAAA = this.Expedicion.split('-')[0]
+      this.FechaExpedicion.MM = this.Expedicion.split('-')[1]
+      this.FechaExpedicion.DD = this.Expedicion.split('-')[2]
+
+      let variables = {}
+      if (this.Fecha !== null && this.UsuarioId !== null){
+        variables = {
+          Fecha: this.Fecha,
+          UsuarioId: this.UsuarioId
+        }
+      }else if(this.UsuarioId !== null){
+        variables = {
+          UsuarioId: this.UsuarioId
+        }
+      }else if(this.Fecha !== null){
+        variables = {
           Fecha: this.Fecha
         }
-      },
-      loadingKey: "loading",
-      update (data) {
-        //console.log(data)
-        this.Expedicion.AAAA = data.Compras[0].Fecha.split('-')[0]
-        this.Expedicion.MM = data.Compras[0].Fecha.split('-')[1]
-        this.Expedicion.DD = data.Compras[0].Fecha.split('-')[2]
-
-        this.items = []
-
-        for (let i=0; i<data.Compras.length; i++) {
-
-          let tmp = {
-            Usuario: {
-              Cedula: data.Compras[i].Usuario.Cedula,
-              Apellido: data.Compras[i].Usuario.Apellido,
-              Nombre: data.Compras[i].Usuario.Nombre,
-            },
-            Escenario: {
-              Nombre: data.Compras[i].Escenario.Nombre
-            },
-            HoraInicial: data.Compras[i].HoraInicial,
-            HoraFinal: data.Compras[i].HoraFinal,
-            Tiempo: data.Compras[i].Tiempo,
-            Precio: data.Compras[i].Precio,
-            Estado: data.Compras[i].Estado,
-            Fecha: data.Compras[i].Fecha
-          }
-          this.items.push(tmp)
-        }
       }
-    }
+
+      if(this.Tipo !== null){
+        this.$apollo.query(
+          {
+            query: COMPRAS,
+            loadingKey: 'loading',
+            variables: variables
+          }
+        ).then( res => {
+
+          this.items = []
+
+          for (let i=0; i < res.data.Compras.length; i++) {
+
+            let tmp = {
+              Usuario: {
+                Cedula: res.data.Compras[i].Usuario.Cedula,
+                Apellido: res.data.Compras[i].Usuario.Apellido,
+                Nombre: res.data.Compras[i].Usuario.Nombre,
+              },
+              Escenario: {
+                Nombre: res.data.Compras[i].Escenario.Nombre
+              },
+              HoraInicial: res.data.Compras[i].HoraInicial,
+              HoraFinal: res.data.Compras[i].HoraFinal,
+              Tiempo: res.data.Compras[i].Tiempo,
+              Precio: res.data.Compras[i].Precio,
+              Estado: res.data.Compras[i].Estado,
+              Fecha: res.data.Compras[i].Fecha
+            }
+            this.items.push(tmp)
+          }
+        });
+      }
+    },
   }
 }
 </script>
