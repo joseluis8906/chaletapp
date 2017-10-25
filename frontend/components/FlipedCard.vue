@@ -162,8 +162,8 @@ export default {
       NombreCliente: null,
       ApellidoCliente: null,
       Cuenta: null,
-      horaInicial: '8:00am',
-      horaFinal: '9:00am',
+      horaInicial: '12:00pm',
+      horaFinal: '12:00pm',
       tiempo: null,
       total: null,
       modal1: false,
@@ -195,7 +195,9 @@ export default {
         'Diciembre'],
       days: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
       horasAm: [8,9,10,11],
-      horasPm: [12,1,2,3,4,5,6,7,8,9,10]
+      horasPm: [12,1,2,3,4,5,6,7,8,9,10],
+      StoreCompraReady: false,
+      StoreCuentaReady: false
     }
   },
   props: {
@@ -368,6 +370,9 @@ export default {
         })
       }
       this.Cuenta = Cuenta
+
+      this.StoreCuentaReady = true
+      this.Recibo()
     },
     StoreCompra (Compra) {
       //console.log(Compra)
@@ -422,15 +427,21 @@ export default {
         data.compras ? this.FiltrarHorarios(data.Compras) : null;
       }
 
+      this.StoreCompraReady = true
+      this.Recibo()
+
     },
     calcularPrecio () {
       let inicial = Number(this.horaInicial.split(':')[0])
       let final = Number(this.horaFinal.split(':')[0])
-      if(this.horaInicial.endsWith('am') && (this.horaFinal.endsWith('am') || final === 12)){
+      if(this.horaInicial.endsWith('pm') && this.horaFinal.endsWith('am')){
+        this.tiempo=0;
+      }
+      else if(this.horaInicial.endsWith('am') && (this.horaFinal.endsWith('am') || final === 12)){
         this.tiempo = final-inicial
       }else if(this.horaInicial.endsWith('am') && this.horaFinal.endsWith('pm') && final !== 12){
         this.tiempo = (final+12) - inicial
-      }else if(inicial === 12 && this.horaFinal.endsWith('pm')){
+      }else if(inicial === 12 && this.horaFinal.endsWith('pm') && final !== 12){
         this.tiempo = (final+12)-inicial
       }else{
         this.tiempo = final-inicial
@@ -462,6 +473,16 @@ export default {
         this.total = 0
       }
 
+    },
+    Recibo () {
+      if(this.StoreCompraReady && this.StoreCuentaReady){
+        this.StoreCompraReady = false
+        this.StoreCuentaReady = false
+        this.$store.commit('reports/changeVolver', '/apartar')
+        this.$router.push('/reporte/factura')
+      }else{
+        console.log('esperando store compra y store cuenta')
+      }
     },
     Guardar () {
       if(! (this.Cuenta.Saldo >= (this.total*0.20)) ){
@@ -566,16 +587,14 @@ export default {
         }
       })
 
-      this.$store.commit('reports/changeVolver', '/apartar')
-      this.$router.push('/reporte/factura')
-
     },
     reset () {
       this.over = false
-      this.horaInicial = '8:00am'
-      this.horaFinal = '9:00am'
+      this.horaInicial = '12:00pm'
+      this.horaFinal = '12:00pm'
       this.total = null
       this.tiempo = null
+      this.calcularPrecio()
     }
   },
   components: {
