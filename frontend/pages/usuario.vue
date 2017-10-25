@@ -15,6 +15,20 @@ v-layout( align-center justify-center )
       h6(class="grey--text text--lighten-4 mb-0") {{ snackbar.text }}
       v-icon autorenew
 
+  v-snackbar( :timeout="$store.state.notificaciones.Timeout"
+              :success="$store.state.notificaciones.Context === 'success'"
+              :info="$store.state.notificaciones.Context === 'info'"
+              :warning="$store.state.notificaciones.Context === 'warning'"
+              :error="$store.state.notificaciones.Context === 'error'"
+              :primary="$store.state.notificaciones.Context === 'primary'"
+              :secondary="$store.state.notificaciones.Context === 'secondary'"
+              :multi-line="$store.state.notificaciones.Mode === 'multi-line'"
+              :vertical="$store.state.notificaciones.Mode === 'vertical'"
+              :top="true"
+              v-model="$store.state.notificaciones.State" )
+      h6(class="grey--text text--lighten-4 mb-0") {{ $store.state.notificaciones.Msg }}
+      v-icon {{ $store.state.notificaciones.Icon }}
+
   v-flex( xs12 mt-3 md8 lg6 )
     v-card
       v-layout(row wrap pt-3 light-blue)
@@ -27,26 +41,27 @@ v-layout( align-center justify-center )
           v-flex( xs12 )
             //- v-text-field( label="Nombre De Usuario" v-model="UserName" dark )
 
-            v-text-field( label="Cedula" v-model="Cedula" dark )
+            v-text-field( label="Cedula" v-model="Cedula" :rules="[rules.required]" dark )
 
             v-text-field( label="Contraseña" v-model="UiPassword" type="Password" maxlength="4" dark )
 
-            v-text-field( label="Nombre" v-model="Nombre" dark )
+            v-text-field( label="Nombre" v-model="Nombre" :rules="[rules.required]" dark )
 
-            v-text-field( label="Apellido" v-model="Apellido" dark )
+            v-text-field( label="Apellido" v-model="Apellido" :rules="[rules.required]" dark )
 
-            v-text-field( label="Edad" v-model="Edad" dark )
+            v-text-field(type="number" label="Edad" v-model="Edad" :rules="[rules.required]" dark )
 
-            v-text-field( label="Telefono" v-model="Telefono" dark )
+            v-text-field(label="Telefono" v-model="Telefono" :rules="[rules.required]" dark )
 
-            v-text-field( label="Email" v-model="Email" dark )
+            v-text-field(label="Email" v-model="Email" :rules="[rules.required, rules.email]" dark )
 
-            v-text-field( label="Direccion" v-model="Direccion" dark )
+            v-text-field( label="Direccion" v-model="Direccion" :rules="[rules.required]" dark )
 
             v-select( v-bind:items="ItemsActivo"
                       v-model="Activo"
                       label="Activo"
                       item-value="text"
+                      :rules="[rules.required]"
                       dark )
 
             v-select( label="Grupos"
@@ -67,7 +82,7 @@ v-layout( align-center justify-center )
       v-card-actions
         v-spacer
         v-btn( dark @click.native="Reset" ) Cancelar
-        v-btn( dark primary @click.native="CryptPassword" ) Guardar
+        v-btn( dark primary @click.native="CryptPassword" :disabled="!Completo" ) Guardar
 </template>
 
 <script>
@@ -111,7 +126,15 @@ export default {
       {text: 'No'}
     ],
     ItemsGrupo: [],
-    loading: 0
+    loading: 0,
+    Completo: false,
+    rules: {
+      required: (value) => !!value || 'Obligatorio.',
+      email: (value) => {
+        const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        return pattern.test(value) || 'Correo Inválido.'
+      }
+    }
   }),
   beforeMount () {
     if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
@@ -157,7 +180,34 @@ export default {
     },
     Id (value) {
       (value === null) ? this.DisableGrupoSelect = true : this.DisableGrupoSelect = false
-    }
+    },
+    Cedula () {
+      this.Validar()
+    },
+    Password () {
+      this.Validar()
+    },
+    Nombre () {
+      this.Validar()
+    },
+    Apellido () {
+      this.Validar()
+    },
+    Edad () {
+      this.Validar()
+    },
+    Telefono () {
+      this.Validar()
+    },
+    Email () {
+      this.Validar()
+    },
+    Direccion () {
+      this.Validar()
+    },
+    Activo () {
+      this.Validar()
+    },
   },
   mqtt: {
     'chaletapp/apollo/mutation': function (val) {
@@ -175,6 +225,24 @@ export default {
     }
   },
   methods: {
+    Validar () {
+      if(
+        this.Cedula !== null && this.Cedula !== '' &&
+        this.Nombre !== null && this.Nombre !== '' &&
+        this.Apellido !== null && this.Apellido !== '' &&
+        this.Edad !== null && this.Edad !== '' &&
+        this.Telefono !== null && this.Telefono !== '' &&
+        this.Email !== null && this.Email !== '' &&
+        this.Direccion !== null && this.Direccion !== '' &&
+        this.Activo !== null && this.Activo !== ''
+      ){
+        this.Completo = true
+      }else {
+        this.Completo = false
+      }
+
+
+    },
     /*PubMsg () {
       //console.log('enviando: ' + this.Msg)
       this.$mqtt.publish('chaletapp/apollo/mutation', this.Msg)
@@ -227,6 +295,7 @@ export default {
         })
 
       }
+
     },
     CheckGrupos () {
       if(this.Id !== null) {
@@ -249,6 +318,16 @@ export default {
                 //console.log(res)
                 this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreUsuario', Obj: res.UsuarioAddGrupo}))
               }
+            }).then(() => {
+              this.$store.commit('notificaciones/changeContext', 'success')
+              this.$store.commit('notificaciones/changeIcon', 'done_all')
+              this.$store.commit('notificaciones/changeMsg', 'Guardado Exitoso')
+              this.$store.commit('notificaciones/changeState', 1)
+            }).catch(() => {
+              this.$store.commit('notificaciones/changeContext', 'error')
+              this.$store.commit('notificaciones/changeIcon', 'error_outline')
+              this.$store.commit('notificaciones/changeMsg', 'Error Guardando')
+              this.$store.commit('notificaciones/changeState', 1)
             })
 
             this.OldSelectedGrupos = this.SelectedGrupos
@@ -273,6 +352,16 @@ export default {
                   update: (store, { data: res }) => {
                     this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreUsuario', Obj: res.UsuarioRemoveGrupo}))
                   }
+                }).then(() => {
+                  this.$store.commit('notificaciones/changeContext', 'success')
+                  this.$store.commit('notificaciones/changeIcon', 'done_all')
+                  this.$store.commit('notificaciones/changeMsg', 'Guardado Exitoso')
+                  this.$store.commit('notificaciones/changeState', 1)
+                }).catch(() => {
+                  this.$store.commit('notificaciones/changeContext', 'error')
+                  this.$store.commit('notificaciones/changeIcon', 'error_outline')
+                  this.$store.commit('notificaciones/changeMsg', 'Error Guardando')
+                  this.$store.commit('notificaciones/changeState', 1)
                 })
 
                 break
@@ -339,7 +428,18 @@ export default {
         update: (store, { data: res }) => {
           this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreUsuario', Obj: res.CreateUsuario}))
         }
+      }).then(() => {
+        this.$store.commit('notificaciones/changeContext', 'success')
+        this.$store.commit('notificaciones/changeIcon', 'done_all')
+        this.$store.commit('notificaciones/changeMsg', 'Guardado Exitoso')
+        this.$store.commit('notificaciones/changeState', 1)
+      }).catch(() => {
+        this.$store.commit('notificaciones/changeContext', 'error')
+        this.$store.commit('notificaciones/changeIcon', 'error_outline')
+        this.$store.commit('notificaciones/changeMsg', 'Error Guardando')
+        this.$store.commit('notificaciones/changeState', 1)
       })
+
     },
     Update () {
       //console.log(this.Password)
@@ -379,6 +479,16 @@ export default {
           //console.log(JSON.stringify(res))
           this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreUsuario', Obj: res.UpdateUsuario}))
         },
+      }).then(() => {
+        this.$store.commit('notificaciones/changeContext', 'success')
+        this.$store.commit('notificaciones/changeIcon', 'done_all')
+        this.$store.commit('notificaciones/changeMsg', 'Actualización Exitosa')
+        this.$store.commit('notificaciones/changeState', 1)
+      }).catch(() => {
+        this.$store.commit('notificaciones/changeContext', 'error')
+        this.$store.commit('notificaciones/changeIcon', 'error_outline')
+        this.$store.commit('notificaciones/changeMsg', 'Error de Actualización')
+        this.$store.commit('notificaciones/changeState', 1)
       })
     },
     Reset () {
