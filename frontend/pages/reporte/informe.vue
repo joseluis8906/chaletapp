@@ -24,7 +24,8 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           th HoraInicial
           th HoraFinal
           th Tiempo
-          th Precio
+          th Abono
+          th Saldo
           th Estado
           th Fecha
       tbody
@@ -36,7 +37,8 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           td(style="text-align: right") {{ item.HoraInicial }}
           td(style="text-align: right") {{ item.HoraFinal }}
           td(style="text-align: right") {{ item.Tiempo }} hr(s)
-          td(style="text-align: right") $ {{ item.Precio }}
+          td(style="text-align: right") $ {{ item.Abono | currency("$", 0) }}
+          td(style="text-align: right") $ {{ item.Saldo | currency("$", 0) }}
           td(style="text-align: right") {{ item.Estado }}
           td(style="text-align: right") {{ item.Fecha }}
 
@@ -130,7 +132,8 @@ export default {
               HoraInicial: res.data.Compras[i].HoraInicial,
               HoraFinal: res.data.Compras[i].HoraFinal,
               Tiempo: res.data.Compras[i].Tiempo,
-              Precio: res.data.Compras[i].Precio,
+              Abono: res.data.Compras[i].Abono,
+              Saldo: res.data.Compras[i].Saldo,
               Estado: res.data.Compras[i].Estado,
               Fecha: res.data.Compras[i].Fecha
             }
