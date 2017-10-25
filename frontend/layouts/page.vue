@@ -6,7 +6,7 @@ v-app(light)
     v-icon(dark class="hidden-md-and-up") phone_iphone
     v-spacer
     v-btn(outline dark small nuxt link to="/login") Login
-  main
+  main(class="main")
     nuxt
   v-footer(fluid style="height:auto" class="dark pt-5 pb-5" )
     v-spacer
@@ -55,6 +55,12 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.main
+  background-image url("/grama1.jpg")
+  background-position: center center
+  background-size cover
+  min-height: 1024px
+
 .dark
   background-color rgba(0,0,0,0.85)
   color white
