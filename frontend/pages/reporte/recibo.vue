@@ -7,11 +7,11 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
         tr
           th(style="width: 30%; text-align: center")
             img(src="/football-player.svg" style="width: 10mm")
-          th Factura de Compra
+          th Recibo de Recarga
 
         tr
-          td Expedición
-          td(class="text-xs-right") {{ Fecha }}
+          td Expedido
+          td(class="text-xs-right") {{ Expedicion }}
 
         tr
           td Cédula
@@ -26,32 +26,16 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           td(class="text-xs-right") {{ Nombre }}
 
         tr
-          td Escenario
-          td(class="text-xs-right") {{ Escenario }}
+          td Saldo Anterior
+          td(class="text-xs-right") {{ Saldo }}
 
         tr
-          td Fecha
-          td(class="text-xs-right") {{ Fecha }}
+          td Recarga
+          td(class="text-xs-right") {{ Recarga }}
 
         tr
-          td HoraInicial
-          td(class="text-xs-right") {{ HoraInicial }}
-
-        tr
-          td HoraFinal
-          td(class="text-xs-right") {{ HoraFinal }}
-
-        tr
-          td Tiempo
-          td(class="text-xs-right") {{ Tiempo }} hr(s)
-
-        tr
-          td Abono
-          td(class="text-xs-right") {{ Abono | currency('$', 0) }}
-
-        tr
-          td Saldo
-          td(class="text-xs-right") {{ Saldo | currency('$', 0) }}
+          td Total
+          td(class="text-xs-right") {{ Total }}
 
 
 </template>
@@ -73,37 +57,25 @@ export default {
   },
   computed: {
     Expedicion () {
-      return this.$store.state.compra.Expedicion
+      return this.$store.state.recarga.Expedicion
     },
     Cedula () {
-      return this.$store.state.compra.Cedula
+      return this.$store.state.recarga.Cedula
     },
     Nombre () {
-      return this.$store.state.compra.Nombre
+      return this.$store.state.recarga.Nombre
     },
     Apellido () {
-      return this.$store.state.compra.Apellido
-    },
-    Escenario () {
-      return this.$store.state.compra.Escenario
-    },
-    HoraInicial () {
-      return this.$store.state.compra.HoraInicial
-    },
-    HoraFinal () {
-      return this.$store.state.compra.HoraFinal
-    },
-    Tiempo () {
-      return this.$store.state.compra.Tiempo
-    },
-    Abono () {
-      return this.$store.state.compra.Abono
+      return this.$store.state.recarga.Apellido
     },
     Saldo () {
-      return this.$store.state.compra.Saldo
+      return this.$store.state.recarga.Saldo
     },
-    Fecha () {
-      return this.$store.state.compra.Fecha
+    Recarga () {
+      return this.$store.state.recarga.Recarga
+    },
+    Total () {
+      return this.$store.state.recarga.Total
     }
   },
   layout: 'report',

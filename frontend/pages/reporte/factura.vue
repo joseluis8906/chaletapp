@@ -10,8 +10,8 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           th Factura de Compra
 
         tr
-          td Expedición
-          td(class="text-xs-right") {{ Fecha }}
+          td Expedido
+          td(class="text-xs-right") {{ Expedicion }}
 
         tr
           td Cédula
