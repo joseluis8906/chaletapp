@@ -436,8 +436,13 @@ export default {
       let final = Number(this.horaFinal.split(':')[0])
       if(this.horaInicial.endsWith('pm') && this.horaFinal.endsWith('am')){
         this.tiempo=0;
-      }
-      else if(this.horaInicial.endsWith('am') && (this.horaFinal.endsWith('am') || final === 12)){
+      }else if(this.horaInicial.endsWith('am') && this.horaFinal.endsWith('am') && inicial > final){
+        this.tiempo=0;
+      }else if(this.horaInicial.endsWith('pm') && this.horaFinal.endsWith('pm') && inicial > final && inicial !== 12){
+        this.tiempo=0;
+      }else if(this.horaInicial.endsWith('pm') && this.horaFinal.endsWith('pm') && final === 12){
+        this.tiempo=0;
+      }else if(this.horaInicial.endsWith('am') && (this.horaFinal.endsWith('am') || final === 12)){
         this.tiempo = final-inicial
       }else if(this.horaInicial.endsWith('am') && this.horaFinal.endsWith('pm') && final !== 12){
         this.tiempo = (final+12) - inicial
@@ -485,8 +490,19 @@ export default {
       }
     },
     Guardar () {
-      if(! (this.Cuenta.Saldo >= (this.total*0.20)) ){
-        console.log('Fondos insuficientes')
+      if(!(this.Cuenta.Saldo >= (this.total*0.20))){
+        this.$store.commit('notificaciones/changeContext', 'error')
+        this.$store.commit('notificaciones/changeIcon', 'error_outline')
+        this.$store.commit('notificaciones/changeMsg', 'Fondos Insuficientes')
+        this.$store.commit('notificaciones/changeState', 1)
+        return null
+      }
+
+      if(this.tiempo === null || this.tiempo === undefined || this.tiempo === 0){
+        this.$store.commit('notificaciones/changeContext', 'error')
+        this.$store.commit('notificaciones/changeIcon', 'error_outline')
+        this.$store.commit('notificaciones/changeMsg', 'Error de horario')
+        this.$store.commit('notificaciones/changeState', 1)
         return null
       }
 

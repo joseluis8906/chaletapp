@@ -59,8 +59,6 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
 <script>
 
 import { mapMutations } from 'vuex'
-//import REMISIONS from '~/queries/Remisions.gql'
-
 
 export default {
   data () {

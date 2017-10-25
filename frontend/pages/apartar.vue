@@ -15,6 +15,20 @@ v-layout( align-center justify-center )
       h6(class="grey--text text--lighten-4 mb-0") {{ snackbar.text }}
       v-icon autorenew
 
+  v-snackbar( :timeout="$store.state.notificaciones.Timeout"
+              :success="$store.state.notificaciones.Context === 'success'"
+              :info="$store.state.notificaciones.Context === 'info'"
+              :warning="$store.state.notificaciones.Context === 'warning'"
+              :error="$store.state.notificaciones.Context === 'error'"
+              :primary="$store.state.notificaciones.Context === 'primary'"
+              :secondary="$store.state.notificaciones.Context === 'secondary'"
+              :multi-line="$store.state.notificaciones.Mode === 'multi-line'"
+              :vertical="$store.state.notificaciones.Mode === 'vertical'"
+              :top="true"
+              v-model="$store.state.notificaciones.State" )
+      h6(class="grey--text text--lighten-4 mb-0") {{ $store.state.notificaciones.Msg }}
+      v-icon {{ $store.state.notificaciones.Icon }}
+
   v-flex(xs12 mt-5)
     v-layout(row wrap justify-space-bettwen align-center class="g-layout")
       v-fliped-card(v-for="(item, i) in itemsEscenario" :key="i"
@@ -41,13 +55,14 @@ h5.bold
 
 <script>
 
+import { mapMutations } from 'vuex'
 import ESCENARIOS from '~/queries/Escenarios.gql'
 import VFlipedCard from '~/components/FlipedCard.vue'
 
 export default {
   data: () => ({
     snackbar: {
-      context: 'secondary',
+      context: 'primary',
       mode: '',
       timeout: 6000,
       text: 'Cargando'
