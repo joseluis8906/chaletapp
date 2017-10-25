@@ -173,8 +173,8 @@ export default {
       NombreCliente: null,
       ApellidoCliente: null,
       Cuenta: null,
-      horaInicial: '12:00pm',
-      horaFinal: '12:00pm',
+      horaInicial: '8:00am',
+      horaFinal: '8:00am',
       tiempo: null,
       total: null,
       modal1: false,
@@ -487,6 +487,11 @@ export default {
 
     },
     Recibo () {
+      this.$store.commit('notificaciones/changeContext', 'success')
+      this.$store.commit('notificaciones/changeIcon', 'done_all')
+      this.$store.commit('notificaciones/changeMsg', 'Transacción Exitosa')
+      this.$store.commit('notificaciones/changeState', 1)
+
       setTimeout(()=>{
         if(this.StoreCompraReady && this.StoreCuentaReady){
           this.StoreCompraReady = false
@@ -496,12 +501,12 @@ export default {
         }else{
           console.log('esperando store compra y store cuenta')
         }
-      }, 3000);
+      }, 4000);
     },
     Guardar () {
       this.aviso=false
 
-      if(!(this.Cuenta.Saldo >= (this.total*0.20))){
+      if(!this.Cuenta || !(this.Cuenta.Saldo >= (this.total*0.20))){
         this.$store.commit('notificaciones/changeContext', 'error')
         this.$store.commit('notificaciones/changeIcon', 'error_outline')
         this.$store.commit('notificaciones/changeMsg', 'Fondos Insuficientes')
@@ -588,8 +593,14 @@ export default {
           this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreCompra', Obj: res.CreateCompra}))
         }
       }).then(() => {
-          this.StoreCompraReady = true
-          this.Recibo()
+        this.StoreCompraReady = true
+        this.Recibo()
+
+      }).catch(() => {
+        this.$store.commit('notificaciones/changeContext', 'error')
+        this.$store.commit('notificaciones/changeIcon', 'error_outline')
+        this.$store.commit('notificaciones/changeMsg', 'Error en Transacción')
+        this.$store.commit('notificaciones/changeState', 1)
       })
 
       this.$apollo.mutate ({
@@ -606,6 +617,11 @@ export default {
       }).then(()=>{
         this.StoreCuentaReady = true
         this.Recibo()
+      }).catch(() => {
+        this.$store.commit('notificaciones/changeContext', 'error')
+        this.$store.commit('notificaciones/changeIcon', 'error_outline')
+        this.$store.commit('notificaciones/changeMsg', 'Error en Transacción')
+        this.$store.commit('notificaciones/changeState', 1)
       })
 
       this.$apollo.mutate ({
@@ -623,8 +639,8 @@ export default {
     },
     reset () {
       this.over = false
-      this.horaInicial = '12:00pm'
-      this.horaFinal = '12:00pm'
+      this.horaInicial = '8:00am'
+      this.horaFinal = '8:00am'
       this.total = null
       this.tiempo = null
       this.calcularPrecio()
