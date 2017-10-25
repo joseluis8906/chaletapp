@@ -335,7 +335,7 @@ export default {
           setTimeout(() => {
             this.$store.commit('reports/changeVolver', '/recargas')
             this.$router.push('/reporte/recibo')
-          }, 3000)
+          }, 4000)
 
         }).catch(() => {
           this.$store.commit('notificaciones/changeContext', 'error')

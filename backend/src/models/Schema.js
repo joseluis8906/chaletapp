@@ -345,7 +345,7 @@ var Query = new GraphQLObjectType({
           Activo: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Usuario.findAll({where: args});
+          return Db.models.Usuario.findAll({where: args, order: [['Apellido', 'ASC'], ['Nombre', 'ASC']]});
         }
       },
       Grupos: {
@@ -355,7 +355,7 @@ var Query = new GraphQLObjectType({
           Nombre: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Grupo.findAll({where: args});
+          return Db.models.Grupo.findAll({where: args, order: [['Nombre', 'ASC']]});
         }
       },
       Escenarios: {
@@ -384,7 +384,7 @@ var Query = new GraphQLObjectType({
           Saldo: {type: GraphQLFloat}
         },
         resolve(root, args) {
-          return Db.models.Cuenta.findAll({where: args});
+          return Db.models.Cuenta.findAll({where: args, order: [['Id', 'ASC']]});
         }
       },
       Compras: {
