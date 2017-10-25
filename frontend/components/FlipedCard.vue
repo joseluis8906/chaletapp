@@ -1,5 +1,14 @@
 <template lang="pug">
 v-flex(xs12 sm4 md4 lg3 class="g-card-container")
+  v-dialog(v-model="aviso" persistent)
+      v-card
+        v-card-title(class="title error") Términos Y Condiciones
+        v-card-text(class="text-xs-justify") Tenga en cuenta que al realizar esta operación, se cobrará desde el saldo de cuenta el 10% del valor del servicio. Si desea continuar haga click en ACEPTAR de lo contrario haga click en CANCELAR.
+        v-card-actions
+          v-spacer
+          v-btn(error @click.native="aviso=false") CANCELAR
+          v-btn(success @click.native="Guardar") ACEPTAR
+
   v-card(class="g-card" v-bind:class="{ flipped: over }" light)
     div(class="front" v-on:click="over=true")
       div(:style="{backgroundImage: `url(${src || 'default.png'}?random=${Math.random(100)})`, backgroundSize:'cover', height:'180px', width: '100%', verticalAlign:'bottom'}" class="g-card-img")
@@ -93,8 +102,8 @@ v-flex(xs12 sm4 md4 lg3 class="g-card-container")
                     maskType="currency"
                     light)
 
-            v-btn(light primary class="blue white--text" @click.native="Guardar()") APARTAR
-            v-btn(light error class="white--text" v-on:click.native="reset()") CANCELAR
+            v-btn(light primary class="blue white--text" @click.native="aviso=true") APARTAR
+            v-btn(light error class="white--text" v-on:click.native="reset") CANCELAR
 
 
 </template>
@@ -154,6 +163,7 @@ import VMoney from '~/components/MonetaryInput.vue'
 export default {
   data () {
     return {
+      aviso: false,
       over: false,
       menu1: false,
       Fecha: null,
@@ -490,6 +500,8 @@ export default {
       }
     },
     Guardar () {
+      this.aviso=false
+
       if(!(this.Cuenta.Saldo >= (this.total*0.20))){
         this.$store.commit('notificaciones/changeContext', 'error')
         this.$store.commit('notificaciones/changeIcon', 'error_outline')
