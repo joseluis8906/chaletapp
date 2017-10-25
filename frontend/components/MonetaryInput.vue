@@ -4,8 +4,10 @@
                 :readonly="readonly"
                 :prepend-icon="prependIcon"
                 :light="light"
+                :rules="rules"
                 @blur="handleInputState"
-                @focus="handleInputState" )
+                @focus="handleInputState"
+                dark="dark" )
 </template>
 
 <script>
@@ -25,13 +27,14 @@ const masks = {
 export default {
   props: {
     value: null,
+    rules: null,
     maskType: String,
     focused: false,
     label: String,
     readonly: Boolean,
     prependIcon: String,
     light: Boolean,
-
+    dark: String
   },
   data: function() {
     return {

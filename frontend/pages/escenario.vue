@@ -15,6 +15,20 @@ v-layout( align-center justify-center )
       h6(class="grey--text text--lighten-4 mb-0") {{ snackbar.text }}
       v-icon autorenew
 
+  v-snackbar( :timeout="$store.state.notificaciones.Timeout"
+              :success="$store.state.notificaciones.Context === 'success'"
+              :info="$store.state.notificaciones.Context === 'info'"
+              :warning="$store.state.notificaciones.Context === 'warning'"
+              :error="$store.state.notificaciones.Context === 'error'"
+              :primary="$store.state.notificaciones.Context === 'primary'"
+              :secondary="$store.state.notificaciones.Context === 'secondary'"
+              :multi-line="$store.state.notificaciones.Mode === 'multi-line'"
+              :vertical="$store.state.notificaciones.Mode === 'vertical'"
+              :top="true"
+              v-model="$store.state.notificaciones.State" )
+      h6(class="grey--text text--lighten-4 mb-0") {{ $store.state.notificaciones.Msg }}
+      v-icon {{ $store.state.notificaciones.Icon }}
+
   v-flex( xs12 mt-3 md8 lg6 )
     v-card
       v-layout(row wrap pt-3 light-blue)
@@ -26,34 +40,36 @@ v-layout( align-center justify-center )
         v-layout( row wrap)
           v-flex( xs12 )
 
-            v-text-field( label="Nombre" v-model="Nombre" dark )
+            v-text-field( label="Nombre" v-model="Nombre" :rules="[rules.required]" dark )
 
             //- v-text-field( label="Imagen" v-model="Imagen" dark )
             v-upload-image(v-model="Imagen" label="Cambiar Imagen" :src="Imagen" :name="Nombre")
 
-            v-text-field( label="Especificación 1" v-model="Esp1" dark )
+            v-text-field( label="Especificación 1" v-model="Esp1" :rules="[rules.required]" dark )
 
-            v-text-field( label="Especificación 2" v-model="Esp2" dark )
+            v-text-field( label="Especificación 2" v-model="Esp2" :rules="[rules.required]" dark )
 
-            //- v-text-field( label="Especificación 3" v-model="Esp3" dark )
+            //- v-text-field( label="Especificación 3" v-model="Esp3" :rules="[rules.required]" dark )
 
-            v-money(label="Precio Diurno" v-model="PrecioDiurno" maskType="currency")
+            v-money(label="Precio Diurno" v-model="PrecioDiurno" :rules="[rules.required]" maskType="currency" dark)
 
-            v-money(label="Precio Nocturno" v-model="PrecioNocturno" maskType="currency")
+            v-money(label="Precio Nocturno" v-model="PrecioNocturno" :rules="[rules.required]" maskType="currency")
 
-            v-text-field( label="Likes" v-model="Likes" dark )
+            //- v-text-field(type="number" label="Likes" v-model="Likes" :rules="[rules.required]" dark )
 
             v-select(
               v-bind:items="ItemsActivo"
               v-model="Activo"
               label="Activo"
               autocomplete
-              bottom )
+              :rules="[rules.required]"
+              bottom
+              dark )
 
       v-card-actions
         v-spacer
         v-btn( dark @click.native="Reset" ) Cancelar
-        v-btn( dark primary @click.native="CreateOrUpdate" ) Guardar
+        v-btn( dark primary @click.native="CreateOrUpdate" :disabled="!Completo") Guardar
 </template>
 
 <script>
@@ -68,11 +84,12 @@ import VUploadImage from '~/components/UploadImage.vue'
 export default {
   data: () => ({
     snackbar: {
-      context: 'secondary',
+      context: 'primary',
       mode: '',
       timeout: 6000,
       text: 'Cargando'
     },
+    Completo: false,
     Id: null,
     Nombre: null,
     Imagen: null,
@@ -87,7 +104,14 @@ export default {
       'Si',
       'No'
     ],
-    loading: 0
+    loading: 0,
+    rules: {
+      required: (value) => !!value || 'Obligatorio.',
+      email: (value) => {
+        const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        return pattern.test(value) || 'Correo Inválido.'
+      }
+    }
   }),
   beforeMount () {
     if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
@@ -136,8 +160,40 @@ export default {
     }
   },
   watch: {
+    Nombre () {
+      this.Validar()
+    },
+    Esp1 () {
+      this.Validar()
+    },
+    Esp2 () {
+      this.Validar()
+    },
+    PrecioDiurno () {
+      this.Validar()
+    },
+    PrecioNocturno () {
+      this.Validar()
+    },
+    Activo () {
+      this.Validar()
+    }
   },
   methods: {
+    Validar () {
+      if(
+        this.Nombre !== null && this.Nombre !== '' &&
+        this.Esp1 !== null && this.Esp1 !== '' &&
+        this.Esp2 !== null && this.Esp2 !== '' &&
+        this.PrecioDiurno !== null && this.PrecioDiurno !== '' &&
+        this.PrecioNocturno !== null && this.PrecioNocturno !== '' &&
+        this.Activo !== null && this.Activo !== ''
+      ){
+        this.Completo = true
+      }else {
+        this.Completo = false
+      }
+    },
     StoreEscenario (Escenario) {
       var store = this.$apollo.provider.defaultClient
 
@@ -256,6 +312,16 @@ export default {
         update: (store, { data: res }) => {
           this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreEscenario', Obj: res.CreateEscenario}))
         },
+      }).then(() => {
+        this.$store.commit('notificaciones/changeContext', 'success')
+        this.$store.commit('notificaciones/changeIcon', 'done_all')
+        this.$store.commit('notificaciones/changeMsg', 'Guardado exitoso')
+        this.$store.commit('notificaciones/changeState', 1)
+      }).catch(() => {
+        this.$store.commit('notificaciones/changeContext', 'error')
+        this.$store.commit('notificaciones/changeIcon', 'error_outline')
+        this.$store.commit('notificaciones/changeMsg', 'Error en Guardado')
+        this.$store.commit('notificaciones/changeState', 1)
       })
     },
     Update () {
@@ -293,6 +359,16 @@ export default {
         update: (store, { data: res }) => {
           this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreEscenario', Obj: res.UpdateEscenario}))
         }
+      }).then(() => {
+        this.$store.commit('notificaciones/changeContext', 'success')
+        this.$store.commit('notificaciones/changeIcon', 'done_all')
+        this.$store.commit('notificaciones/changeMsg', 'Actualización exitosa')
+        this.$store.commit('notificaciones/changeState', 1)
+      }).catch(() => {
+        this.$store.commit('notificaciones/changeContext', 'error')
+        this.$store.commit('notificaciones/changeIcon', 'error_outline')
+        this.$store.commit('notificaciones/changeMsg', 'Error en Actualización')
+        this.$store.commit('notificaciones/changeState', 1)
       })
     },
     Reset () {
