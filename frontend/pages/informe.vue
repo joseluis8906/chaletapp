@@ -339,9 +339,7 @@ export default {
           data: data
         })
       }
-
       this.Consultar()
-
     },
     StoreUsuario (Usuario) {
       var store = this.$apollo.provider.defaultClient
@@ -378,9 +376,7 @@ export default {
           data: data
         })
       }
-
       this.CargarClientes(data.Usuarios)
-
     },
     CargarClientes (Usuarios) {
       this.ItemsUsuario = []

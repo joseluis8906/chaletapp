@@ -381,8 +381,6 @@ export default {
       }
       this.Cuenta = Cuenta
 
-      this.StoreCuentaReady = true
-      this.Recibo()
     },
     StoreCompra (Compra) {
       //console.log(Compra)
@@ -437,8 +435,6 @@ export default {
         data.compras ? this.FiltrarHorarios(data.Compras) : null;
       }
 
-      this.StoreCompraReady = true
-      this.Recibo()
 
     },
     calcularPrecio () {
@@ -588,6 +584,9 @@ export default {
         update: (store, { data: res }) => {
           this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreCompra', Obj: res.CreateCompra}))
         }
+      }).then(() => {
+          this.StoreCompraReady = true
+          this.Recibo()
       })
 
       this.$apollo.mutate ({
@@ -601,6 +600,9 @@ export default {
         update: (store, { data: res }) => {
           this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreCuenta', Obj: res.UpdateCuenta}))
         }
+      }).then(()=>{
+        this.StoreCuentaReady = true
+        this.Recibo()
       })
 
       this.$apollo.mutate ({
