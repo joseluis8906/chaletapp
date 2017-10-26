@@ -6,7 +6,7 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
       nuxt
 
   v-footer(fixed)
-    <span> © {{ new Date().getFullYear() }} </span> Airton & Jorge
+    <span> © {{ new Date().getFullYear() }} </span> Airton T. & Jorge S.
 
 </template>
 

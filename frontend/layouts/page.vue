@@ -12,7 +12,7 @@ v-app(light)
     v-spacer
       v-layout(row wrap)
         v-flex(xs12 md6 offset-md3)
-          div(class="text-xs-center g-footer")  Copyright ©  {{ new Date().getFullYear() }} <span class="orange--text text--darken-4"> Airton & Jorge </span>
+          div(class="text-xs-center g-footer")  Copyright ©  {{ new Date().getFullYear() }} <span class="orange--text text--darken-4"> Airton T. & Jorge S. </span>
             br
             span Todos los derechos reservados.
         v-flex(xs12 md6 offset-md3 pb-3)

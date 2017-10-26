@@ -13,6 +13,7 @@ module.exports = {
       { rel: 'icon', type: 'image/png', href: '/football-player.favicon.png' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Work+Sans:200'},
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Alfa+Slab+One'},
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Archivo+Black'},
       { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'},
       { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/1.9.33/css/materialdesignicons.min.css'}
@@ -46,6 +47,7 @@ module.exports = {
     '~plugins/vuetify.js',
     {src: '~plugins/vue-mqtt.js', ssr: false},
     {src: '~plugins/vue2-filters.js', ssr: false},
+    {src: '~plugins/vue-youtube-embed.js', ssr: false},
     '~plugins/vue-awesome-swiper.js',
     {src: '~plugins/vue-chartjs.js', ssr: false},
     {src: '~plugins/apollo-client.js', injectAs: 'apolloProvider'}
