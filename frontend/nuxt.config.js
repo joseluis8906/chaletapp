@@ -47,7 +47,7 @@ module.exports = {
     '~plugins/vuetify.js',
     {src: '~plugins/vue-mqtt.js', ssr: false},
     {src: '~plugins/vue2-filters.js', ssr: false},
-    {src: '~plugins/vue-youtube-embed.js', ssr: false},
+    {src: '~plugins/vue-youtube-embed.js'},
     '~plugins/vue-awesome-swiper.js',
     {src: '~plugins/vue-chartjs.js', ssr: false},
     {src: '~plugins/apollo-client.js', injectAs: 'apolloProvider'}

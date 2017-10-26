@@ -31,11 +31,17 @@ v-container(fluid style="max-width:1024px")
       img(src="/imagen3.png" width="100%")
 
   v-layout(row wrap mt-2)
-    v-flex(xs12 md9 pt-5 pl-2 pb-2 style="min-height: 480px; background-image: url('/imagen4.png'); background-size: 100% 100%; background-position: left top")
-      youtube(:video-id="videoId" :startTime="startTime" :player-width="playerWidth" :player-height="playerHeight" class="mt-4")
-    v-flex(xs12 md3 grey style="min-height: 256px") Gris derecho
+    v-flex(xs12 md9 pt-5 pl-2 pb-2 style="min-height: 480px; background-image: url('/imagen4.png'); background-size: 99% 100%; background-position: left top")
+      youtube(:video-id="videoId" :startTime="startTime" :player-width="playerWidth" :player-height="playerHeight" class="mt-4" )
+    v-flex(xs12 md3 pt-2 style="min-height: 360px; max-height: 360px; background-image: url('/imagen5.png'); background-size: 100% 100%; background-position: left top" )
+      v-list(class="mt-5")
+         v-list-tile(avatar v-for="item in items" v-bind:key="item.title" @click.native="cargar(item)")
+           v-list-tile-action
+             v-icon(v-if="item.icon" class="pink--text") star
+           v-list-tile-content
+             v-list-tile-title(v-text="item.title")
 
-  v-layout(row wrap mt-2)
+  //- v-layout(row wrap mt-2)
     v-flex(xs12 md9 blue style="min-height: 256px") Azul izquierdo
     v-flex(xs12 md3 yellow style="min-height: 256px") Negro derecho
 
@@ -53,7 +59,13 @@ export default {
       videoId: null,
       startTime: null,
       playerWidth: '750',
-      playerHeight: '390'
+      playerHeight: '390',
+      items: [
+        { icon: true, title: 'Que usar en campos...', url: 'https://www.youtube.com/watch?v=bjnsD1qsHYY'},
+        { icon: false, title: 'Canchas sintéticas p...', url: 'https://www.youtube.com/watch?v=N-bCnLYtxbA'},
+        { icon: false, title: 'Trial motocross circ...', url: 'https://www.youtube.com/watch?v=uyqOQGUrNCc'},
+        { icon: false, title: 'Beneficios de hacer ...', url: 'https://www.youtube.com/watch?v=7KIp0KVNHlc'},
+      ],
     }
   },
   created () {
@@ -75,13 +87,22 @@ export default {
     });
   },
   methods:{
+    cargar (item) {
+      for(let i=0; i<this.items.length; i++){
+        this.items[i].icon = false
+      }
+      item.icon = true
+      this.videoId = this.$youtube.getIdFromURL(item.url)
+      this.startTime = this.$youtube.getTimeFromURL(item.url)
+    },
     handleResize () {
-      let width = window.screen.width
-
-      if(width>1024){
-        this.playerWidth = '750'
-      }else{
-        this.playerWidth = '400'
+      if (process.BROWSER_BUILD) {
+        let width = window.screen.width
+        if(width>1024){
+          this.playerWidth = '750'
+        }else{
+          this.playerWidth = '400'
+        }
       }
     }
   },
