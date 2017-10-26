@@ -98,8 +98,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="383.08031"
-     inkscape:cy="385.5855"
+     inkscape:cx="-131.20541"
+     inkscape:cy="442.72836"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -7096,7 +7096,7 @@ DvEx8Fjw/wHmgvdTwGR/WAAAAABJRU5ErkJggg==
          style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu Medium'">COMPRAR AHORA</tspan></text>
     <path
        style="opacity:1;fill:#0b1728;fill-opacity:1;stroke:none;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="m -851.18081,373.21192 c -7.84059,0 -14.15234,4.84552 -14.15234,10.86523 l 0,429.48633 c 0,6.01971 6.31175,10.86719 14.15234,10.86719 l 783.857428,0 c 7.84059,0 14.15234,-4.84748 14.15234,-10.86719 l 0,-372.91556 c -0.0109,-4.53465 -4.95589,-10.76786 -10,-10.92819 l -529.419918,0 c -17.12153,-20.45137 -43.04614,-45.2429 -62.54883,-56.50781 z"
+       d="m -851.18081,373.21192 c -7.84059,0 -14.15234,4.84552 -14.15234,10.86523 l 0,429.48633 c 0,6.01971 6.31175,10.86719 14.15234,10.86719 l 783.857428,0 c 7.84059,0 14.15234,-4.84748 14.15234,-10.86719 l 0,-372.91556 c -0.0109,-4.53465 -4.95589,-10.76786 -10,-10.92819 l -529.419918,0 -62.54883,-56.50781 z"
        id="rect4211"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ssssssccccs"
@@ -7109,12 +7109,12 @@ DvEx8Fjw/wHmgvdTwGR/WAAAAABJRU5ErkJggg==
        inkscape:export-filename="/home/jose/Developments/chaletapp/frontend/static/imagen4.png"
        sodipodi:linespacing="125%"
        id="text4217"
-       y="422.17621"
+       y="418.17621"
        x="-818.28638"
        style="font-style:normal;font-weight:normal;font-size:13.75px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;font-family:'Alfa Slab One';-inkscape-font-specification:'Alfa Slab One';fill:#ffffff"
-         y="422.17621"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:35px;font-family:'Alfa Slab One';-inkscape-font-specification:'Alfa Slab One';fill:#ffffff"
+         y="418.17621"
          x="-818.28638"
          id="tspan4219"
          sodipodi:role="line">Videos</tspan></text>
@@ -7125,13 +7125,13 @@ DvEx8Fjw/wHmgvdTwGR/WAAAAABJRU5ErkJggg==
        sodipodi:nodetypes="ssssssccccs"
        inkscape:connector-curvature="0"
        id="path4221"
-       d="m 120.24776,337.49763 c -7.84059,0 -14.15234,4.84552 -14.15234,10.86523 l 0,549.48633 c 0,6.01971 6.31175,10.86719 14.15234,10.86719 l 307.85743,0 c 7.84059,0 14.15234,-4.84748 14.15234,-10.86719 l 0,-492.91556 c -0.0109,-4.53465 -4.95589,-10.76786 -10,-10.92819 l -119.41992,0 c -17.12153,-20.45137 -43.04614,-45.2429 -62.54883,-56.50781 z"
+       d="m 120.24776,353.49763 c -7.84059,0 -14.15234,4.84552 -14.15234,10.86523 l 0,345.48633 c 0,6.01971 6.31175,10.86719 14.15234,10.86719 l 307.85743,0 c 7.84059,0 14.15234,-4.84748 14.15234,-10.86719 l 0,-304.91556 c -0.0109,-4.53465 -4.95589,-10.76786 -10,-10.92819 l -119.41992,0 -62.54883,-40.50781 z"
        style="opacity:1;fill:#0b1728;fill-opacity:1;stroke:none;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:13.75px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="145.1422"
-       y="386.46191"
+       y="394.46191"
        id="text4223"
        sodipodi:linespacing="125%"
        inkscape:export-filename="/home/jose/Developments/chaletapp/frontend/static/imagen5.png"
@@ -7140,7 +7140,7 @@ DvEx8Fjw/wHmgvdTwGR/WAAAAABJRU5ErkJggg==
          sodipodi:role="line"
          id="tspan4225"
          x="145.1422"
-         y="386.46191"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;font-family:'Alfa Slab One';-inkscape-font-specification:'Alfa Slab One';fill:#ffffff">Lista</tspan></text>
+         y="394.46191"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:35px;font-family:'Alfa Slab One';-inkscape-font-specification:'Alfa Slab One';fill:#ffffff">Lista</tspan></text>
   </g>
 </svg>

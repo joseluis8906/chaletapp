@@ -265,7 +265,7 @@ export default {
           this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreCompra', Obj: res.UpdateCompra}))
         }
       }).then(() => {
-        this.Consultar()
+
         this.$store.commit('notificaciones/changeContext', 'success')
         this.$store.commit('notificaciones/changeIcon', 'done_all')
         this.$store.commit('notificaciones/changeMsg', 'Transacción Exitosa')
@@ -296,13 +296,11 @@ export default {
       }
 
       if(this.Tipo !== null){
-        this.$apollo.query(
-          {
-            query: COMPRAS,
-            loadingKey: 'loading',
-            variables: variables
-          }
-        ).then( res => {
+        this.$apollo.query({
+          query: COMPRAS,
+          loadingKey: 'loading',
+          variables: variables
+        }).then( res => {
           this.LoadUi(res.data.Compras)
         });
       }
@@ -364,7 +362,7 @@ export default {
           data: data
         })
       }
-
+      this.Consultar()
     },
     StoreUsuario (Usuario) {
       var store = this.$apollo.provider.defaultClient
