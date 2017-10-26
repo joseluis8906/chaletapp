@@ -133,6 +133,8 @@ export default {
           data: data
         })
 
+        this.CargarEscenarios(data.Escenarios)
+
       } catch (Err) {
 
         var data = {Escenarios: []}
@@ -143,13 +145,8 @@ export default {
           query: ESCENARIOS,
           data: data
         })
-      }
 
-      for(let i=0;  i < this.itemsEscenario.length; i++){
-        if(this.itemsEscenario[i].Nombre === Escenario.Nombre){
-          var tmp = Object.assign({}, Escenario)
-          this.itemsEscenario[i] = tmp
-        }
+        this.CargarEscenarios(data.Escenarios)
       }
 
     },
