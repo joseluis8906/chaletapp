@@ -26,6 +26,8 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
   v-toolbar(fixed)
     v-toolbar-side-icon(  @click.native.stop="drawer.model = !drawer.model" )
     v-toolbar-title {{ title }}
+    v-spacer
+    p(v-show="Saldo") Saldo {{ Saldo | currency("$", 0) || '$0' }}
 
   main
     v-container(fluid mb-5 pt-0)
@@ -37,6 +39,8 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
 </template>
 
 <script>
+  import { mapMutations } from 'vuex'
+
   export default {
     data: () => {
       return {
@@ -54,10 +58,16 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
           { icon: 'account_balance', text: 'Escenario', to: '/escenario', Roles: ["Administrador"] },
           { icon: 'attach_money', text: 'Recargas', to: '/recargas', Roles: ["Administrador", "Empleado"] },
           { icon: 'assignment', text: 'Apartar', to: '/apartar', Roles: ["Cliente"] },
-          { icon: 'description', text: 'Informe', to: '/informe', Roles: ["Administrador", "Empleado"] }
+          { icon: 'description', text: 'Informe', to: '/informe', Roles: ["Administrador", "Empleado"] },
+          { icon: 'assessment', text: 'Historial', to: '/historial', Roles: ["Administrador"] }
         ],
         title: 'Chalet Escenarios Deportivos',
         StoreRoles: []
+      }
+    },
+    computed: {
+      Saldo () {
+        return this.$store.state.cuenta.Saldo
       }
     },
     methods: {

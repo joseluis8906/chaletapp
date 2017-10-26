@@ -86,6 +86,7 @@ import USUARIOS from '~/queries/Usuarios.gql'
 import CUENTAS from '~/queries/Cuentas.gql'
 import CREATE_CUENTA from '~/queries/CreateCuenta.gql'
 import UPDATE_CUENTA from '~/queries/UpdateCuenta.gql'
+import CREATE_HISTORIAL from '~/queries/CreateHistorial.gql'
 
 import VMoney from '~/components/MonetaryInput.vue'
 import axios from 'axios'
@@ -99,6 +100,8 @@ export default {
       text: 'Cargando'
     },
     ItemsUsuario: [],
+    EmpleadoId: null,
+    UserName: null,
     Id: null,
     Usuario:null,
     Saldo: null,
@@ -117,13 +120,16 @@ export default {
     if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
       this.$router.push('/')
     } else {
+      var UserName = sessionStorage.getItem('x-access-username')
       var Roles = JSON.parse(sessionStorage.getItem('x-access-roles'))
+      this.$store.commit('security/SetUserName', UserName);
       this.$store.commit('security/AddRoles', Roles);
     }
   },
   mounted () {
     this.$nextTick(() => {
       this.$mqtt.subscribe('chaletapp/apollo/mutation')
+      this.UserName = this.$store.state.security.UserName
     })
   },
   apollo: {
@@ -275,6 +281,10 @@ export default {
     CargarClientes (Usuarios) {
       this.ItemsUsuario = []
       for(let j = 0; j < Usuarios.length; j++){
+        if(Usuarios[j].UserName === this.UserName){
+          this.EmpleadoId = Usuarios[j].Id
+        }
+
         for (let i=0; i < Usuarios[j].Grupos.length; i++){
           if (Usuarios[j].Grupos[i].Nombre === 'Cliente') {
             var tmp = Object.assign({}, Usuarios[j])
@@ -296,6 +306,7 @@ export default {
     Guardar () {
       var Ahora = new Date(Date.now())
       var FechaHoy = `${Ahora.getFullYear()}-${(Ahora.getMonth() + 1) < 10 ? '0' + (Ahora.getMonth() + 1) : Ahora.getMonth() + 1}-${Ahora.getDate()}`
+      var Hora = `${Ahora.getHours()}:${Ahora.getMinutes()}:00`
 
       if(this.Id === null){
 
@@ -304,6 +315,15 @@ export default {
         const Cuenta = {
           UsuarioId: this.Usuario.Id,
           Saldo: NuevoSaldo
+        };
+
+        const Historial = {
+          ClienteId: this.Usuario.Id,
+          EmpleadoId: this.EmpleadoId,
+          Tipo: 'Recarga',
+          Monto: this.Recarga,
+          Fecha: FechaHoy,
+          Hora: Hora
         };
 
         this.$store.commit('recarga/changeExpedicion', FechaHoy)
@@ -344,6 +364,32 @@ export default {
           this.$store.commit('notificaciones/changeState', 1)
         })
 
+        this.$apollo.mutate ({
+          mutation: CREATE_HISTORIAL,
+          variables: {
+            ClienteId: Historial.ClienteId,
+            EmpleadoId: Historial.EmpleadoId,
+            Tipo: Historial.Tipo,
+            Monto: Historial.Monto,
+            Fecha: Historial.Fecha,
+            Hora: Historial.Hora
+          },
+          loadingKey: 'loading',
+          update: (store, { data: res }) => {
+            this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreHistorial', Obj: res.CreateHistorial}))
+          }
+        }).then(() => {
+          this.$store.commit('notificaciones/changeContext', 'success')
+          this.$store.commit('notificaciones/changeIcon', 'done_all')
+          this.$store.commit('notificaciones/changeMsg', 'Transacción Exitosa')
+          this.$store.commit('notificaciones/changeState', 1)
+        }).catch(() => {
+          this.$store.commit('notificaciones/changeContext', 'error')
+          this.$store.commit('notificaciones/changeIcon', 'error_outline')
+          this.$store.commit('notificaciones/changeMsg', 'Error en Transacción')
+          this.$store.commit('notificaciones/changeState', 1)
+        })
+
       }else{
 
         let NuevoSaldo = this.Saldo ? this.Saldo + this.Recarga : this.Recarga
@@ -353,6 +399,17 @@ export default {
           UsuarioId: this.Usuario.Id,
           Saldo: NuevoSaldo
         };
+
+        const Historial = {
+          ClienteId: this.Usuario.Id,
+          EmpleadoId: this.EmpleadoId,
+          Tipo: 'Recarga',
+          Monto: this.Recarga,
+          Fecha: FechaHoy,
+          Hora: Hora
+        };
+
+        console.log(Historial)
 
         this.$store.commit('recarga/changeExpedicion', FechaHoy)
         this.$store.commit('recarga/changeCedula', this.Usuario.Cedula)
@@ -386,6 +443,32 @@ export default {
             this.$router.push('/reporte/recibo')
           }, 3000)
 
+        }).catch(() => {
+          this.$store.commit('notificaciones/changeContext', 'error')
+          this.$store.commit('notificaciones/changeIcon', 'error_outline')
+          this.$store.commit('notificaciones/changeMsg', 'Error en Transacción')
+          this.$store.commit('notificaciones/changeState', 1)
+        })
+
+        this.$apollo.mutate ({
+          mutation: CREATE_HISTORIAL,
+          variables: {
+            ClienteId: Historial.ClienteId,
+            EmpleadoId: Historial.EmpleadoId,
+            Tipo: Historial.Tipo,
+            Monto: Historial.Monto,
+            Fecha: Historial.Fecha,
+            Hora: Historial.Hora
+          },
+          loadingKey: 'loading',
+          update: (store, { data: res }) => {
+            this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreHistorial', Obj: res.CreateHistorial}))
+          }
+        }).then(() => {
+          this.$store.commit('notificaciones/changeContext', 'success')
+          this.$store.commit('notificaciones/changeIcon', 'done_all')
+          this.$store.commit('notificaciones/changeMsg', 'Transacción Exitosa')
+          this.$store.commit('notificaciones/changeState', 1)
         }).catch(() => {
           this.$store.commit('notificaciones/changeContext', 'error')
           this.$store.commit('notificaciones/changeIcon', 'error_outline')

@@ -91,7 +91,8 @@ Usuario.hasOne(Cuenta);
 //Historial
 const Historial = Db.define('Historial', {
   Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
-  UsuarioId: {type: Sequelize.INTEGER, references: {model: Usuario, key: 'Id'}},
+  ClienteId: {type: Sequelize.INTEGER, references: {model: Usuario, key: 'Id', }},
+  EmpleadoId: {type: Sequelize.INTEGER, references: {model: Usuario, key: 'Id', }},
   Monto: Sequelize.DECIMAL,
   Tipo: Sequelize.STRING,
   Fecha: Sequelize.DATEONLY,
@@ -102,8 +103,10 @@ const Historial = Db.define('Historial', {
   freezeTableName: true
 });
 
-Historial.belongsTo(Usuario);
-Usuario.hasMany(Historial);
+Historial.belongsTo(Usuario, {as: 'Cliente', foreignKey: 'ClienteId'});
+Historial.belongsTo(Usuario, {as: 'Empleado', foreignKey: 'EmpleadoId'});
+Usuario.hasMany(Historial, {as: 'Cliente', foreignKey: 'ClienteId'});
+Usuario.hasMany(Historial, {as: 'Empleado', foreignKey: 'EmpleadoId'});
 
 
 //Compra

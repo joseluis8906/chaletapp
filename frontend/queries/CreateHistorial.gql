@@ -1,0 +1,37 @@
+mutation CreateHistorial (
+  $ClienteId: Int,
+  $EmpleadoId: Int,
+  $Monto: Float,
+  $Tipo: String,
+  $Fecha: String,
+  $Hora: String
+) {
+  CreateHistorial (
+    ClienteId: $ClienteId,
+    EmpleadoId: $EmpleadoId,
+    Monto: $Monto,
+    Tipo: $Tipo,
+    Fecha: $Fecha,
+    Hora: $Hora
+  ) {
+    Id
+    ClienteId
+    EmpleadoId
+    Monto
+    Tipo
+    Fecha
+    Hora
+    Cliente {
+      Id
+      Nombre
+      Apellido
+      Cedula
+    }
+    Empleado {
+      Id
+      Nombre
+      Apellido
+      Cedula
+    }
+  }
+}

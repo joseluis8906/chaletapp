@@ -256,6 +256,7 @@ export default {
       update (data) {
         for(let i=0; i<data.Cuentas.length; i++){
           this.Cuenta = data.Cuentas[i]
+          this.$store.commit('cuenta/changeSaldo', this.Cuenta.Saldo)
           this.calcularPrecio()
         }
       }

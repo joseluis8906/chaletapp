@@ -315,6 +315,69 @@ var Compra = new GraphQLObjectType({
 })
 
 
+var Historial = new GraphQLObjectType({
+  name: "Historial",
+  description: "Object representation of Historial",
+  fields: () => {
+    return {
+      Id: {
+        type: GraphQLInt,
+        resolve(Historial) {
+          return Historial.Id;
+        }
+      },
+      ClienteId: {
+        type: GraphQLInt,
+        resolve(Historial) {
+          return Historial.ClienteId;
+        }
+      },
+      EmpleadoId: {
+        type: GraphQLInt,
+        resolve(Historial) {
+          return Historial.EmpleadoId;
+        }
+      },
+      Monto: {
+        type: GraphQLFloat,
+        resolve(Historial) {
+          return Historial.Monto;
+        }
+      },
+      Tipo: {
+        type: GraphQLString,
+        resolve(Historial) {
+          return Historial.Tipo;
+        }
+      },
+      Fecha: {
+        type: GraphQLString,
+        resolve(Historial) {
+          return Historial.Fecha;
+        }
+      },
+      Hora: {
+        type: GraphQLString,
+        resolve(Historial) {
+          return Historial.Hora;
+        }
+      },
+      Cliente: {
+        type: Usuario,
+        resolve(Historial) {
+          return Historial.getCliente();
+        }
+      },
+      Empleado: {
+        type: Usuario,
+        resolve(Historial) {
+          return Historial.getEmpleado();
+        }
+      }
+    }
+  }
+})
+
 
 //Query
 var Query = new GraphQLObjectType({
@@ -405,6 +468,21 @@ var Query = new GraphQLObjectType({
         },
         resolve(root, args) {
           return Db.models.Compra.findAll({where: args, order: [['Expedicion', 'ASC'], ['Hora', 'ASC']]});
+        }
+      },
+      Historiales:{
+        type: new GraphQLList(Historial),
+        args: {
+          Id: {type: GraphQLInt},
+          ClienteId: {type: GraphQLInt},
+          EmpleadoId: {type: GraphQLInt},
+          Monto: {type: GraphQLFloat},
+          Tipo: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          Hora: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Historial.findAll({where: args, order: [['Fecha', 'ASC'], ['Hora', 'ASC']]});
         }
       }
     };
@@ -714,6 +792,28 @@ var Mutation = new GraphQLObjectType({
             args.Hora !== undefined ? R.Hora = args.Hora : R.Hora
             R.save()
             return R;
+          });
+        }
+      },
+      CreateHistorial:{
+        type: Historial,
+        args: {
+          Id: {type: GraphQLInt},
+          ClienteId: {type: GraphQLInt},
+          EmpleadoId: {type: GraphQLInt},
+          Monto: {type: GraphQLFloat},
+          Tipo: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          Hora: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Historial.create({
+            ClienteId: args.ClienteId,
+            EmpleadoId: args.EmpleadoId,
+            Monto: args.Monto,
+            Tipo: args.Tipo,
+            Fecha: args.Fecha,
+            Hora: args.Hora
           });
         }
       }
