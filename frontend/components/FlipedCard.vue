@@ -502,7 +502,7 @@ export default {
         }else{
           console.log('esperando store compra y store cuenta')
         }
-      }, 4000);
+      }, 3000);
     },
     Guardar () {
       this.aviso=false
