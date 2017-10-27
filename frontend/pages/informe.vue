@@ -280,25 +280,33 @@ export default {
     Consultar() {
       let variables = {}
       if (this.Tipo==='Por Fecha'){
-         variables = {
-           Fecha: this.Fecha
-         }
-      }else if(this.Tipo==='Por Usuario'){
-        variables = {
-          UsuarioId: this.UsuarioId
-        }
-      }else if(this.Tipo==='Por Usuario Y Fecha'){
-        variables = {
-          Fecha: this.Fecha,
-          UsuarioId: this.UsuarioId
-        }
-      }
-
-      if(this.Tipo !== null){
         this.$apollo.query({
           query: COMPRAS,
           loadingKey: 'loading',
-          variables: variables
+          variables: {
+            Fecha: this.Fecha
+          }
+        }).then( res => {
+          this.LoadUi(res.data.Compras)
+        });
+      }else if(this.Tipo==='Por Usuario'){
+        this.$apollo.query({
+          query: COMPRAS,
+          loadingKey: 'loading',
+          variables: {
+            UsuarioId: this.UsuarioId
+          }
+        }).then( res => {
+          this.LoadUi(res.data.Compras)
+        });
+      }else if(this.Tipo==='Por Usuario Y Fecha'){
+        this.$apollo.query({
+          query: COMPRAS,
+          loadingKey: 'loading',
+          variables: {
+            Fecha: this.Fecha,
+            UsuarioId: this.UsuarioId
+          }
         }).then( res => {
           this.LoadUi(res.data.Compras)
         });

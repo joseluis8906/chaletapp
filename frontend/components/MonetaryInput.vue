@@ -61,7 +61,7 @@ export default {
     displayValue: {
       get: function() {
         if (this.inputFocused) {
-          return (this.value !== null ? this.value.toLocaleString() : ''.toLocaleString())
+          return (this.value !== null ? this.value : null)
         } else {
           return this.mask(this.value)
         }
