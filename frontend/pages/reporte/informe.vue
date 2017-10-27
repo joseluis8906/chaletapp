@@ -28,6 +28,8 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           th Saldo
           th Estado
           th Fecha
+          th Realizado
+          th Hora
       tbody
         tr(v-for="(item, j) in items" :key="j")
           td(style="text-align: right") {{ item.Usuario.Cedula }}
@@ -41,6 +43,8 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           td(style="text-align: right") $ {{ item.Saldo | currency("$", 0) }}
           td(style="text-align: right") {{ item.Estado }}
           td(style="text-align: right") {{ item.Fecha }}
+          td(style="text-align: right") {{ item.Expedicion }}
+          td(style="text-align: right") {{ item.Hora }}
 
 </template>
 
@@ -135,7 +139,9 @@ export default {
               Abono: res.data.Compras[i].Abono,
               Saldo: res.data.Compras[i].Saldo,
               Estado: res.data.Compras[i].Estado,
-              Fecha: res.data.Compras[i].Fecha
+              Fecha: res.data.Compras[i].Fecha,
+              Expedicion: res.data.Compras[i].Expedicion,
+              Hora: res.data.Compras[i].Hora,
             }
             this.items.push(tmp)
           }

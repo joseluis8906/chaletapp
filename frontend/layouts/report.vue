@@ -33,7 +33,7 @@ export default {
       window.print()
     },
     volver () {
-      console.log(this.$store.state.reports)
+      //console.log(this.$store.state.reports)
       this.$router.push(this.$store.state.reports.volver)
     }
   }

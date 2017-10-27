@@ -114,6 +114,7 @@ v-layout( align-center justify-center )
                 td(class="text-xs-center" :style="{minWidth: ''+(props.item.Saldo.length*12)+'px'}") {{ props.item.Saldo | currency("$", 0) }}
                 td(class="text-xs-center" :style="{minWidth: ''+(props.item.Estado.length*10)+'px'}") {{ props.item.Estado }}
                 td(class="text-xs-center" :style="{minWidth: ''+(props.item.Fecha.length*12)+'px'}") {{ props.item.Fecha }}
+                td(class="text-xs-center" :style="{minWidth: ''+(props.item.Expedicion.length*12)+'px'}") {{ props.item.Expedicion }}
                 td(class="text-xs-center") {{ props.item.Hora }}
                 td(class="text-xs-center")
                   v-btn(fab small class="teal" dark @click.native="Pagar(props.item)" :disabled="props.item.Saldo === 0")
@@ -161,6 +162,7 @@ export default {
       {text: 'Saldo', value: 'Saldo'},
       {text: 'Estado', value: 'Estado'},
       {text: 'Fecha', value: 'Fecha'},
+      {text: 'Realizado', value: 'Expedicion'},
       {text: 'Hora', value: 'Hora'},
       {text: 'Pago', value: 'Pago'},
     ],
@@ -277,7 +279,7 @@ export default {
       })
 
     },
-    Consultar() {
+    Consultar () {
       let variables = {}
       if (this.Tipo==='Por Fecha'){
         this.$apollo.query({
@@ -311,6 +313,7 @@ export default {
           this.LoadUi(res.data.Compras)
         });
       }
+
     },
     Generar () {
       var Ahora = new Date(Date.now())
@@ -328,48 +331,143 @@ export default {
     StoreCompra (Compra) {
       var store = this.$apollo.provider.defaultClient
 
-      try {
-        var data = store.readQuery({
-          query: COMPRAS,
-          variables: {
-            UsuarioId: Compra.UsuarioId
+        //por fecha
+        try {
+          var data = store.readQuery({
+            query: COMPRAS,
+            variables: {
+              Fecha: Compra.Fecha
+            }
+          })
+
+          var Existe = false
+
+          for (let i=0; i<data.Compras.length; i++) {
+            if (data.Compras[i].Id === Compra.Id) {
+              Existe = true
+              data.Compras[i] = Compra
+            }
           }
-        })
 
-        var Existe = false
+          (!Existe) ? data.Compras.push(Compra) : null;
 
-        for (let i=0; i<data.Compras.length; i++) {
-          if (data.Compras[i].Id === Compra.Id) {
-            Existe = true
-            data.Compras[i] = Compra
+          store.writeQuery({
+            query: COMPRAS,
+            variables: {
+              Fecha: Compra.Fecha
+            },
+            data: data
+          })
+
+        } catch (Err) { }/*
+
+          var data = {Compras: []}
+
+          data.Compras.push(Compra)
+
+          store.writeQuery({
+            query: COMPRAS,
+            variables: {
+              Fecha: Compra.Fecha
+            },
+            data: data
+          })
+        }*/
+
+
+        //por usuario
+        try {
+          var data = store.readQuery({
+            query: COMPRAS,
+            variables: {
+              UsuarioId: Compra.UsuarioId
+            }
+          })
+
+          var Existe = false
+
+          for (let i=0; i<data.Compras.length; i++) {
+            if (data.Compras[i].Id === Compra.Id) {
+              Existe = true
+              data.Compras[i] = Compra
+            }
           }
-        }
 
-        (!Existe) ? data.Compras.push(Compra) : null;
+          (!Existe) ? data.Compras.push(Compra) : null;
 
-        store.writeQuery({
-          query: COMPRAS,
-          variables: {
-            UsuarioId: Compra.UsuarioId
-          },
-          data: data
-        })
+          store.writeQuery({
+            query: COMPRAS,
+            variables: {
+              UsuarioId: Compra.UsuarioId
+            },
+            data: data
+          })
 
-      } catch (Err) {
+        } catch (Err) { } /*
 
-        var data = {Compras: []}
+          var data = {Compras: []}
 
-        data.Compras.push(Compra)
+          data.Compras.push(Compra)
 
-        store.writeQuery({
-          query: COMPRAS,
-          variables: {
-            UsuarioId: Compra.UsuarioId
-          },
-          data: data
-        })
-      }
+          store.writeQuery({
+            query: COMPRAS,
+            variables: {
+              UsuarioId: Compra.UsuarioId
+            },
+            data: data
+          })
+        }*/
+
+
+        //por usuario y fecha
+        try {
+          var data = store.readQuery({
+            query: COMPRAS,
+            variables: {
+              Fecha: Compra.Fecha,
+              UsuarioId: Compra.UsuarioId
+            }
+          })
+
+          var Existe = false
+
+          for (let i=0; i<data.Compras.length; i++) {
+            if (data.Compras[i].Id === Compra.Id) {
+              Existe = true
+              data.Compras[i] = Compra
+            }
+          }
+
+          (!Existe) ? data.Compras.push(Compra) : null;
+
+          store.writeQuery({
+            query: COMPRAS,
+            variables: {
+              Fecha: Compra.Fecha,
+              UsuarioId: Compra.UsuarioId
+            },
+            data: data
+          })
+
+        } catch (Err) { } /*
+
+          var data = {Compras: []}
+
+          data.Compras.push(Compra)
+
+          store.writeQuery({
+            query: COMPRAS,
+            variables: {
+              Fecha: Compra.Fecha,
+              UsuarioId: Compra.UsuarioId
+            },
+            data: data
+          })
+        }*/
+
+
       this.Consultar()
+
     },
     StoreUsuario (Usuario) {
       var store = this.$apollo.provider.defaultClient
@@ -435,20 +533,19 @@ export default {
           Saldo: Compras[i].Saldo,
           Estado: Compras[i].Estado,
           Fecha: Compras[i].Fecha,
+          Expedicion: Compras[i].Expedicion,
           Hora: Compras[i].Hora
         }
         this.itemsCompra.push(tmp)
       }
     },
     Reset () {
-      this.Id = null
       this.Tipo = null,
       this.UsuarioId = null
       this.Fecha = null
       this.itemsCompra = []
     },
     Reset2 () {
-      this.Id = null
       this.UsuarioId = null
       this.Fecha = null
       this.itemsCompra = []

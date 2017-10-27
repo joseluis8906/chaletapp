@@ -4,7 +4,7 @@ export const state = {
   Icon: 'autorenew',
   Context: 'primary',
   Mode: 'multi-line',
-  Timeout: 3000
+  Timeout: 2500
 }
 
 export const mutations = {

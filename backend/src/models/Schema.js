@@ -467,7 +467,7 @@ var Query = new GraphQLObjectType({
           Hora: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Compra.findAll({where: args, order: [['Expedicion', 'ASC'], ['Hora', 'ASC']]});
+          return Db.models.Compra.findAll({where: args, order: [['Fecha', 'ASC']]});
         }
       },
       Historiales:{

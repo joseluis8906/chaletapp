@@ -101,7 +101,6 @@ export default {
     },
     ItemsUsuario: [],
     EmpleadoId: null,
-    UserName: null,
     Id: null,
     Usuario:null,
     Saldo: null,
@@ -116,28 +115,34 @@ export default {
       }
     }
   }),
-  beforeMount () {
-    if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
-      this.$router.push('/')
-    } else {
-      var UserName = sessionStorage.getItem('x-access-username')
-      var Roles = JSON.parse(sessionStorage.getItem('x-access-roles'))
-      this.$store.commit('security/SetUserName', UserName);
-      this.$store.commit('security/AddRoles', Roles);
-    }
-  },
+  beforeCreate () { console.log('beforeCreate') },
+  created () { console.log('created') },
+  beforeMount () { console.log('beforeMount') },
   mounted () {
+    console.log('mounted')
     this.$nextTick(() => {
+      if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
+        this.$router.push('/')
+      } else {
+        var UserName = sessionStorage.getItem('x-access-username')
+        var Roles = JSON.parse(sessionStorage.getItem('x-access-roles'))
+        this.$store.commit('security/SetUserName', UserName);
+        this.$store.commit('security/AddRoles', Roles);
+      }
+
       this.$mqtt.subscribe('chaletapp/apollo/mutation')
-      this.UserName = this.$store.state.security.UserName
     })
   },
+  updated () { console.log('update') },
+  deactivate () { console.log('deactivate') },
+  beforeDestroy () { console.log('beforeDestroy') },
+  destroyed(){ console.log('beforeDestroy') },
   apollo: {
     Usuarios: {
       query: USUARIOS,
       loadingKey: 'loading',
       update (data) {
-        this.CargarClientes (data.Usuarios)
+        this.CargarUsuarios (data.Usuarios)
       }
     },
     Cuentas: {
@@ -275,13 +280,14 @@ export default {
         })
       }
 
-      this.CargarClientes(data.Usuarios)
+      this.CargarUsuarios(data.Usuarios)
 
     },
-    CargarClientes (Usuarios) {
+    CargarUsuarios (Usuarios) {
       this.ItemsUsuario = []
+      let UserName = this.$store.state.security.UserName
       for(let j = 0; j < Usuarios.length; j++){
-        if(Usuarios[j].UserName === this.UserName){
+        if(Usuarios[j].UserName === UserName){
           this.EmpleadoId = Usuarios[j].Id
         }
 
@@ -355,7 +361,7 @@ export default {
           setTimeout(() => {
             this.$store.commit('reports/changeVolver', '/recargas')
             this.$router.push('/reporte/recibo')
-          }, 4000)
+          }, 3000)
 
         }).catch(() => {
           this.$store.commit('notificaciones/changeContext', 'error')
