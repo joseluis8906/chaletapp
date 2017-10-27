@@ -13,4 +13,4 @@ web 56784321
 //local host
 //Vue.use(VueMqtt, "http://site.com/ws/mqtt", {username: 'web', password: '56784321', clientId: 'chaletApp_' + Math.random().toString(16).substr(2, 8)})
 // vps chalet
-Vue.use(VueMqtt, "https://reservaselgranchalet.com/mqtt", {username: 'web', password: '56784321', clientId: 'chaletApp_' + Math.random().toString(16).substr(2, 8)})
+Vue.use(VueMqtt, "wss://reservaselgranchalet.com:443/ws/mqtt", {username: 'web', password: '56784321', clientId: 'chaletApp_' + Math.random().toString(16).substr(2, 8)})
