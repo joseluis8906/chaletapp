@@ -43,7 +43,7 @@ v-layout( align-center justify-center )
             v-select(v-bind:items="ItemsTipo"
                    v-model="Tipo"
                    label="Tipo"
-                   @change="Reset"
+                   @change="Reset2"
                    :rules="[rules.required]"
                    dark)
 
@@ -265,7 +265,6 @@ export default {
           this.$mqtt.publish('chaletapp/apollo/mutation', JSON.stringify({Method: 'StoreCompra', Obj: res.UpdateCompra}))
         }
       }).then(() => {
-
         this.$store.commit('notificaciones/changeContext', 'success')
         this.$store.commit('notificaciones/changeIcon', 'done_all')
         this.$store.commit('notificaciones/changeMsg', 'Transacción Exitosa')
@@ -436,6 +435,12 @@ export default {
     Reset () {
       this.Id = null
       this.Tipo = null,
+      this.UsuarioId = null
+      this.Fecha = null
+      this.itemsCompra = []
+    },
+    Reset2 () {
+      this.Id = null
       this.UsuarioId = null
       this.Fecha = null
       this.itemsCompra = []

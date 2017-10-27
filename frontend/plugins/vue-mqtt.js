@@ -8,6 +8,9 @@ desktop 87654321
 web 56784321
 */
 
-//Vue.use(VueMqtt, "ws://149.56.109.238:9001/mqtt", {username: 'web', password: '56784321', clientId: 'chaletApp_' + Math.random().toString(16).substr(2, 8)})
-//Vue.use(VueMqtt, "ws://127.0.0.1:9001/mqtt", {username: 'web', password: '56784321', clientId: 'chaletApp_' + Math.random().toString(16).substr(2, 8)})
-Vue.use(VueMqtt, "ws://144.217.167.244:9001/mqtt", {username: 'web', password: '56784321', clientId: 'chaletApp_' + Math.random().toString(16).substr(2, 8)})
+//vps de prueba
+//Vue.use(VueMqtt, "http://test1.unixjs.com/mqtt", {username: 'web', password: '56784321', clientId: 'chaletApp_' + Math.random().toString(16).substr(2, 8)})
+//local host
+Vue.use(VueMqtt, "http://site.com/ws/mqtt", {username: 'web', password: '56784321', clientId: 'chaletApp_' + Math.random().toString(16).substr(2, 8)})
+// vps chalet
+//Vue.use(VueMqtt, "https://reservaselgranchalet.com/mqtt", {username: 'web', password: '56784321', clientId: 'chaletApp_' + Math.random().toString(16).substr(2, 8)})
