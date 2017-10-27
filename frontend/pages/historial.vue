@@ -126,8 +126,8 @@ v-layout( align-center justify-center )
                 td(class="text-xs-center" :style="{minWidth: ''+(props.item.DocumentoEmpleado.length*12)+'px'}") {{ props.item.DocumentoEmpleado }}
                 td(class="text-xs-center" :style="{minWidth: ''+(props.item.Tipo.length*12)+'px'}") {{ props.item.Tipo }}
                 td(class="text-xs-center" :style="{minWidth: ''+(props.item.Monto.length*12)+'px'}") {{ props.item.Monto | currency("$", 0) }}
-                td(class="text-xs-center" :style="{minWidth: ''+(props.item.Empleado.length*12)+'px'}") {{ props.item.Cliente }}
-                td(class="text-xs-center" :style="{minWidth: ''+(props.item.DocumentoEmpleado.length*12)+'px'}") {{ props.item.DocumentoCliente }}
+                td(class="text-xs-center" :style="{minWidth: ''+(props.item.Cliente.length*12)+'px'}") {{ props.item.Cliente }}
+                td(class="text-xs-center" :style="{minWidth: ''+(props.item.DocumentoCliente.length*12)+'px'}") {{ props.item.DocumentoCliente }}
                 td(class="text-xs-center" :style="{minWidth: ''+(props.item.Fecha.length*12)+'px'}") {{ props.item.Fecha }}
                 td(class="text-xs-center") {{ props.item.Hora }}
 
@@ -405,7 +405,7 @@ export default {
           data: data
         })
 
-      } catch (Err) {
+      } catch (Err) { } /*
 
         var data = {Historiales: []}
 
@@ -418,7 +418,7 @@ export default {
           },
           data: data
         })
-      }
+      }*/
 
 
       //por cliente
@@ -449,7 +449,7 @@ export default {
           data: data
         })
 
-      } catch (Err) {
+      } catch (Err) { } /*
 
         var data = {Historiales: []}
 
@@ -462,7 +462,7 @@ export default {
           },
           data: data
         })
-      }
+      }*/
 
 
       //por empleado
@@ -493,7 +493,7 @@ export default {
           data: data
         })
 
-      } catch (Err) {
+      } catch (Err) { } /*
 
         var data = {Historiales: []}
 
@@ -506,7 +506,7 @@ export default {
           },
           data: data
         })
-      }
+      }*/
 
 
       //por fecha y cliente
@@ -539,7 +539,7 @@ export default {
           data: data
         })
 
-      } catch (Err) {
+      } catch (Err) { } /*
 
         var data = {Historiales: []}
 
@@ -553,7 +553,7 @@ export default {
           },
           data: data
         })
-      }
+      }*/
 
 
       //por fecha y empleado
@@ -586,7 +586,7 @@ export default {
           data: data
         })
 
-      } catch (Err) {
+      } catch (Err) { } /*
 
         var data = {Historiales: []}
 
@@ -600,7 +600,7 @@ export default {
           },
           data: data
         })
-      }
+      }*/
 
 
       //por empleado y cliente
@@ -633,7 +633,7 @@ export default {
           data: data
         })
 
-      } catch (Err) {
+      } catch (Err) { }/*
 
         var data = {Historiales: []}
 
@@ -647,7 +647,7 @@ export default {
           },
           data: data
         })
-      }
+      }*/
 
       this.$store.commit('notificaciones/changeContext', 'info')
       this.$store.commit('notificaciones/changeIcon', 'info_outline')
