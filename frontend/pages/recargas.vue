@@ -329,7 +329,7 @@ export default {
         if(this.UsuarioId === null || this.EmpleadoId === null){
           this.$store.commit('notificaciones/changeContext', 'error')
           this.$store.commit('notificaciones/changeIcon', 'error_outline')
-          this.$store.commit('notificaciones/changeMsg', 'Error general\nsalga y vuelva a entrar.')
+          this.$store.commit('notificaciones/changeMsg', 'Error general\nsalga y vuelva a entrar')
           this.$store.commit('notificaciones/changeState', 1)
           return null;
         }
