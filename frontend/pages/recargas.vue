@@ -285,7 +285,11 @@ export default {
     },
     CargarUsuarios (Usuarios) {
       this.ItemsUsuario = []
-      let UserName = this.$store.state.security.UserName
+      var UserName = null
+      while(this.UserName === null){
+        UserName = this.$store.state.security.UserName
+      }
+
       for(let j = 0; j < Usuarios.length; j++){
         if(Usuarios[j].UserName === UserName){
           this.EmpleadoId = Usuarios[j].Id
